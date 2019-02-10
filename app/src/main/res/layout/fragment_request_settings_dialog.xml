@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/bg_dialog"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="10dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/view"
+        android:layout_toEndOf="@id/view"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:drawableTop="@drawable/ic_local_grocery_big"
+        android:gravity="center"
+        android:text="@string/cancel_request" />
+
+
+    <View
+        android:layout_width="1dp"
+        android:id="@+id/view"
+        android:layout_centerInParent="true"
+        android:layout_height="60dp"
+        android:layout_marginBottom="60dp"
+        android:layout_marginTop="60dp"
+        android:background="@android:color/darker_gray" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:drawablePadding="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/view"
+        android:layout_toStartOf="@id/view"
+        android:drawableTop="@drawable/ic_local_grocery_big"
+        android:gravity="center"
+        android:text="@string/another_request" />
+
+</RelativeLayout>

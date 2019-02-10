@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ShopInfoFragment"
+        android:layout_marginBottom="70dp"
+        tools:ignore="HardcodedText">
+
+
+        <RelativeLayout
+            android:id="@+id/iam_courier_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:visibility="visible"
+            tools:ignore="UnusedAttribute">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:id="@+id/be_a_courier"
+                android:layout_toLeftOf="@id/number_of_couriers"
+                android:layout_toStartOf="@id/number_of_couriers"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                android:paddingRight="5dp"
+                android:text="@string/iam_courier"
+                android:textColor="#434343" />
+
+            <TextView
+                android:id="@+id/number_of_couriers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="@string/number_of_couriers"
+                android:textColor="#434343" />
+
+        </RelativeLayout>
+
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/iam_courier_parent" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@id/iam_courier_parent"
+            android:background="#B0B1B6" />
+
+        <!--<android.support.design.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true">
+
+        </android.support.design.widget.CoordinatorLayout>-->
+
+        <!--<Button
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/iam_courier_parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_button_rectangle"
+            android:drawableLeft="@drawable/ic_location"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_location"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="@string/show_on_map"
+            android:textAllCaps="false"
+            android:textColor="@color/whiteColor" />-->
+
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_add"
+        app:fabSize="normal"
+        app:layout_anchor="@+id/bottom_sheet"
+        app:layout_anchorGravity="top|end" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/whiteColor"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="70dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+        tools:ignore="UnusedAttribute">
+
+
+        <View
+            android:layout_width="7dp"
+            android:layout_height="280dp"
+            android:background="#FFD300" />
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B0B1B6" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/store_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:text="@string/store_name"
+                android:textColor="#FFD300"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/store_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/store_distance"
+                android:textColor="#B0B1B6"
+                android:textSize="15sp" />
+
+
+            <LinearLayout
+                android:id="@+id/btn_bottom_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:visibility="gone"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp">
+
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:drawableLeft="@drawable/ic_clock"
+                    android:drawablePadding="10dp"
+                    android:drawableStart="@drawable/ic_clock"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/today_s"
+                    android:textColor="#FFD300"
+                    android:textSize="14sp" />
+
+
+                <TextView
+                    android:id="@+id/today_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:drawablePadding="10dp"
+                    android:drawableRight="@drawable/ic_arrow_down"
+                    android:gravity="end"
+                    android:text="09:00am - 12:00am"
+                    android:textAlignment="center"
+                    android:drawableEnd="@drawable/ic_arrow_down" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/scheduling"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:visibility="gone"
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/sunday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/sunday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/monday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/monday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/tuesday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/tuesday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/wednesday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/wednesday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/thursday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/thursday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/friday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/friday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingLeft="10dp"
+                    android:visibility="gone"
+                    android:paddingRight="10dp">
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/saturday"
+                        android:textColor="@android:color/darker_gray"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="10dp"
+                        android:gravity="end"
+                        android:id="@+id/saturday_time"
+                        android:text="09:00am - 12:00am" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

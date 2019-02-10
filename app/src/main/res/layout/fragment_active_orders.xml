@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActiveOrdersFragment">
+
+
+    <include
+        layout="@layout/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1.3dp"
+        android:id="@+id/white_line"
+        android:layout_below="@id/app_bar"
+        android:background="@color/whiteColor"/>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_below="@id/white_line"
+        android:paddingTop="15dp"
+        android:id="@+id/spinner_parent"
+        android:paddingBottom="15dp"
+        android:background="@color/colorPrimary"
+        android:layout_height="wrap_content">
+
+
+        <Spinner
+            android:layout_width="280dp"
+            android:layout_gravity="center"
+            android:id="@+id/spinner"
+            android:spinnerMode="dropdown"
+            android:background="@drawable/bg_spinner"
+            android:layout_height="48dp"/>
+
+
+    </FrameLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_centerInParent="true"
+        android:id="@+id/progressIndicator"
+        android:visibility="gone"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:id="@+id/orders_recycler"
+        android:layout_below="@id/spinner_parent"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:id="@+id/empty_order_parent"
+        android:visibility="gone"
+        android:layout_below="@id/spinner_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/english"
+            android:src="@drawable/ic_no_orders"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="@android:color/darker_gray"
+            android:layout_height="wrap_content"
+            android:text="@string/no_orders"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

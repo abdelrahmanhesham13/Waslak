@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_login"
+    tools:context=".LoginActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:fillViewport="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
+        android:paddingTop="15dp"
+        tools:context=".LoginActivity">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                android:id="@+id/progressIndicator"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/parent_layout"
+                android:layout_height="wrap_content"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/me"
+                    android:src="@drawable/im_logo" />
+
+
+                <Button
+                    android:id="@+id/facebook_login"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="50dp"
+                    android:background="@drawable/bg_facebook_button"
+                    android:drawableLeft="@drawable/ic_facebook"
+                    android:drawableStart="@drawable/ic_facebook"
+                    android:padding="10dp"
+                    android:text="@string/login_facebook"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />
+
+
+                <Button
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/google_login"
+                    android:background="@drawable/bg_google_button"
+                    android:drawableLeft="@drawable/ic_google"
+                    android:drawableStart="@drawable/ic_google"
+                    android:padding="10dp"
+                    android:text="@string/login_google"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />
+
+                <!--<Button
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bg_instagram_button"
+                    android:drawableLeft="@drawable/ic_instagram"
+                    android:drawableStart="@drawable/ic_instagram"
+                    android:padding="10dp"
+                    android:id="@+id/instagram_login"
+                    android:text="@string/login_instagram"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />-->
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="@string/or"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
+
+
+                <Button
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bg_phone_button"
+                    android:drawableLeft="@drawable/ic_smartphone"
+                    android:drawableStart="@drawable/ic_smartphone"
+                    android:padding="10dp"
+                    android:id="@+id/login_phone"
+                    android:text="@string/login_phone"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:text="@string/not_registered"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp" />
+
+
+                <Button
+                    android:id="@+id/sign_up"
+                    android:layout_width="280dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/bg_phone_button"
+                    android:padding="10dp"
+                    android:text="@string/sign_up"
+                    android:textAllCaps="false"
+                    android:textColor="@color/whiteColor" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+</FrameLayout>

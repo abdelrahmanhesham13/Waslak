@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MapActivity">
+
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context=".MapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:elevation="10dp"
+        android:background="@color/whiteColor"
+        android:layout_height="wrap_content"
+        tools:ignore="UnusedAttribute">
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_weight="0.9"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:inputType="text"
+            android:hint="@string/paste_url"
+            android:textSize="15sp"
+            android:background="@android:color/transparent"
+            android:drawablePadding="10dp"
+            android:drawableStart="@drawable/ic_search"
+            android:drawableLeft="@drawable/ic_search"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:layout_width="90dp"
+            android:text="@string/paste"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_button_rectangle"
+            android:layout_height="35dp" />
+
+    </LinearLayout>-->
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingBottom="35dp"
+        android:layout_centerInParent="true"
+        android:contentDescription="@string/customer"
+        android:src="@drawable/ic_map_pin"
+        android:tint="@color/colorPrimary" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        app:cardCornerRadius="5dp"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:id="@+id/address"
+                android:textColor="@android:color/black"
+                android:drawablePadding="10dp"
+                android:textSize="12sp"
+                android:layout_toLeftOf="@id/send_btn"
+                android:layout_toStartOf="@id/send_btn"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_alignParentStart="true"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawableStart="@drawable/ic_location"
+                android:drawableTint="@color/colorPrimary"
+                android:layout_height="wrap_content"
+                tools:ignore="UnusedAttribute" />
+
+            <ProgressBar
+                android:layout_width="20dp"
+                android:id="@+id/progressIndicator"
+                android:visibility="invisible"
+                android:layout_height="20dp" />
+
+
+            <EditText
+                android:layout_width="match_parent"
+                android:hint="@string/floor_number"
+                android:textSize="12sp"
+                android:inputType="text"
+                android:paddingBottom="15dp"
+                android:id="@+id/address_details"
+                android:textColorLink="@android:color/darker_gray"
+                android:shadowColor="@android:color/darker_gray"
+                android:layout_toLeftOf="@id/send_btn"
+                android:layout_toStartOf="@id/send_btn"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+                android:layout_below="@id/address"
+                android:layout_height="wrap_content" />
+
+            <com.github.clans.fab.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                app:fab_size="normal"
+                android:id="@+id/send_btn"
+                app:fab_colorNormal="@color/colorPrimary"
+                app:fab_colorPressed="@color/colorPrimary"
+                android:src="@drawable/ic_send_black_24dp"
+                android:rotation="-40"
+                android:layout_centerVertical="true"
+                android:layout_height="wrap_content" />
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

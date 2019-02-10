@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/coordinatorLayout"
+    tools:context=".OrderNowActivity">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".OrderNowActivity">
+
+        <include
+            layout="@layout/app_bar_order_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" />
+
+        <ProgressBar
+            android:id="@+id/progressIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+
+        <LinearLayout
+            android:id="@+id/store_details"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_bar"
+            android:background="@color/colorPrimary"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/store_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:contentDescription="@string/order_now"
+                android:scaleType="centerCrop"
+                android:src="@drawable/im_profile_picture" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:id="@+id/store_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/store_name"
+                    android:textColor="@color/whiteColor"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/store_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/address"
+                    android:textColor="@color/whiteColor"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/delivery_location_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/store_details">
+
+            <TextView
+                android:id="@+id/delivery_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_location"
+                android:drawablePadding="5dp"
+                android:drawableStart="@drawable/ic_location"
+                android:drawableTint="@android:color/darker_gray"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="@string/delivery_location"
+                android:textColor="@android:color/darker_gray"
+                android:textStyle="bold"
+                tools:ignore="UnusedAttribute" />
+
+
+            <TextView
+                android:id="@+id/choose_delivery_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/delivery_location"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:gravity="center_vertical"
+                android:text="@string/choose_delivery_location"
+                android:textColor="@android:color/darker_gray" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/choose_delivery_location"
+                android:layout_marginTop="15dp"
+                android:background="@android:color/darker_gray" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/delivery_time_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/delivery_location_parent">
+
+            <TextView
+                android:id="@+id/delivery_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_clock"
+                android:drawablePadding="5dp"
+                android:drawableStart="@drawable/ic_clock"
+                android:drawableTint="@android:color/darker_gray"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="@string/delivery_time"
+                android:textColor="@android:color/darker_gray"
+                android:textStyle="bold"
+                tools:ignore="UnusedAttribute" />
+
+
+            <TextView
+                android:id="@+id/choose_delivery_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/delivery_time"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:gravity="center_vertical"
+                android:text="@string/choose_delivery_time"
+                android:textColor="@android:color/darker_gray" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/choose_delivery_time"
+                android:layout_marginTop="15dp"
+                android:background="@android:color/darker_gray" />
+
+        </RelativeLayout>
+
+
+        <EditText
+            android:id="@+id/description_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/delivery_time_parent"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/transparent"
+            android:gravity="top|start"
+            android:hint="@string/order_description"
+            android:inputType="textMultiLine"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="60dp"
+        app:fabSize="normal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_camera"/>
+
+
+</android.support.design.widget.CoordinatorLayout>

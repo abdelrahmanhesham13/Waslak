@@ -1,0 +1,78 @@
+{
+  "project_info": {
+    "project_number": "1077157101285",
+    "firebase_url": "https://waslak-9b935.firebaseio.com",
+    "project_id": "waslak-9b935",
+    "storage_bucket": "waslak-9b935.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077157101285:android:dd26b90a975f74d9",
+        "android_client_info": {
+          "package_name": "com.waslak.waslak"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077157101285-crqbimu488gh33aqmeh7a0hm2lb6m14d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waslak.waslak",
+            "certificate_hash": "1aaa5a855d4de0c013d9fa66f768e6c7608ea55d"
+          }
+        },
+        {
+          "client_id": "1077157101285-2g0rlb5r2d1kq9dipd5re63hvbeptb33.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waslak.waslak",
+            "certificate_hash": "d88f237486280b781a8bf590395c473e009bf418"
+          }
+        },
+        {
+          "client_id": "1077157101285-trc4qgr60uf9ff1to23qg5as3q1o10vm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.waslak.waslak",
+            "certificate_hash": "ec5e424ec8db05047bbd97ff9ddb7e723a6678c2"
+          }
+        },
+        {
+          "client_id": "1077157101285-3v3rb2i24nroqs7daod4itk4a1i8aaj7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvwwDtrs9ZUlSEJhKXI8dSuDuEeOE52Qk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077157101285-96qubpi2hh6r1t2vshn2h7b5qudflele.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1077157101285-9cd6kl40k8uhhrnpub8o6sjci6ue3ch0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "waslak.com"
+              }
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

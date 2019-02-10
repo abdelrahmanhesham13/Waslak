@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:paddingTop="60dp"
+        android:background="@drawable/bg_dialog"
+        android:layout_below="@id/imageView1"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/delegate_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Customer Name"
+            android:textColor="#808080"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <RatingBar
+            style="?android:ratingBarStyleIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:id="@+id/rating"
+            android:theme="@style/RatingBar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_error"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_error"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:id="@+id/verify_state"
+            android:text="@string/not_verified_account"
+            android:textColor="#FFD300"
+            android:textSize="12sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="15dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/number_of_orders"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="#808080"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                tools:text="1"
+                android:gravity="center"
+                android:layout_marginLeft="35dp"
+                android:layout_marginStart="35dp"
+                android:id="@+id/num_of_orders"
+                android:textColor="#808080"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@android:color/darker_gray"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="15dp"
+            android:id="@+id/customer_comments_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/customer_comments"
+                android:gravity="center"
+                android:id="@+id/customer_comments"
+                android:textStyle="bold"
+                android:textColor="#808080"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                tools:text="12 Comment"
+                android:gravity="center"
+                android:layout_toRightOf="@id/customer_comments"
+                android:layout_toEndOf="@id/customer_comments"
+                android:layout_marginLeft="35dp"
+                android:layout_marginStart="35dp"
+                android:textColor="#808080"
+                android:id="@+id/comments"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:contentDescription="@string/customer_comments"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_keyboard_arrow_right"/>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/imageView1"
+        android:layout_height="120dp"
+        android:layout_width="120dp"
+        android:layout_marginBottom="-60dp"
+        app:civ_border_width="10dp"
+        app:civ_border_color="#82ffffff"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

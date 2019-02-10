@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NotificationSettingsActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/advertisement"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:id="@+id/ads"
+                android:textStyle="bold"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_notifications_default"
+                android:drawableLeft="@drawable/ic_notifications_default"
+                android:layout_height="wrap_content" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:checked="true"
+                android:layout_toRightOf="@id/ads"
+                android:layout_toEndOf="@id/ads"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/advertisement_others"
+                android:layout_below="@id/ads"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/new_orders"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:id="@+id/orders"
+                android:textStyle="bold"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_new_orders"
+                android:drawableLeft="@drawable/ic_new_orders"
+                android:layout_height="wrap_content" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:checked="true"
+                android:layout_toRightOf="@id/orders"
+                android:layout_toEndOf="@id/orders"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/new_orders"
+                android:layout_below="@id/orders"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="@android:color/darker_gray"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/nearest_orders"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:id="@+id/nearest"
+                android:textStyle="bold"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_location_purple"
+                android:drawableLeft="@drawable/ic_location_purple"
+                android:layout_height="wrap_content" />
+
+            <Switch
+                android:layout_width="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:checked="true"
+                android:layout_toRightOf="@id/nearest"
+                android:layout_toEndOf="@id/nearest"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/your_nearest"
+                android:layout_below="@id/nearest"
+                android:layout_marginTop="10dp"
+                android:textColor="@android:color/black"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+</ScrollView>

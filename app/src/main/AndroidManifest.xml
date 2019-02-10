@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.waslak.waslak">
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
+    <application
+        android:allowBackup="true"
+        android:largeHeap="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+        <service android:name=".notification.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".notification.FirebaseIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
+        <activity
+            android:name=".HomeActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".SplashActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LanguageActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".OrderDetailsActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".PrivacyPolicyActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".SettingActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".AddCouponActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".AccountActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".CheckInActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".IntroActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".StoreActivity"
+            android:configChanges="locale|orientation|screenSize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="waslk.com"
+                    android:scheme="http" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="waslk.page.link"
+                    android:scheme="http" />
+                <data
+                    android:host="waslk.page.link"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDcLxU4klzRTDvefBvM6Oli-wEHzXb1zrM" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".OrderNowActivity" />
+        <activity
+            android:name=".MapActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/MapTheme" />
+        <activity android:name=".SignUpActivity" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MobileVerificationActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/MapTheme" />
+        <activity
+            android:name=".ChatActivity"
+            android:theme="@style/CustomTheme" />
+        <activity
+            android:name=".ReviewsActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/MapTheme" />
+        <activity
+            android:name=".NotificationSettingsActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/MapTheme" />
+        <activity
+            android:name=".ConfirmDeliveryActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/MapTheme" />
+        <activity
+            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="sensor"
+            android:theme="@style/FinestWebViewTheme.Light" />
+        <activity
+            android:name=".WebViewActivity"
+            android:configChanges="locale|orientation|screenSize"
+            android:theme="@style/MapTheme" />
+        <activity
+            android:name=".SearchActivity"
+            android:configChanges="locale|orientation|screenSize" />
+        <activity
+            android:name=".ComplaintsActivity"
+            android:theme="@style/MapTheme" />
+        <activity android:name=".BeAgentActivity" />
+        <activity android:name=".TrackOrderActivity"></activity>
+    </application>
+
+</manifest>

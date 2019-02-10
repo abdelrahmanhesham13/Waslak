@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content">
+
+
+    <View
+        android:layout_width="match_parent"
+        android:background="#B0B1B6"
+        android:layout_marginTop="4dp"
+        android:layout_height="1.5dp"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingLeft="30dp"
+        android:paddingTop="10dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingBottom="10dp"
+        android:paddingRight="30dp"
+        android:layout_height="wrap_content"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:contentDescription="@string/notifications"
+            android:src="@drawable/ic_notification_pink"/>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:textColor="#434343"
+
+            android:id="@+id/notification_text"
+            tools:text="Mohamed Gad accept your offer"
+            android:layout_gravity="center"/>
+
+
+
+
+    </LinearLayout>
+
+
+</LinearLayout>

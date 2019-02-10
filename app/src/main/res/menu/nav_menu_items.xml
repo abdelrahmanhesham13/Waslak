@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_edit_profile"
+            android:title="@string/edit_profile" />
+        <item
+            android:id="@+id/nav_my_check_in_list"
+            android:title="@string/my_check_in_list" />
+        <item
+            android:id="@+id/nav_rate_my_app"
+            android:title="@string/rate_this_app" />
+        <item
+            android:id="@+id/nav_about_us"
+            android:title="@string/about_us" />
+        <item
+            android:id="@+id/nav_app_tour"
+            android:title="@string/app_tour" />
+        <item
+            android:id="@+id/nav_terms_conditions"
+            android:title="@string/terms_and_conditions" />
+        <item
+            android:id="@+id/nav_privacy_policy"
+            android:title="@string/privacy_policy" />
+        <item
+            android:id="@+id/nav_become_an_agent"
+            android:title="@string/how_to_be_agent" />
+        <item
+            android:id="@+id/nav_log_out"
+            android:title="@string/log_out"/>
+    </group>
+
+</menu>

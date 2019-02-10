@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spinner_words">
+        <item>الطلبات المفعله</item>
+        <item>الطلبات المنتهيه</item>
+    </string-array>
+</resources>
