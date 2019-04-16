@@ -55,7 +55,7 @@ public class StoresAdapter extends RecyclerView.Adapter<StoresAdapter.StoreViewH
             String ref = uri.getQueryParameter("photoreference");
             Helper.writeToLog("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ");
             if (ref != null)
-                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ").fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
+                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyA-39lOKwrCfBv1N31ofGpgeCeh6KK0va4").fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
                     @Override
                     public void onSuccess() {
 
