@@ -156,19 +156,19 @@ public class BeAgentActivity extends AppCompatActivity {
                 Image img = images.get(0);
                 try {
                     if (mType == 0) {
-                        Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
+                        Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 2080);
                         mNationalIdPhoto.setImageBitmap(bitmapImage);
-                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),200)));
+                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),2080)));
                         UploadImage();
                     } else if (mType == 1) {
-                        Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
+                        Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 2080);
                         mNonConvictsImage.setImageBitmap(bitmapImage);
-                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),200)));
+                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),2080)));
                         UploadImage();
                     } else if (mType == 2) {
-                        Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
+                        Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 2080);
                         mCarImage.setImageBitmap(bitmapImage);
-                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),200)));
+                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),2080)));
                         UploadImage();
                     }
                 } catch (IOException e) {
@@ -184,7 +184,7 @@ public class BeAgentActivity extends AppCompatActivity {
             File f = new File(BeAgentActivity.this.getExternalCacheDir().getAbsolutePath() + "/" + name);
             boolean crated = f.createNewFile();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bmap.compress(Bitmap.CompressFormat.JPEG, 70, bos);
+            bmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             byte[] bitmapData = bos.toByteArray();
 
             FileOutputStream fos = new FileOutputStream(f);
@@ -233,7 +233,7 @@ public class BeAgentActivity extends AppCompatActivity {
         bmOptions.inJustDecodeBounds = true;
 
         // Calculate inSampleSize
-        bmOptions.inSampleSize = calculateInSampleSize(bmOptions, 500, 500);
+        bmOptions.inSampleSize = calculateInSampleSize(bmOptions, 1080, 2000);
 
         // Decode bitmap with inSampleSize set
         bmOptions.inJustDecodeBounds = false;

@@ -28,6 +28,9 @@
             android:id="@+id/nav_become_an_agent"
             android:title="@string/how_to_be_agent" />
         <item
+            android:id="@+id/nav_featured_customer"
+            android:title="@string/featured_customer"/>
+        <item
             android:id="@+id/nav_log_out"
             android:title="@string/log_out"/>
     </group>

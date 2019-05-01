@@ -225,6 +225,14 @@
 
                 </RelativeLayout>
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:id="@+id/attach_receipt"
+                    android:layout_height="wrap_content"
+                    android:text="@string/attach_receipt"
+                    android:textColor="@color/colorPrimary"
+                    android:layout_gravity="center" />
+
 
                 <Button
                     android:layout_width="110dp"

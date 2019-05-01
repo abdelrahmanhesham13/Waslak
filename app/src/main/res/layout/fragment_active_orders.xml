@@ -21,13 +21,53 @@
         android:background="@color/whiteColor"/>
 
 
+    <info.hoang8f.android.segmented.SegmentedGroup
+        xmlns:segmentedgroup="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/segmented2"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/white_line"
+        android:layout_margin="10dp"
+        android:layoutDirection="ltr"
+        android:orientation="horizontal"
+        segmentedgroup:sc_checked_text_color="@color/whiteColor"
+        segmentedgroup:sc_tint_color="@color/colorPrimary"
+        segmentedgroup:sc_border_width="2dp"
+        segmentedgroup:sc_corner_radius="10dp">
+
+
+        <RadioButton
+            android:id="@+id/customer_orders"
+            android:button="@null"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/customer_orders_new" />
+
+        <RadioButton
+            android:id="@+id/my_orders"
+            android:text="@string/my_orders"
+            android:gravity="center"
+            android:checked="true"
+            android:button="@null"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+
+
+    </info.hoang8f.android.segmented.SegmentedGroup>
+
+
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_below="@id/white_line"
+        android:layout_below="@id/segmented2"
         android:paddingTop="15dp"
         android:id="@+id/spinner_parent"
         android:paddingBottom="15dp"
-        android:background="@color/colorPrimary"
         android:layout_height="wrap_content">
 
 

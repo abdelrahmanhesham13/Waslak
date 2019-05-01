@@ -262,7 +262,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     private Bitmap getBitmap(String path) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
-        return getResizedBitmap(bitmap, 600);
+        return getResizedBitmap(bitmap, 2080);
     }
 
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
@@ -342,7 +342,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             File f = new File(OrderNowActivity.this.getExternalCacheDir().getAbsolutePath() + "/" + name);
             boolean crated = f.createNewFile();
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            bmap.compress(Bitmap.CompressFormat.JPEG, 70, bos);
+            bmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
             byte[] bitmapData = bos.toByteArray();
 
             FileOutputStream fos = new FileOutputStream(f);

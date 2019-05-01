@@ -77,6 +77,9 @@ public class RealStoresFragment extends Fragment {
     RecyclerView mShopsRecycler;
     @BindView(R.id.progressIndicator)
     ProgressBar mProgressBar;
+    @BindView(R.id.deliver)
+    View mDeliveryParent;
+
 
     ArrayList<ShopModel> mShopModels;
     StoresAdapter mAdapter;
@@ -156,6 +159,13 @@ public class RealStoresFragment extends Fragment {
         mShopsRecycler.setHasFixedSize(true);
         mShopsRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mShopsRecycler.setAdapter(mAdapter);
+
+        mDeliveryParent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),PackageDeliveryActivity.class));
+            }
+        });
 
 
         return view;

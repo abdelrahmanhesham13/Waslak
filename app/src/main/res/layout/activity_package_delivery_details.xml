@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    tools:context=".PackageDeliveryDetailsActivity">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/send"
+        android:fillViewport="true"
+        tools:context=".PackageDeliveryDetailsActivity">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".PackageDeliveryDetailsActivity">
+
+
+            <RelativeLayout
+                android:id="@+id/start_delivery_location_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/store_details">
+
+                <TextView
+                    android:id="@+id/start_delivery_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawableLeft="@drawable/ic_location"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@android:color/darker_gray"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/start_location"
+                    android:textColor="@android:color/darker_gray"
+                    android:textStyle="bold"
+                    tools:ignore="UnusedAttribute" />
+
+
+                <TextView
+                    android:id="@+id/start_choose_delivery_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/start_delivery_location"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/choose_start_location"
+                    android:textColor="@android:color/darker_gray" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/start_choose_delivery_location"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:color/darker_gray" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/end_delivery_location_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_delivery_location_parent">
+
+                <TextView
+                    android:id="@+id/end_delivery_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawableLeft="@drawable/ic_location"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@android:color/darker_gray"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/end_location"
+                    android:textColor="@android:color/darker_gray"
+                    android:textStyle="bold"
+                    tools:ignore="UnusedAttribute" />
+
+
+                <TextView
+                    android:id="@+id/end_choose_delivery_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/end_delivery_location"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/choose_end_location"
+                    android:textColor="@android:color/darker_gray" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/end_choose_delivery_location"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:color/darker_gray" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/delivery_time_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/end_delivery_location_parent">
+
+                <TextView
+                    android:id="@+id/delivery_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableStart="@drawable/ic_clock"
+                    android:drawableLeft="@drawable/ic_clock"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@android:color/darker_gray"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="@string/delivery_time"
+                    android:textColor="@android:color/darker_gray"
+                    android:textStyle="bold"
+                    tools:ignore="UnusedAttribute" />
+
+
+                <TextView
+                    android:id="@+id/choose_delivery_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/delivery_time"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/choose_delivery_time"
+                    android:textColor="@android:color/darker_gray" />
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/choose_delivery_time"
+                    android:layout_marginTop="15dp"
+                    android:background="@android:color/darker_gray" />
+
+            </RelativeLayout>
+
+
+            <EditText
+                android:id="@+id/order_details"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_below="@id/delivery_time_parent"
+                android:layout_margin="10dp"
+                android:background="@drawable/bg_search_rectangle"
+                android:gravity="top"
+                android:hint="@string/order_details_package"
+                android:inputType="textMultiLine"
+                android:padding="5dp"
+                android:textSize="14sp" />
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/add_photo"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_above="@id/mobile_verification_parent"
+                android:layout_below="@id/order_details"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_add_a_photo_bk_24dp"
+                android:tint="@color/colorPrimary" />
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/send"
+        android:id="@+id/send"
+        android:textAllCaps="false"
+        android:textColor="@color/whiteColor" />
+</RelativeLayout>

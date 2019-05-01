@@ -69,6 +69,8 @@ public class UserFragment extends Fragment {
     TextView mAuthorizedAcc;
     @BindView(R.id.balance)
     TextView mBalanceTextView;
+    @BindView(R.id.attach_receipt)
+    TextView mAttachReceipt;
 
     OnMenuClicked mOnMenuClicked;
 
@@ -137,6 +139,13 @@ public class UserFragment extends Fragment {
             public void onClick(View v) {
                 Helper.removeUserFromSharedPreferences(context);
                 startActivity(new Intent(getActivity(), LoginActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            }
+        });
+
+        mAttachReceipt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 

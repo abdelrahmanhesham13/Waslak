@@ -25,8 +25,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -69,6 +71,13 @@ public class ActiveOrdersFragment extends Fragment {
     TextView mSettingButton;
     @BindView(R.id.menu_button)
     ImageView mMenuButton;
+    @BindView(R.id.customer_orders)
+    RadioButton mCustomerOrders;
+    @BindView(R.id.my_orders)
+    RadioButton mMyOrders;
+    @BindView(R.id.spinner_parent)
+    View mSpinnerParent;
+
 
     OrdersAdapter mOrdersAdapter;
 
@@ -205,7 +214,7 @@ public class ActiveOrdersFragment extends Fragment {
                     Crashlytics.setString("Ago",ago);
 
                     if (ago.contains("In ") || ago.contains("in ") || ago.contains("قبل")) {
-                        if (Integer.valueOf(ago.split(" ")[1]) < 15 && ((ago.split(" ")[2].equals("minutes") || ago.split(" ")[2].equals("minute")))) {
+                        if (Integer.valueOf(ago.split(" ")[1]) < 5 && ((ago.split(" ")[2].equals("minutes") || ago.split(" ")[2].equals("minute")))) {
                             mProgressDialog = Helper.showProgressDialog(getContext(), "Loading", false);
                             mConnectorDeleteRequest.getRequest(TAG, "http://www.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
                         } else {
@@ -213,7 +222,7 @@ public class ActiveOrdersFragment extends Fragment {
                             mOrdersAdapter.notifyItemChanged(pos);
                         }
                     } else {
-                        if (Integer.valueOf(ago.split(" ")[0]) < 15 && ((ago.split(" ")[1].equals("minutes") || ago.split(" ")[1].equals("minute")))) {
+                        if (Integer.valueOf(ago.split(" ")[0]) < 5 && ((ago.split(" ")[1].equals("minutes") || ago.split(" ")[1].equals("minute")))) {
                             mProgressDialog = Helper.showProgressDialog(getContext(), "Loading", false);
                             mConnectorDeleteRequest.getRequest(TAG, "http://www.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
                         } else {
@@ -264,6 +273,23 @@ public class ActiveOrdersFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 onMenuClicked.setOnMenuClicked();
+            }
+        });
+
+        mMyOrders.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked)
+                    mSpinnerParent.setVisibility(View.VISIBLE);
+            }
+        });
+
+        mCustomerOrders.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    mSpinnerParent.setVisibility(View.GONE);
+                }
             }
         });
 

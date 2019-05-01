@@ -216,4 +216,16 @@
     <string name="your_order_delivered">Did your order arrive ?</string>
     <string name="track_order">Track Order</string>
     <string name="received_from_store">Received From Store</string>
+    <string name="delivery_package">Delivery</string>
+    <string name="customer_delivery">Customer Delivery</string>
+    <string name="package_delivery">Package Delivery</string>
+    <string name="start_location">Start Location</string>
+    <string name="end_location">End Location</string>
+    <string name="choose_start_location">Choose Start Location</string>
+    <string name="choose_end_location">Choose End Location</string>
+    <string name="order_details_package">Order Details</string>
+    <string name="my_orders_new">My Orders</string>
+    <string name="customer_orders_new">Customer Orders</string>
+    <string name="featured_customer">Join Featured Customers</string>
+    <string name="attach_receipt">Attach Receipt</string>
 </resources>
