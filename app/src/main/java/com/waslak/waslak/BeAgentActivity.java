@@ -129,7 +129,7 @@ public class BeAgentActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone_number), BeAgentActivity.this);
                 } else {
                     mProgressDialog = Helper.showProgressDialog(BeAgentActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.cta3.com/waslk/api/enroll_to_delivery?user_id=" + Helper.getUserSharedPreferences(BeAgentActivity.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&car_image=" + mCar + "&non_convicts=" + mNonConvicts);
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/enroll_to_delivery?user_id=" + Helper.getUserSharedPreferences(BeAgentActivity.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&car_image=" + mCar + "&non_convicts=" + mNonConvicts);
                 }
             }
         });

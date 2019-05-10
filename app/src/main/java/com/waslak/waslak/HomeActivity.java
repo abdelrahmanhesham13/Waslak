@@ -98,7 +98,7 @@ public class HomeActivity extends AppCompatActivity  implements NavigationView.O
         if (URLUtil.isValidUrl(mUserModel.getImage()))
             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(((ImageView)(mNavigationView.getHeaderView(0).findViewById(R.id.profile_image))));
         else {
-            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(((ImageView)(mNavigationView.getHeaderView(0).findViewById(R.id.profile_image))));
+            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(((ImageView)(mNavigationView.getHeaderView(0).findViewById(R.id.profile_image))));
         }
         ((TextView)mNavigationView.getHeaderView(0).findViewById(R.id.name)).setText(String.format("%s %s",getString(R.string.hello), mUserModel.getName()));
 
@@ -152,7 +152,7 @@ public class HomeActivity extends AppCompatActivity  implements NavigationView.O
                 public void onGetLocation(double longtiude, double lantitude) {
                     if (longtiude != 0 && lantitude != 0) {
                         Helper.writeToLog("Update : " + lantitude + " " + longtiude);
-                        mUpdateAddress.getRequest(TAG,"https://www.cta3.com/waslk/api/update_address?longitude=" + longtiude + "&latitude=" + lantitude + "&id=" + mUserModel.getId());
+                        mUpdateAddress.getRequest(TAG,"http://www.as.cta3.com/waslk/api/update_address?longitude=" + longtiude + "&latitude=" + lantitude + "&id=" + mUserModel.getId());
                     }
                 }
             });
@@ -300,6 +300,9 @@ public class HomeActivity extends AppCompatActivity  implements NavigationView.O
                 return true;
             case R.id.nav_app_tour:
                 startActivity(new Intent(HomeActivity.this,IntroActivity.class).putExtra("type","inside"));
+                return true;
+            case R.id.nav_featured_customer:
+                startActivity(new Intent(HomeActivity.this,BecomeFeaturedClient.class));
                 return true;
             default: return true;
         }

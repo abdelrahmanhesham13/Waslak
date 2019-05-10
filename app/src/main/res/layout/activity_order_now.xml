@@ -168,11 +168,55 @@
         </RelativeLayout>
 
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/estimated_price_parent"
+            android:layout_below="@id/delivery_time_parent">
+
+            <TextView
+                android:id="@+id/delivery_time_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_attach_money"
+                android:drawablePadding="5dp"
+                android:drawableStart="@drawable/ic_attach_money"
+                android:drawableTint="@android:color/darker_gray"
+                android:gravity="center_vertical"
+                android:padding="10dp"
+                android:text="@string/price"
+                android:textColor="@android:color/darker_gray"
+                android:textStyle="bold"
+                tools:ignore="UnusedAttribute" />
+
+
+            <TextView
+                android:id="@+id/estimated_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/delivery_time_price"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:gravity="center_vertical"
+                android:text="@string/estimated_price"
+                android:textColor="@android:color/darker_gray" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/estimated_price"
+                android:layout_marginTop="15dp"
+                android:background="@android:color/darker_gray" />
+
+        </RelativeLayout>
+
+
         <EditText
             android:id="@+id/description_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/delivery_time_parent"
+            android:layout_below="@id/estimated_price_parent"
             android:layout_marginTop="10dp"
             android:background="@android:color/transparent"
             android:gravity="top|start"

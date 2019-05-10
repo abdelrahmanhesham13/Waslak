@@ -448,7 +448,8 @@ public class Connector {
                 String gender = user.optString("gender");
                 String ratingUser = user.optString("rating");
                 String deliveryFlag = user.optString("delivery");
-                UserModel customer = new UserModel(nameUser, username, token, birthDate, password, mobile, longitudeUser, latitudeUser, city, country, imageUser, 0, role, idUser, gender, ratingUser, deliveryFlag);
+                String blocked = user.optString("block");
+                UserModel customer = new UserModel(nameUser, username, token, birthDate, password, mobile, longitudeUser, latitudeUser, city, country, imageUser, 0, role, idUser, gender, ratingUser, deliveryFlag,blocked);
 
                 user = offer.getJSONObject("delivery");
                 nameUser = user.optString("name");
@@ -467,7 +468,8 @@ public class Connector {
                 gender = user.optString("gender");
                 ratingUser = user.optString("rating");
                 deliveryFlag = user.optString("delivery");
-                UserModel delivery = new UserModel(nameUser, username, token, birthDate, password, mobile, longitudeUser, latitudeUser, city, country, imageUser, 0, role, idUser, gender, ratingUser, deliveryFlag);
+                blocked = user.optString("block");
+                UserModel delivery = new UserModel(nameUser, username, token, birthDate, password, mobile, longitudeUser, latitudeUser, city, country, imageUser, 0, role, idUser, gender, ratingUser, deliveryFlag,blocked);
 
 
                 offerModel = new OfferModel(id, deliveryId, userId, price, description, status, longitude, latitude, address, updated
@@ -733,7 +735,8 @@ public class Connector {
                     String genderDelivery = delivery.optString("gender");
                     String ratingDelivery = delivery.optString("rating");
                     String deliveryState = delivery.optString("delivery");
-                    UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, ratingDelivery, deliveryState);
+                    String blocked = delivery.optString("block");
+                    UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, ratingDelivery, deliveryState,blocked);
                     String note = request.optString("note");
                     JSONObject shop = request.getJSONObject("shop");
                     String idShop = shop.optString("id");
@@ -770,8 +773,107 @@ public class Connector {
                     String genderUser = user.optString("gender");
                     String rating = user.optString("rating");
                     String deliveryFlag = user.optString("delivery");
+                    String blockedUser = user.optString("block");
                     String promo = request.optString("promo");
-                    UserModel userModel = new UserModel(nameUser, usernameUser, tokenUser, birthDateUser, passwordUser, mobileUser, longitudeUser, latitudeUser, cityUser, countryUser, imageUser, 0, roleUser, idUser, genderUser, rating, deliveryFlag);
+                    UserModel userModel = new UserModel(nameUser, usernameUser, tokenUser, birthDateUser, passwordUser, mobileUser, longitudeUser, latitudeUser, cityUser, countryUser, imageUser, 0, roleUser, idUser, genderUser, rating, deliveryFlag,blockedUser);
+                    requestModels.add(new RequestModel(id, city, address, longitude, latitude, description, name, status, created, updated, userId, country, price, image, views, delivery_id, duration, shopId, detail, longitudeUpdate, latitudeUpdate, shopName, deliveryModel, note, shopModelCreated, userModel, deleteStatus,promo));
+                }
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+            }
+        }
+        return requestModels;
+    }
+
+
+    public static ArrayList<RequestModel> getAllRequests(String response) {
+        ArrayList<RequestModel> requestModels = new ArrayList<>();
+        if (Helper.isJSONValid(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                JSONArray requests = jsonObject.optJSONArray("requests");
+                for (int i = 0; i < requests.length(); i++) {
+                    JSONObject request = requests.optJSONObject(i);
+                    String id = request.optString("id");
+                    String city = request.optString("city_id");
+                    String address = request.optString("address");
+                    String longitude = request.optString("longitude");
+                    String latitude = request.optString("latitude");
+                    String description = request.optString("description");
+                    String name = request.optString("name");
+                    String status = request.optString("status");
+                    String created = request.optString("created");
+                    String updated = request.optString("updated");
+                    String userId = request.optString("user_id");
+                    String country = request.optString("country");
+                    String price = request.optString("price");
+                    boolean deleteStatus = request.optBoolean("delete_status");
+                    String image = request.optString("image");
+                    String views = request.optString("views");
+                    String delivery_id = request.optString("delivery_id");
+                    String duration = request.optString("duration");
+                    String shopId = request.optString("shop_id");
+                    String detail = request.optString("detail");
+                    String longitudeUpdate = request.optString("longitude_update");
+                    String latitudeUpdate = request.getString("latitude_update");
+                    String shopName = request.getString("shopname");
+                    JSONObject delivery = request.optJSONObject("delivery");
+                    String nameDelivery = delivery.optString("name");
+                    String usernameDelivery = delivery.optString("username");
+                    String tokenDelivery = delivery.optString("token");
+                    String birthDateDelivery = delivery.optString("birth_date");
+                    String passwordDelivery = delivery.optString("password");
+                    String mobileDelivery = delivery.optString("mobile");
+                    String longitudeDelivery = delivery.optString("longitude");
+                    String latitudeDelivery = delivery.optString("latitude");
+                    String cityDelivery = delivery.optString("city_id");
+                    String countryDelivery = delivery.optString("country");
+                    String imageDelivery = delivery.optString("image");
+                    int roleDelivery = delivery.optInt("role");
+                    String idDelivery = delivery.optString("id");
+                    String genderDelivery = delivery.optString("gender");
+                    String ratingDelivery = delivery.optString("rating");
+                    String deliveryState = delivery.optString("delivery");
+                    String blocked = delivery.optString("block");
+                    UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, ratingDelivery, deliveryState,blocked);
+                    String note = request.optString("note");
+                    JSONObject shop = request.getJSONObject("shop");
+                    String idShop = shop.optString("id");
+                    String cityShop = shop.optString("city_id");
+                    String addressShop = shop.optString("address");
+                    String longitudeShop = shop.optString("longitude");
+                    String latitudeShop = shop.optString("latitude");
+                    String descriptionShop = shop.optString("description");
+                    String nameShop = shop.optString("name");
+                    String approvedShop = shop.optString("approved");
+                    String createdShop = shop.optString("created");
+                    String updatedShop = shop.optString("updated");
+                    String userIdShop = shop.optString("user_id");
+                    String countryShop = shop.optString("country");
+                    String regionShop = shop.optString("region");
+                    String imageShop = shop.optString("image");
+                    String viewsShop = shop.optString("views");
+                    ShopModel shopModelCreated = new ShopModel(idShop, cityShop, addressShop, longitudeShop, latitudeShop, descriptionShop, nameShop, approvedShop, createdShop, updatedShop, userIdShop, countryShop, regionShop, imageShop, viewsShop, new ArrayList<String>());
+                    JSONObject user = request.optJSONObject("user");
+                    String nameUser = user.optString("name");
+                    String usernameUser = user.optString("username");
+                    String tokenUser = user.optString("token");
+                    String birthDateUser = user.optString("birth_date");
+                    String passwordUser = user.optString("password");
+                    String mobileUser = user.optString("mobile");
+                    String longitudeUser = user.optString("longitude");
+                    String latitudeUser = user.optString("latitude");
+                    String cityUser = user.optString("city_id");
+                    String countryUser = user.optString("country");
+                    String imageUser = user.optString("image");
+                    int roleUser = user.optInt("role");
+                    String idUser = user.optString("id");
+                    String genderUser = user.optString("gender");
+                    String rating = user.optString("rating");
+                    String deliveryFlag = user.optString("delivery");
+                    String promo = request.optString("promo");
+                    String blockedUser = user.optString("block");
+                    UserModel userModel = new UserModel(nameUser, usernameUser, tokenUser, birthDateUser, passwordUser, mobileUser, longitudeUser, latitudeUser, cityUser, countryUser, imageUser, 0, roleUser, idUser, genderUser, rating, deliveryFlag,blockedUser);
                     requestModels.add(new RequestModel(id, city, address, longitude, latitude, description, name, status, created, updated, userId, country, price, image, views, delivery_id, duration, shopId, detail, longitudeUpdate, latitudeUpdate, shopName, deliveryModel, note, shopModelCreated, userModel, deleteStatus,promo));
                 }
             } catch (JSONException ex) {
@@ -827,7 +929,8 @@ public class Connector {
                 String genderDelivery = delivery.optString("gender");
                 String rating = delivery.optString("rating");
                 String deliveryFlag = delivery.optString("delivery");
-                UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, rating, deliveryFlag);
+                String block = delivery.optString("block");
+                UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, rating, deliveryFlag,block);
                 String note = request.optString("note");
                 JSONObject shop = request.getJSONObject("shop");
                 String idShop = shop.optString("id");
@@ -866,7 +969,8 @@ public class Connector {
                 String ratingUser = user.optString("rating");
                 String deliveryUser = user.optString("delivery");
                 String promo = request.optString("promo");
-                UserModel userModel = new UserModel(nameUser, usernameUser, tokenUser, birthDateUser, passwordUser, mobileUser, longitudeUser, latitudeUser, cityUser, countryUser, imageUser, 0, roleUser, idUser, genderUser, ratingUser, deliveryUser);
+                String blockUser = user.optString("user");
+                UserModel userModel = new UserModel(nameUser, usernameUser, tokenUser, birthDateUser, passwordUser, mobileUser, longitudeUser, latitudeUser, cityUser, countryUser, imageUser, 0, roleUser, idUser, genderUser, ratingUser, deliveryUser,blockUser);
                 if (shopModel != null)
                     requestModel = new RequestModel(id, city, address, longitude, latitude, description, name, status, created, updated, userId, country, price, image, views, delivery_id, duration, shopId, detail, longitudeUpdate, latitudeUpdate, shopModel.getName(), deliveryModel, note, shopModelCreated, userModel, deleteStatus,promo);
                 else
@@ -902,7 +1006,8 @@ public class Connector {
                 String rating = user.optString("rating");
                 String delivery = user.optString("delivery");
                 String balance = user.optString("balance");
-                userModel = new UserModel(name, username, token, birthDate, password, mobile, longitude, latitude, city, country, image, 0, role, id, gender, rating, delivery);
+                String block = user.optString("block");
+                userModel = new UserModel(name, username, token, birthDate, password, mobile, longitude, latitude, city, country, image, 0, role, id, gender, rating, delivery,block);
                 String orders = String.valueOf(jsonObject.getInt("orders"));
                 String comments = String.valueOf(jsonObject.getInt("comments"));
                 String credit = user.optString("credit");

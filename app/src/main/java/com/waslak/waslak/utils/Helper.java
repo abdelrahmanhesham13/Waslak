@@ -143,6 +143,7 @@ public class Helper {
         editor.putString("delivery", userModel.getDelivery());
         editor.putString("balance", userModel.getBalance());
         editor.putString("credit", userModel.getCredit());
+        editor.putString("block",userModel.getBlocked());
         editor.apply();
     }
 
@@ -187,6 +188,7 @@ public class Helper {
         editor.remove("notification_count");
         editor.remove("rejectCount");
         editor.remove("notification");
+        editor.remove("block");
         editor.apply();
     }
 
@@ -221,6 +223,7 @@ public class Helper {
         String delivery = preferences.getString("delivery", null);
         String balance = preferences.getString("balance", null);
         String credit = preferences.getString("credit", null);
+        String block = preferences.getString("block",null);
         if (role == null){
             role = "99";
         }
@@ -228,7 +231,7 @@ public class Helper {
         if (activate == null)
             activate = "99";
 
-        UserModel userModel = new UserModel(name, email, token, birthDate, password, mobile, longitude, latitude, city, country, image, Integer.valueOf(activate), Integer.valueOf(role), id, gender, rating, delivery);
+        UserModel userModel = new UserModel(name, email, token, birthDate, password, mobile, longitude, latitude, city, country, image, Integer.valueOf(activate), Integer.valueOf(role), id, gender, rating, delivery,block);
         userModel.setOrders(orders);
         userModel.setBalance(balance);
         userModel.setComment(comment);

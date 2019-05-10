@@ -8,16 +8,19 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
@@ -28,6 +31,7 @@ import com.koushikdutta.ion.Ion;
 import com.nguyenhoanglam.imagepicker.model.Config;
 import com.nguyenhoanglam.imagepicker.model.Image;
 import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
+import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
 import com.waslak.waslak.utils.Helper;
 
@@ -44,6 +48,8 @@ import butterknife.ButterKnife;
 import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 
 public class PackageDeliveryDetailsActivity extends AppCompatActivity implements RoutingListener {
+
+    private static final String TAG = "PackageDeliveryDetailsA";
 
     @BindView(R.id.order_details)
     EditText mOrderDetailsEditText;
@@ -66,7 +72,15 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.choose_delivery_time)
     TextView mChooseDeliveryTime;
 
+    @BindView(R.id.send)
+    Button mSendButton;
+
+
+
     File mSelectedFile;
+
+    UserModel mUserModel;
+
     ProgressDialog mProgressDialog;
 
     double mLat = 0;
@@ -90,6 +104,8 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
     String mImage = "";
 
+    Connector mAddRequestConnector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +116,8 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
         setTitle(getString(R.string.order_details_package));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        mUserModel = Helper.getUserSharedPreferences(this);
 
 
 
@@ -131,6 +149,52 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
             @Override
             public void onClick(View v) {
                 pickImage();
+            }
+        });
+
+        mAddRequestConnector = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                mProgressDialog.dismiss();
+                if (Connector.checkStatus(response)){
+                    Helper.showLongTimeToast(PackageDeliveryDetailsActivity.this,getString(R.string.added_successfully));
+                    finish();
+                } else {
+                    Helper.showSnackBarMessage(getString(R.string.error),PackageDeliveryDetailsActivity.this);
+                }
+
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+                mProgressDialog.dismiss();
+                Helper.showSnackBarMessage(getString(R.string.error),PackageDeliveryDetailsActivity.this);
+            }
+        });
+
+
+        mSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mDescription = mOrderDetailsEditText.getText().toString();
+                if (mLon == 0) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_your_location),PackageDeliveryDetailsActivity.this);
+                } else if (mLonEnd == 0) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_your_location),PackageDeliveryDetailsActivity.this);
+                } else {
+                    if (getIntent().getStringExtra("type").equals("customer")) {
+                        mProgressDialog = Helper.showProgressDialog(PackageDeliveryDetailsActivity.this, getString(R.string.loading), false);
+                        mAddRequestConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId()
+                                + "&longitude=" + mLon + "&latitude=" + mLat + "&address=" + Uri.encode(mAddress) + "&latitude_to=" + mLatEnd + "&longitude_to=" + mLonEnd
+                                + "&address_to=" + Uri.encode(mAddressEnd) + "&shop_id=0" + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage) + "&type=2");
+                    } else {
+                        mProgressDialog = Helper.showProgressDialog(PackageDeliveryDetailsActivity.this, getString(R.string.loading), false);
+                        mAddRequestConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId()
+                                + "&longitude=" + mLon + "&latitude=" + mLat + "&address=" + Uri.encode(mAddress) + "&latitude_to=" + mLatEnd + "&longitude_to=" + mLonEnd
+                                + "&address_to=" + Uri.encode(mAddressEnd) + "&shop_id=0" + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage) + "&type=1");
+
+                    }
+                }
             }
         });
 
@@ -209,7 +273,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                 mAddressExtraDetailsEnd=data.getStringExtra("addressExtra");
                 mCityEnd=data.getStringExtra("city");
                 mCountryEnd=data.getStringExtra("country");
-                endLocation.setText(mAddress);
+                endLocation.setText(mAddressEnd);
                 if (mLat != 0 && mLon != 0) {
                     LatLng start = new LatLng(Double.valueOf(mLat), Double.valueOf(mLon));
                     LatLng end = new LatLng(mLatEnd, mLonEnd);
@@ -263,7 +327,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
     @Override
     public void onRoutingFailure(RouteException e) {
-
+        e.printStackTrace();
     }
 
     @Override
@@ -274,6 +338,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
     @Override
     public void onRoutingSuccess(ArrayList<Route> arrayList, int i) {
         mChooseDeliveryTime.setText(String.valueOf((arrayList.get(i).getDurationValue() + 2400) / 60) + " mins");
+        mDuration = mChooseDeliveryTime.getText().toString();
     }
 
     @Override

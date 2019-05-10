@@ -13,36 +13,7 @@
           "package_name": "com.waslak.waslak"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1077157101285-15lfsikcqu9uvh42flhjefpf2nh5u43q.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.waslak.waslak",
-            "certificate_hash": "d88f237486280b781a8bf590395c473e009bf418"
-          }
-        },
-        {
-          "client_id": "1077157101285-i611du50urqaa6dn52lv7dlb7r68ss7j.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.waslak.waslak",
-            "certificate_hash": "db70ee58e8fda0916a1dc3c7a1961ae8053d0f2c"
-          }
-        },
-        {
-          "client_id": "1077157101285-p5l4dagnlurppuu4hnnpl93a8604avhk.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.waslak.waslak",
-            "certificate_hash": "1aaa5a855d4de0c013d9fa66f768e6c7608ea55d"
-          }
-        },
-        {
-          "client_id": "1077157101285-mkvvalftsos19qqku92t9jtue9c53c43.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyA-39lOKwrCfBv1N31ofGpgeCeh6KK0va4"
@@ -50,19 +21,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1077157101285-mkvvalftsos19qqku92t9jtue9c53c43.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1077157101285-u0rkttu6t5s7s3fdveij7eh972pt3ga7.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "waslak.com"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

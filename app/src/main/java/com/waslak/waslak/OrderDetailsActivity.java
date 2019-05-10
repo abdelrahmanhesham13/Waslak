@@ -30,7 +30,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.thefinestartist.utils.ui.ViewUtil;
 import com.waslak.waslak.models.ChatModel;
 import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
@@ -85,7 +84,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
         mSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(OrderDetailsActivity.this,SettingActivity.class));
+                startActivity(new Intent(OrderDetailsActivity.this, SettingActivity.class));
             }
         });
 
@@ -110,8 +109,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
         mOpenChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mRequestModel.getDelivery().getName().equals("null")){
-                    Helper.showSnackBarMessage(getString(R.string.no_offer_accepted),OrderDetailsActivity.this);
+                if (mRequestModel.getDelivery().getName().equals("null")) {
+                    Helper.showSnackBarMessage(getString(R.string.no_offer_accepted), OrderDetailsActivity.this);
                 } else if (Integer.valueOf(mRequestModel.getStatus()) == 1) {
                     String url = Connector.createStartChatUrl() + "?message=&user_id=" + mRequestModel.getUser_id() + "&request_id=" + mRequestModel.getId() + "&to_id=" + mRequestModel.getDelivery().getId();
                     Helper.writeToLog(url);
@@ -127,7 +126,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
                 if (Connector.checkStatus(response)) {
                     mChatModel = Connector.getChatModelJson(response, "", mRequestModel.getDeliveryId(), mRequestModel.getUser_id());
 
-                    mConnectorGetRequest.getRequest(TAG,"http://www.cta3.com/waslk/api/get_request?id=" + mRequestModel.getId());
+                    mConnectorGetRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_request?id=" + mRequestModel.getId());
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), OrderDetailsActivity.this);
                 }
@@ -142,9 +141,9 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
         mConnectorGetRequest = new Connector(this, new Connector.LoadCallback() {
             @Override
             public void onComplete(String tag, String response) {
-                if (Connector.checkStatus(response)){
-                    mRequestModel = Connector.getRequest(response,new ShopModel());
-                    startActivity(new Intent(OrderDetailsActivity.this, ChatActivity.class).putExtra("chat", mChatModel).putExtra("request",mRequestModel));
+                if (Connector.checkStatus(response)) {
+                    mRequestModel = Connector.getRequest(response, new ShopModel());
+                    startActivity(new Intent(OrderDetailsActivity.this, ChatActivity.class).putExtra("chat", mChatModel).putExtra("request", mRequestModel));
                 }
             }
         }, new Connector.ErrorCallback() {
@@ -174,21 +173,27 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
         }
         googleMap.getUiSettings().setRotateGesturesEnabled(false);
 
-        LatLng start = new LatLng(Double.parseDouble(mRequestModel.getLatitude()),Double.parseDouble(mRequestModel.getLongitude()));
+        LatLng start = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
         int height = 100;
         int width = 100;
-        BitmapDrawable bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.home);
-        Bitmap b=bitmapdraw.getBitmap();
+        BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.home);
+        Bitmap b = bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
         mMap.addMarker(new MarkerOptions().position(start).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
 
-        LatLng wayPoint = new LatLng(Double.parseDouble(mRequestModel.getShop().getLat()),Double.parseDouble(mRequestModel.getShop().getLon()));
-        height = 100;
-        width = 100;
-        bitmapdraw=(BitmapDrawable)getResources().getDrawable(R.drawable.shop1);
-        b=bitmapdraw.getBitmap();
-        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-        mMap.addMarker(new MarkerOptions().position(wayPoint).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+        LatLng wayPoint = null;
+
+        try {
+            wayPoint = new LatLng(Double.parseDouble(mRequestModel.getShop().getLat()), Double.parseDouble(mRequestModel.getShop().getLon()));
+            height = 100;
+            width = 100;
+            bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.shop1);
+            b = bitmapdraw.getBitmap();
+            smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+            mMap.addMarker(new MarkerOptions().position(wayPoint).icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         LatLng end = null;
         if (!mRequestModel.getDelivery().getName().equals("null")) {
@@ -203,7 +208,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(start);
-        builder.include(wayPoint);
+        if (wayPoint != null)
+            builder.include(wayPoint);
         if (end != null) {
             builder.include(end);
         }
@@ -215,7 +221,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
         int screenHeight = displayMetrics.heightPixels;
         int screedWidth = displayMetrics.widthPixels;
 
-        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds,screedWidth, 600,150);
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, screedWidth, 600, 150);
 
         mMap.animateCamera(cu);
 

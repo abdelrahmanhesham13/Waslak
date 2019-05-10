@@ -129,13 +129,13 @@ public class NotificationsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mProgressDialog.show();
-                            mConnectorCancelOrder.getRequest(TAG, "http://www.cta3.com/waslk/api/complete_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId());
+                            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId());
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mProgressDialog.show();
-                            mConnectorCancelOrder.getRequest(TAG, "http://www.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId() + "&status=7");
+                            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId() + "&status=7");
                         }
                     });
                 }
@@ -188,7 +188,7 @@ public class NotificationsFragment extends Fragment {
                         mChatModel = Connector.getChatModelJson(response, "", mNotificationModels.get(mPos).getDelivery_id(), mUserModel.getId());
                     }
 
-                    mConnectorGetRequest.getRequest(TAG,"http://www.cta3.com/waslk/api/get_request?id=" + mRequestId);
+                    mConnectorGetRequest.getRequest(TAG,"http://www.as.cta3.com/waslk/api/get_request?id=" + mRequestId);
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity)getActivity());
                 }
@@ -372,7 +372,7 @@ public class NotificationsFragment extends Fragment {
                 if (TextUtils.isEmpty(commentText)) {
                     Helper.showSnackBarMessage(getString(R.string.enter_comment), (AppCompatActivity)getActivity());
                 } else {
-                        mConnectorRate.getRequest(TAG, "http://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mNotificationModels.get(mPos).getRequest_id() + "&delivery_id=" + mNotificationModels.get(mPos).getDelivery_id());
+                        mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mNotificationModels.get(mPos).getRequest_id() + "&delivery_id=" + mNotificationModels.get(mPos).getDelivery_id());
 
                 }
             }

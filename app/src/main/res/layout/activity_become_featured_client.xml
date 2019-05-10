@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:background="@drawable/im_background"
+    tools:context=".MobileVerificationActivity">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        tools:context=".MobileVerificationActivity"
+        tools:ignore="UselessParent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".MobileVerificationActivity">
+
+            <ProgressBar
+                android:id="@+id/progressIndicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="gone" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_your_national_id"
+                android:gravity="center_vertical"
+                android:text="@string/add_your_national_id"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/whiteColor"
+                android:layout_marginBottom="20dp"
+                android:textSize="18sp" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="match_parent"
+                android:id="@+id/national_id"
+                android:layout_below="@id/add_your_national_id"
+                android:src="@drawable/ic_add_a_photo_black_24dp"
+                android:layout_above="@id/mobile_verification_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_height="60dp" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_your_car_image"
+                android:gravity="center_vertical"
+                android:layout_below="@id/national_id"
+                android:text="@string/add_your_car_image"
+                android:layout_centerHorizontal="true"
+                android:textColor="@color/whiteColor"
+                android:layout_marginBottom="20dp"
+                android:textSize="18sp" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="match_parent"
+                android:id="@+id/car_image"
+                android:layout_below="@id/add_your_car_image"
+                android:src="@drawable/ic_add_a_photo_black_24dp"
+                android:layout_above="@id/mobile_verification_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_height="60dp" />
+
+            <EditText
+                android:id="@+id/mobile_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_below="@id/car_image"
+                android:background="@drawable/bg_edit_text"
+                android:hint="@string/mobile"
+                android:inputType="phone"
+                android:paddingBottom="12.5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="12.5dp"
+                android:textColor="@color/whiteColor"
+                android:textColorHint="@color/whiteColor"
+                android:textSize="15sp" />
+
+
+
+
+            <Button
+                android:id="@+id/send_data"
+                android:layout_width="280dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/mobile_number"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/bg_phone_button"
+                android:padding="10dp"
+                android:text="@string/verify"
+                android:textAllCaps="false"
+                android:textColor="@color/whiteColor" />
+
+        </RelativeLayout>
+
+    </ScrollView>
+</FrameLayout>

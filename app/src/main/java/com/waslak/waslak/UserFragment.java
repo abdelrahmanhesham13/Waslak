@@ -145,7 +145,7 @@ public class UserFragment extends Fragment {
         mAttachReceipt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                startActivity(new Intent(getContext(),AttachReceiptActivity.class));
             }
         });
 
@@ -173,7 +173,7 @@ public class UserFragment extends Fragment {
                         if (URLUtil.isValidUrl(mUserModel.getImage()))
                             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                         else {
-                            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+                            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                         }
                     }
                 } else {

@@ -129,7 +129,7 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                         if (URLUtil.isValidUrl(mOfferModel.getImage()))
                             Picasso.get().load(mOfferModel.getImage()).fit().centerCrop().into(mDelegateImage);
                         else {
-                            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mOfferModel.getImage()).fit().centerCrop().into(mDelegateImage);
+                            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mOfferModel.getImage()).fit().centerCrop().into(mDelegateImage);
                         }
                     } else {
                         dismiss();
@@ -173,7 +173,7 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                 if (Connector.checkStatus(response)) {
 
                     mChatModel = Connector.getChatModelJson(response, "", mOfferModel.getDeliveryId(), mUserModel.getId());
-                    mConnectorGetRequest.getRequest(TAG, "http://www.cta3.com/waslk/api/get_request?id=" + mOfferModel.getRequestId());
+                    mConnectorGetRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_request?id=" + mOfferModel.getRequestId());
 
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity) getActivity());
@@ -237,7 +237,7 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                     Helper.writeToLog(String.valueOf(Helper.getRejectCountSharedPreferences(getContext())));
                     mProgressDialog = Helper.showProgressDialog(getContext(), getString(R.string.loading), false);
                     mProgressDialog.show();
-                    mBlockUserConnector.getRequest("DeliveryFragment", "http://www.cta3.com/waslk/api/block_user?id=" + mOfferModel.getUserId());
+                    mBlockUserConnector.getRequest("DeliveryFragment", "http://www.as.cta3.com/waslk/api/block_user?id=" + mOfferModel.getUserId());
                     Helper.setRejectCountSharedPreferences(getContext(), 0);
                 } else {
                     int rejectCount = Helper.getRejectCountSharedPreferences(getContext());

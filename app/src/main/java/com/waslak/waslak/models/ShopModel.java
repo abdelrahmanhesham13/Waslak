@@ -19,7 +19,7 @@ public class ShopModel implements Serializable {
     String region;
     String image;
     String views;
-    String distance;
+    String distance = "";
     String delivery_count;
     ArrayList<String> time;
     double rating;

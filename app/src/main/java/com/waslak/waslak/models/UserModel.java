@@ -24,6 +24,7 @@ public class UserModel implements Serializable {
     String comment = "0";
     String delivery = "";
     String balance = "";
+    String blocked = "0";
     String credit;
 
     public UserModel(String name, String image) {
@@ -34,7 +35,7 @@ public class UserModel implements Serializable {
     public UserModel() {
     }
 
-    public UserModel(String name, String username, String token, String birthDate, String password, String mobile, String longitude, String latitude, String city, String country, String image, int activate, int role, String id, String gender, String rating, String delivery) {
+    public UserModel(String name, String username, String token, String birthDate, String password, String mobile, String longitude, String latitude, String city, String country, String image, int activate, int role, String id, String gender, String rating, String delivery,String blocked) {
         this.name = name;
         this.username = username;
         this.token = token;
@@ -52,6 +53,15 @@ public class UserModel implements Serializable {
         this.gender = gender;
         this.rating = rating;
         this.delivery = delivery;
+        this.blocked = blocked;
+    }
+
+    public String getBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(String blocked) {
+        this.blocked = blocked;
     }
 
     public void setBalance(String balance) {

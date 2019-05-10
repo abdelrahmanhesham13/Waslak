@@ -211,7 +211,7 @@ public class AccountActivity extends AppCompatActivity {
                     if (URLUtil.isValidUrl(mUserModel.getImage()))
                         Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                     else {
-                        Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+                        Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                     }
                     if (mUserModel.getGender().equals("0")) {
                         mMaleTextView.setTextColor(getResources().getColor(R.color.colorPrimary));

@@ -1,7 +1,7 @@
 package com.waslak.waslak.networkUtils;
 
 public class Constants {
-    public static final String WASLAK_BASE_URL = "https://www.cta3.com/waslk/api";
+    public static final String WASLAK_BASE_URL = "http://www.as.cta3.com/waslk/api";
     public static final String GET_SHOPS_PATH = "get_shops";
     public static final String GET_SHOP_PATH = "get_shop";
     public static final String SIGN_UP_PATH = "signup";

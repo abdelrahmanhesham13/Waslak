@@ -31,6 +31,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
@@ -80,6 +81,7 @@ public class ActiveOrdersFragment extends Fragment {
 
 
     OrdersAdapter mOrdersAdapter;
+    PendingOrdersAdapter mPendingOrdersAdapter;
 
     OnMenuClicked onMenuClicked;
 
@@ -90,8 +92,13 @@ public class ActiveOrdersFragment extends Fragment {
 
     Connector mConnector;
     Connector mConnectorDeleteRequest;
+    Connector mConnectorAllRequests;
 
     int mPos;
+
+    int spinnerPosition = 0;
+
+    ItemTouchHelper itemTouchHelper;
 
     public ActiveOrdersFragment() {
         // Required empty public constructor
@@ -120,6 +127,14 @@ public class ActiveOrdersFragment extends Fragment {
             mEmptyView.setVisibility(View.GONE);
         }*/
 
+        mPendingOrdersAdapter = new PendingOrdersAdapter(getContext(), mRequestModels, new PendingOrdersAdapter.OnItemClicked() {
+            @Override
+            public void setOnItemClicked(int position) {
+                if (!mRequestModels.get(position).getUser_id().equals(mUserModel.getId()))
+                    startActivity(new Intent(getContext(), ChatActivity.class).putExtra("request",mRequestModels.get(position)).putExtra("shopModel",mRequestModels.get(position).getShop()).putExtra("user",mUserModel));
+            }
+        },mUserModel);
+
         mConnector = new Connector(getContext(), new Connector.LoadCallback() {
             @Override
             public void onComplete(String tag, String response) {
@@ -127,6 +142,9 @@ public class ActiveOrdersFragment extends Fragment {
                     mRequestModels.clear();
                     mRequestModels.addAll(Connector.getRequests(response, new ShopModel()));
                     mOrdersAdapter.notifyDataSetChanged();
+                    itemTouchHelper.attachToRecyclerView(mOrdersRecycler);
+                    itemTouchHelper.attachToRecyclerView(mOrdersRecycler);
+                    mOrdersRecycler.setAdapter(mOrdersAdapter);
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mOrdersRecycler.setVisibility(View.VISIBLE);
                 } else {
@@ -142,6 +160,37 @@ public class ActiveOrdersFragment extends Fragment {
                     Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity) getActivity());
                 mProgressBar.setVisibility(View.INVISIBLE);
                 mOrdersRecycler.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        mConnectorAllRequests = new Connector(getContext(), new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                if (Connector.checkStatus(response)){
+                    if (mUserModel.getDelivery().equals("1")) {
+                        mRequestModels.clear();
+                        mRequestModels.addAll(Connector.getAllRequests(response));
+                        mOrdersRecycler.setAdapter(mPendingOrdersAdapter);
+                        itemTouchHelper.attachToRecyclerView(null);
+                        mPendingOrdersAdapter.notifyDataSetChanged();
+                        mProgressBar.setVisibility(View.INVISIBLE);
+                        mOrdersRecycler.setVisibility(View.VISIBLE);
+                    } else {
+                        Toast.makeText(getContext(),getContext().getString(R.string.be_agent_first),Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    mProgressBar.setVisibility(View.INVISIBLE);
+                    mOrdersRecycler.setVisibility(View.INVISIBLE);
+                }
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+                if (getActivity() != null)
+                    Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity) getActivity());
+                mProgressBar.setVisibility(View.INVISIBLE);
+                mOrdersRecycler.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -183,7 +232,7 @@ public class ActiveOrdersFragment extends Fragment {
         mOrdersRecycler.setHasFixedSize(true);
         mOrdersRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mOrdersRecycler.setAdapter(mOrdersAdapter);
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        itemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -216,7 +265,7 @@ public class ActiveOrdersFragment extends Fragment {
                     if (ago.contains("In ") || ago.contains("in ") || ago.contains("قبل")) {
                         if (Integer.valueOf(ago.split(" ")[1]) < 5 && ((ago.split(" ")[2].equals("minutes") || ago.split(" ")[2].equals("minute")))) {
                             mProgressDialog = Helper.showProgressDialog(getContext(), "Loading", false);
-                            mConnectorDeleteRequest.getRequest(TAG, "http://www.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
+                            mConnectorDeleteRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
                         } else {
                             Helper.showSnackBarMessage(getString(R.string.cannot_be_deleted), (AppCompatActivity) getActivity());
                             mOrdersAdapter.notifyItemChanged(pos);
@@ -224,7 +273,7 @@ public class ActiveOrdersFragment extends Fragment {
                     } else {
                         if (Integer.valueOf(ago.split(" ")[0]) < 5 && ((ago.split(" ")[1].equals("minutes") || ago.split(" ")[1].equals("minute")))) {
                             mProgressDialog = Helper.showProgressDialog(getContext(), "Loading", false);
-                            mConnectorDeleteRequest.getRequest(TAG, "http://www.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
+                            mConnectorDeleteRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
                         } else {
                             Helper.showSnackBarMessage(getString(R.string.cannot_be_deleted), (AppCompatActivity) getActivity());
                             mOrdersAdapter.notifyItemChanged(pos);
@@ -267,7 +316,8 @@ public class ActiveOrdersFragment extends Fragment {
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX / 4, dY, actionState, isCurrentlyActive);
             }
-        }).attachToRecyclerView(mOrdersRecycler);
+        });
+        itemTouchHelper.attachToRecyclerView(mOrdersRecycler);
 
         mMenuButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -279,8 +329,10 @@ public class ActiveOrdersFragment extends Fragment {
         mMyOrders.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked)
+                if (isChecked) {
                     mSpinnerParent.setVisibility(View.VISIBLE);
+                    mConnector.getRequest(TAG, Connector.createGetRequestsUrl() + "?user_id=" + mUserModel.getId() + "&status=" + spinnerPosition);
+                }
             }
         });
 
@@ -289,6 +341,7 @@ public class ActiveOrdersFragment extends Fragment {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked){
                     mSpinnerParent.setVisibility(View.GONE);
+                    mConnectorAllRequests.getRequest(TAG,Connector.createGetRequestsUrl() + "?filter_id=" + mUserModel.getId() + "&all=true");
                 }
             }
         });
@@ -306,10 +359,12 @@ public class ActiveOrdersFragment extends Fragment {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     if (position == 0) {
+                        spinnerPosition = 0;
                         mProgressBar.setVisibility(View.VISIBLE);
                         mOrdersRecycler.setVisibility(View.GONE);
                         mConnector.getRequest(TAG, Connector.createGetRequestsUrl() + "?user_id=" + mUserModel.getId() + "&status=0");
                     } else {
+                        spinnerPosition = 1;
                         mProgressBar.setVisibility(View.VISIBLE);
                         mOrdersRecycler.setVisibility(View.GONE);
                         mConnector.getRequest(TAG, Connector.createGetRequestsUrl() + "?user_id=" + mUserModel.getId() + "&status=1");

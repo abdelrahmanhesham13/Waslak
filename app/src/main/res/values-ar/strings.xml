@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">وصلك</string>
+    <string name="app_name">واصلك</string>
     <string name="stores">المتاجر</string>
     <string name="order">طلب</string>
     <string name="notifications">التنبيهات</string>
@@ -214,4 +214,10 @@
     <string name="customer_orders_new">طلبات العملاء</string>
     <string name="featured_customer">الانضمام عميل مميز</string>
     <string name="attach_receipt">ارفاق ايصال الدفع</string>
+    <string name="become_featured_client">كيف تصبح عميل مميز</string>
+    <string name="living_prove">ثبات السكن (صورة فاتورة الكهرباء او فاتورة الماء)</string>
+    <string name="added_successfully">تم الاضافه بنجاح</string>
+    <string name="add_receipt">قم بارفاق ايصال الدفع</string>
+    <string name="estimated_price">سيتم حساب السعر تلقائيا</string>
+    <string name="price">السعز</string>
 </resources>

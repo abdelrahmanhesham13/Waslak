@@ -53,6 +53,10 @@ public class StoresFragment extends Fragment {
     EditText mSearchText;
     @BindView(R.id.search_button)
     Button mSearchButton;
+    @BindView(R.id.user_state)
+    TextView mUserStateTextView;
+    @BindView(R.id.user_blocked)
+    TextView mUserBlockedTextView;
 
     OnMenuClicked mOnMenuClicked;
     UserModel mUserModel;
@@ -117,6 +121,18 @@ public class StoresFragment extends Fragment {
 
         if (!isHighAccuracy()) {
             Helper.showAlertDialog(getContext(), getString(R.string.open_location), "", false,getString(R.string.ok) ,"",null,null);
+        }
+
+        if (mUserModel.getDelivery().equals("1")){
+            mUserStateTextView.setVisibility(View.VISIBLE);
+        } else {
+            mUserStateTextView.setVisibility(View.GONE);
+        }
+
+        if (mUserModel.getBlocked().equals("1")) {
+            mUserBlockedTextView.setVisibility(View.VISIBLE);
+        } else {
+            mUserBlockedTextView.setVisibility(View.GONE);
         }
 
 

@@ -194,7 +194,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mShopModel.getImage()))
                     Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                 else {
-                    Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
+                    Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                 }
             }
         }
@@ -308,7 +308,7 @@ public class ChatActivity extends AppCompatActivity {
                         if (URLUtil.isValidUrl(mShopModel.getImage()))
                             Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                         else {
-                            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
+                            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                         }
                     }
                     Crashlytics.setString("user",mUserModel.getId());
@@ -787,15 +787,15 @@ public class ChatActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.order_canceled) {
             mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
-            mConnectorCancelOrder.getRequest(TAG, "http://www.cta3.com/waslk/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
             mType = "cancel";
             return true;
         } else if (id == R.id.done_order) {
             mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
             if (mRequestModelDetails.getDeliveryId().equals(mUserModel.getId()))
-                mConnectorCancelOrder.getRequest(TAG, "http://www.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
+                mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
             else
-                mConnectorCancelOrder.getRequest(TAG, "http://www.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+                mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
             mType = "done";
             return true;
         } else if (id == R.id.call) {
@@ -843,9 +843,9 @@ public class ChatActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_comment), ChatActivity.this);
                 } else {
                     if (mUserModel.getId().equals(mRequestModel.getDeliveryId())) {
-                        mConnectorRate.getRequest(TAG, "http://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&delivery_id=" + mUserModel.getId());
+                        mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&delivery_id=" + mUserModel.getId());
                     } else {
-                        mConnectorRate.getRequest(TAG, "http://www.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&user_id=" + mUserModel.getId());
+                        mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&user_id=" + mUserModel.getId());
                     }
                 }
             }

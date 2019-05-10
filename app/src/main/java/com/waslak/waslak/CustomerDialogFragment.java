@@ -88,7 +88,7 @@ public class CustomerDialogFragment extends AppCompatDialogFragment {
                     if (URLUtil.isValidUrl(mUserModel.getImage()))
                         Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mDelegateImage);
                     else {
-                        Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mDelegateImage);
+                        Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mDelegateImage);
                     }
                 } else {
                     dismiss();

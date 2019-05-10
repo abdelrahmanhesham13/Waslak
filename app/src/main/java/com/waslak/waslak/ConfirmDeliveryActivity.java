@@ -239,7 +239,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
 
                     mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
                     Helper.writeToLog(mTotalDistance);
-                    mConnectorGetSettings.getRequest(TAG, "http://www.cta3.com/waslk/api/get_settings");
+                    mConnectorGetSettings.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_settings?user_id=5");
 
                     Routing routing = new Routing.Builder()
                             .travelMode(Routing.TravelMode.DRIVING)
@@ -277,7 +277,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
 
             mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
             Helper.writeToLog(mTotalDistance);
-            mConnectorGetSettings.getRequest(TAG, "http://www.cta3.com/waslk/api/get_settings?user_id=0");
+            mConnectorGetSettings.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_settings?user_id=0");
 
             Routing routing = new Routing.Builder()
                     .travelMode(Routing.TravelMode.DRIVING)

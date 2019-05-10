@@ -78,9 +78,9 @@ public class SettingActivity extends AppCompatActivity {
                 Helper.saveNotificationSharedPreferences(SettingActivity.this,b);
                 mProgressDialog = Helper.showProgressDialog(SettingActivity.this,getString(R.string.loading),false);
                 if (b){
-                    mUpdateNotification.getRequest(TAG,"https://www.cta3.com/waslk/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=1");
+                    mUpdateNotification.getRequest(TAG,"http://www.as.cta3.com/waslk/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=1");
                 } else {
-                    mUpdateNotification.getRequest(TAG,"https://www.cta3.com/waslk/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=0");
+                    mUpdateNotification.getRequest(TAG,"http://www.as.cta3.com/waslk/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=0");
                 }
             }
         });

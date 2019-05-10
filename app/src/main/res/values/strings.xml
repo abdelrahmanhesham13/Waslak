@@ -96,6 +96,7 @@
     <string name="choose_delivery_location">Choose Delivery Location</string>
     <string name="delivery_time">Delivery Time</string>
     <string name="choose_delivery_time">Delivery time will be estimated automatically according to your area</string>
+    <string name="estimated_price">Price will be estimated automatically according</string>
     <string name="order_description">Write here the details of your order, for example: i want 1 Cheeseburger, and 1 Large Fries. Please write also how much is the approximate cost of your order</string>
     <string name="not_verified_account">Not Verified Account</string>
     <string name="number_of_orders">Number of Orders</string>
@@ -228,4 +229,9 @@
     <string name="customer_orders_new">Customer Orders</string>
     <string name="featured_customer">Join Featured Customers</string>
     <string name="attach_receipt">Attach Receipt</string>
+    <string name="become_featured_client">Become Feature Client</string>
+    <string name="living_prove">Living Prove</string>
+    <string name="added_successfully">Added Successfully</string>
+    <string name="add_receipt">Add Your Receipt</string>
+    <string name="price">Price</string>
 </resources>

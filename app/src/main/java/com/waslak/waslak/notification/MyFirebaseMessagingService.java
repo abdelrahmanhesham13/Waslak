@@ -19,7 +19,6 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.thefinestartist.utils.preferences.Pref;
 import com.waslak.waslak.ChatActivity;
 import com.waslak.waslak.HomeActivity;
 import com.waslak.waslak.R;
@@ -146,5 +145,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
+    }
+
+
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+        sendRegistrationToServer(s);
+    }
+
+
+    private void sendRegistrationToServer(String token) {
+        // Add custom implementation, as needed.
+        Helper.saveTokenToSharePreferences(this,token);
     }
 }

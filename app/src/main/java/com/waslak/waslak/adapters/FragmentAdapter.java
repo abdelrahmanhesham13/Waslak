@@ -26,13 +26,13 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
             case 0:
                 RealStoresFragment realStoresFragment = new RealStoresFragment();
                 Bundle bundle = new Bundle();
-                bundle.putString("Type","All");
+                bundle.putString("Type","Nearby");
                 realStoresFragment.setArguments(bundle);
                 return realStoresFragment;
             case 1:
                 RealStoresFragment realStoresFragment2 = new RealStoresFragment();
                 Bundle bundle2 = new Bundle();
-                bundle2.putString("Type","Nearby");
+                bundle2.putString("Type","All");
                 realStoresFragment2.setArguments(bundle2);
                 return realStoresFragment2;
             case 2:
@@ -55,9 +55,9 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return mContext.getString(R.string.all_stores);
-            case 1:
                 return mContext.getString(R.string.nearby);
+            case 1:
+                return mContext.getString(R.string.all_stores);
             case 2:
                 return mContext.getString(R.string.active);
             default:

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.preference.PreferenceManager;
@@ -40,6 +41,9 @@ import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
 import com.waslak.waslak.utils.Helper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -82,6 +86,8 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     ImageView mBackButton;
     @BindView(R.id.coordinatorLayout)
     CoordinatorLayout cLayout;
+    @BindView(R.id.estimated_price)
+    TextView mPrice;
 
     ProgressDialog mProgressDialog;
 
@@ -100,7 +106,15 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     UserModel mUserModel;
     ShopModel mShopModel;
 
+    Connector mConnectorGetSettings;
+
     File mSelectedFile;
+
+    String mTotalDistance;
+
+    String mMinPrice;
+    String mPricePerKilo;
+    String mMaxPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +122,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
         setContentView(R.layout.activity_order_now);
         ButterKnife.bind(this);
 
-        if (getIntent() != null){
+        if (getIntent() != null) {
             mUserModel = (UserModel) getIntent().getSerializableExtra("user");
             mShopModel = (ShopModel) getIntent().getSerializableExtra("ShopModel");
             mStoreName.setText(mShopModel.getName());
@@ -134,7 +148,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
         mDeliveryLocationParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(OrderNowActivity.this,MapActivity.class),1);
+                startActivityForResult(new Intent(OrderNowActivity.this, MapActivity.class), 1);
             }
         });
 
@@ -143,15 +157,15 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             public void onClick(View v) {
                 mDescription = mDescriptionEditText.getText().toString();
                 mDuration = mChooseDeliveryTime.getText().toString();
-                if (mAddress.isEmpty()){
-                    Helper.showSnackBarMessage(getString(R.string.enter_your_location),OrderNowActivity.this);
-                } else if (mDescription.isEmpty()){
-                    Helper.showSnackBarMessage(getString(R.string.enter_your_description),OrderNowActivity.this);
-                } else if (mDuration.isEmpty()){
-                    Helper.showSnackBarMessage(getString(R.string.enter_your_duration),OrderNowActivity.this);
+                if (mAddress.isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_your_location), OrderNowActivity.this);
+                } else if (mDescription.isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_your_description), OrderNowActivity.this);
+                } else if (mDuration.isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.enter_your_duration), OrderNowActivity.this);
                 } else {
-                    mProgressDialog = Helper.showProgressDialog(OrderNowActivity.this,getString(R.string.loading),false);
-                    mConnector.getRequest(TAG,"http://www.cta3.com/waslk/api/add_request?user_id="+ mUserModel.getId() +"&shop_id=" + mShopModel.getId() +"&longitude="+ mLon + "&latitude=" + mLat + "&city_id="+ Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&address=" + Uri.encode(mAddress) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage));
+                    mProgressDialog = Helper.showProgressDialog(OrderNowActivity.this, getString(R.string.loading), false);
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId() + "&shop_id=" + mShopModel.getId() + "&longitude=" + mLon + "&latitude=" + mLat + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&address=" + Uri.encode(mAddress) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage));
                 }
             }
         });
@@ -168,27 +182,48 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             @Override
             public void onComplete(String tag, String response) {
                 mProgressDialog.dismiss();
-                if (Connector.checkStatus(response)){
+                if (Connector.checkStatus(response)) {
                     finish();
                 } else {
 
-                    Helper.showSnackBarMessage(getString(R.string.error),OrderNowActivity.this);
+                    Helper.showSnackBarMessage(getString(R.string.error), OrderNowActivity.this);
                 }
             }
         }, new Connector.ErrorCallback() {
             @Override
             public void onError(VolleyError error) {
                 mProgressDialog.dismiss();
-                Helper.showSnackBarMessage(getString(R.string.error),OrderNowActivity.this);
+                Helper.showSnackBarMessage(getString(R.string.error), OrderNowActivity.this);
+            }
+        });
+
+
+        mConnectorGetSettings = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    mMinPrice = jsonObject.getString("min_price");
+                    mPricePerKilo = jsonObject.getString("price_per_kilo");
+                    mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)));
+                    mMaxPrice = mPrice.getText().toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+
             }
         });
 
     }
 
 
-    public void showDialog(){
+    public void showDialog() {
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
-        final CharSequence items[] = new CharSequence[] {getString(R.string.one_hour), getString(R.string.two_hour), getString(R.string.three_hour),getString(R.string.one_day),getString(R.string.two_day),getString(R.string.three_day)};
+        final CharSequence items[] = new CharSequence[]{getString(R.string.one_hour), getString(R.string.two_hour), getString(R.string.three_hour), getString(R.string.one_day), getString(R.string.two_day), getString(R.string.three_day)};
         adb.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -219,17 +254,28 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
-                mLat=data.getDoubleExtra("lat",0);
-                mLon=data.getDoubleExtra("lon",0);
-                mAddress=data.getStringExtra("address");
-                mAddressExtraDetails=data.getStringExtra("addressExtra");
-                mCity=data.getStringExtra("city");
-                mCountry=data.getStringExtra("country");
+            if (resultCode == Activity.RESULT_OK) {
+                mLat = data.getDoubleExtra("lat", 0);
+                mLon = data.getDoubleExtra("lon", 0);
+                mAddress = data.getStringExtra("address");
+                mAddressExtraDetails = data.getStringExtra("addressExtra");
+                mCity = data.getStringExtra("city");
+                mCountry = data.getStringExtra("country");
                 mDeliveryLocation.setText(mAddress);
 
-                LatLng start = new LatLng(Double.valueOf(mShopModel.getLat()),Double.valueOf(mShopModel.getLon()));
-                LatLng end = new LatLng(mLat,mLon);
+                Location wayPointLocation = new Location("");
+                wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
+                wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+
+                Location endLocation = new Location("");
+                endLocation.setLatitude(mLat);
+                endLocation.setLongitude(mLon);
+
+
+                mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                mConnectorGetSettings.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_settings?user_id=10");
+                LatLng start = new LatLng(Double.valueOf(mShopModel.getLat()), Double.valueOf(mShopModel.getLon()));
+                LatLng end = new LatLng(mLat, mLon);
                 Routing routing = new Routing.Builder()
                         .travelMode(Routing.TravelMode.DRIVING)
                         .withListener(OrderNowActivity.this)
@@ -240,7 +286,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
                 routing.execute();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                Helper.showSnackBarMessage(getString(R.string.not_located),OrderNowActivity.this);
+                Helper.showSnackBarMessage(getString(R.string.not_located), OrderNowActivity.this);
             }
         }
 
@@ -357,7 +403,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     @Override
     protected void onStop() {
         super.onStop();
-        if (mConnector != null){
+        if (mConnector != null) {
             mConnector.cancelAllRequests(TAG);
         }
     }

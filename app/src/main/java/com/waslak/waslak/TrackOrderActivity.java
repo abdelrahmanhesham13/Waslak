@@ -146,7 +146,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
         mReceived.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mConnector.getRequest(TAG, "http://www.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&status=3" + "&user_id=" + mRequestModel.getUser_id());
+                mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&status=3" + "&user_id=" + mRequestModel.getUser_id());
                 mReceived.setEnabled(false);
             }
         });
@@ -171,7 +171,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                     if (!mLocated) {
                         mLocated = true;
                         start = new LatLng(lat, lon);
-                        mConnector.getRequest(TAG, "http://www.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
+                        mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
                         mDeliveryLocation.setText(getAddress(start, "delivery"));
                         wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
                         end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
@@ -207,7 +207,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                 mLocated = true;
                 Location location = mTracker.getLocation();
                 start = new LatLng(location.getLatitude(), location.getLongitude());
-                mConnector.getRequest(TAG, "http://www.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
+                mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
                 mDeliveryLocation.setText(getAddress(start, "delivery"));
                 wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
                 end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));

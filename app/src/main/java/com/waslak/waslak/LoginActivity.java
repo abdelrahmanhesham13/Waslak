@@ -524,6 +524,7 @@ public class LoginActivity extends AppCompatActivity {
             }
 
         } catch (ApiException e) {
+            e.printStackTrace();
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
     }

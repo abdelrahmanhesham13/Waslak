@@ -174,7 +174,7 @@ public class SearchActivity extends AppCompatActivity {
                 if (mShopModels.get(position).getId().equals("0")) {
                     mShopModel = mShopModels.get(position);
                     mProgressDialog = Helper.showProgressDialog(SearchActivity.this,getString(R.string.loading),false);
-                    mConnectorAddShop.getRequest(TAG, "http://www.cta3.com/waslk/api/add_shop?name=" + Uri.encode(mShopModel.getName()) + "&description=description&longitude=" + mShopModel.getLon() + "&latitude=" + mShopModel.getLat() + "&address=" + Uri.encode(mShopModel.getAddress()) + "&city=city&country=country&image=" + Uri.encode(mShopModel.getImage()));
+                    mConnectorAddShop.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_shop?name=" + Uri.encode(mShopModel.getName()) + "&description=description&longitude=" + mShopModel.getLon() + "&latitude=" + mShopModel.getLat() + "&address=" + Uri.encode(mShopModel.getAddress()) + "&city=city&country=country&image=" + Uri.encode(mShopModel.getImage()));
                 } else {
                     startActivity(new Intent(SearchActivity.this, StoreActivity.class).putExtra("ShopModel", mShopModels.get(position)).putExtra("user", mUserModel));
                 }
