@@ -79,7 +79,7 @@ public class StoresAdapter extends RecyclerView.Adapter<StoresAdapter.StoreViewH
                     }
                 });
         } else {
-            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mShopModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
+            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
                 @Override
                 public void onSuccess() {
 

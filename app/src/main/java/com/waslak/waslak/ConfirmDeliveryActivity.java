@@ -3,6 +3,7 @@ package com.waslak.waslak;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -114,19 +116,40 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
     String mCity;
     String mMaxPrice;
 
+    String mCountryLocale;
+
+    String mCurrency;
+    String mCurrencyArabic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_delivery);
         ButterKnife.bind(this);
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        mCountryLocale = tm.getNetworkCountryIso();
+
+        if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
+            mCountryLocale = "Saudi%20arabia";
+        } else if (mCountryLocale.equalsIgnoreCase("eg")){
+            mCountryLocale = "Egypt";
+        } else {
+            mCountryLocale = "Jordan";
+        }
 
         if (getIntent() != null && getIntent().hasExtra("user") && getIntent().hasExtra("shopModel") && getIntent().hasExtra("request")) {
             mUserModel = (UserModel) getIntent().getSerializableExtra("user");
             mShopModel = (ShopModel) getIntent().getSerializableExtra("shopModel");
             mRequestModel = (RequestModel) getIntent().getSerializableExtra("request");
-            mStoreLocation.setText(mShopModel.getAddress());
+
             mDuration.setText(mRequestModel.getDuration());
-            setTitle(mShopModel.getName());
+            if (mShopModel.getName() == null) {
+                setTitle(getString(R.string.delivery));
+                mStoreLocation.setText(mRequestModel.getUserAddress());
+            } else {
+                setTitle(mShopModel.getName());
+                mStoreLocation.setText(mShopModel.getAddress());
+            }
         }
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -221,34 +244,62 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                     mLocated = true;
                     start = new LatLng(lat, lon);
                     mDeliveryLocation.setText(getAddress(start, "delivery"));
-                    wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+                    try {
+                        wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+                    } catch (Exception e) {
+                        wayPoint = new LatLng(Double.parseDouble(mRequestModel.getUserRequestLat()), Double.parseDouble(mRequestModel.getUserRequestLon()));
+                        e.printStackTrace();
+                    }
                     end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
                     Location startLocation = new Location("");
                     startLocation.setLatitude(lat);
                     startLocation.setLongitude(lon);
                     Location wayPointLocation = new Location("");
-                    wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
-                    wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+                    try {
+                        wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
+                        wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+                    } catch (Exception e) {
+                        wayPointLocation.setLatitude(Double.parseDouble(mRequestModel.getUserRequestLat()));
+                        wayPointLocation.setLongitude(Double.parseDouble(mRequestModel.getUserRequestLon()));
+                        e.printStackTrace();
+                    }
                     Location endLocation = new Location("");
                     endLocation.setLatitude(Double.parseDouble(mRequestModel.getLatitude()));
                     endLocation.setLongitude(Double.parseDouble(mRequestModel.getLongitude()));
-                    mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(wayPointLocation) / 1000.0));
                     mToCustomerDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(endLocation) / 1000.0));
 
                     Helper.writeToLog("Distance : " + ((wayPointLocation.distanceTo(endLocation) / 1000.0)));
 
-                    mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                    if (wayPoint != null) {
+                        mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                        mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(wayPointLocation) / 1000.0));
+                    } else {
+                        mTotalDistance = String.valueOf((startLocation.distanceTo(endLocation)) / 1000.0);
+                        mToShopDistance.setVisibility(View.GONE);
+                    }
                     Helper.writeToLog(mTotalDistance);
-                    mConnectorGetSettings.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_settings?user_id=5");
+                    mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
 
-                    Routing routing = new Routing.Builder()
-                            .travelMode(Routing.TravelMode.DRIVING)
-                            .withListener(ConfirmDeliveryActivity.this)
-                            .waypoints(start, wayPoint, end)
-                            .alternativeRoutes(false)
-                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                            .build();
-                    routing.execute();
+
+                    if (wayPoint != null) {
+                        Routing routing = new Routing.Builder()
+                                .travelMode(Routing.TravelMode.DRIVING)
+                                .withListener(ConfirmDeliveryActivity.this)
+                                .waypoints(start, wayPoint, end)
+                                .alternativeRoutes(false)
+                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                .build();
+                        routing.execute();
+                    } else {
+                        Routing routing = new Routing.Builder()
+                                .travelMode(Routing.TravelMode.DRIVING)
+                                .withListener(ConfirmDeliveryActivity.this)
+                                .waypoints(start, end)
+                                .alternativeRoutes(false)
+                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                .build();
+                        routing.execute();
+                    }
                     mTracker.stopUsingGPS();
                 }
             }
@@ -258,35 +309,63 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
             Location location = mTracker.getLocation();
             start = new LatLng(location.getLatitude(), location.getLongitude());
             mDeliveryLocation.setText(getAddress(start, "delivery"));
-            wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+            try {
+                wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+            } catch (Exception e) {
+                wayPoint = new LatLng(Double.parseDouble(mRequestModel.getUserRequestLat()), Double.parseDouble(mRequestModel.getUserRequestLon()));
+                e.printStackTrace();
+            }
             end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
 
             Location startLocation = new Location("");
             startLocation.setLatitude(location.getLatitude());
             startLocation.setLongitude(location.getLongitude());
             Location wayPointLocation = new Location("");
-            wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
-            wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+            try {
+                wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
+                wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+            } catch (Exception e) {
+                wayPointLocation.setLatitude(Double.parseDouble(mRequestModel.getUserRequestLat()));
+                wayPointLocation.setLongitude(Double.parseDouble(mRequestModel.getUserRequestLon()));
+                e.printStackTrace();
+            }
+
             Location endLocation = new Location("");
             endLocation.setLatitude(Double.parseDouble(mRequestModel.getLatitude()));
             endLocation.setLongitude(Double.parseDouble(mRequestModel.getLongitude()));
-            mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), wayPointLocation.distanceTo(startLocation) / 1000.0));
             mToCustomerDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), endLocation.distanceTo(startLocation) / 1000.0));
 
             Helper.writeToLog("Distance : " + ((wayPointLocation.distanceTo(endLocation) / 1000.0)));
 
-            mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+            if (wayPoint != null) {
+                mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(wayPointLocation) / 1000.0));
+            } else {
+                mTotalDistance = String.valueOf((startLocation.distanceTo(endLocation)) / 1000.0);
+                mToShopDistance.setVisibility(View.GONE);
+            }
             Helper.writeToLog(mTotalDistance);
-            mConnectorGetSettings.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_settings?user_id=0");
+            mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
 
-            Routing routing = new Routing.Builder()
-                    .travelMode(Routing.TravelMode.DRIVING)
-                    .withListener(ConfirmDeliveryActivity.this)
-                    .waypoints(start, wayPoint, end)
-                    .alternativeRoutes(false)
-                    .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                    .build();
-            routing.execute();
+            if (wayPoint != null) {
+                Routing routing = new Routing.Builder()
+                        .travelMode(Routing.TravelMode.DRIVING)
+                        .withListener(ConfirmDeliveryActivity.this)
+                        .waypoints(start, wayPoint, end)
+                        .alternativeRoutes(false)
+                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .build();
+                routing.execute();
+            } else {
+                Routing routing = new Routing.Builder()
+                        .travelMode(Routing.TravelMode.DRIVING)
+                        .withListener(ConfirmDeliveryActivity.this)
+                        .waypoints(start, end)
+                        .alternativeRoutes(false)
+                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .build();
+                routing.execute();
+            }
             mTracker.stopUsingGPS();
         }
     }
@@ -339,16 +418,21 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
 
         // End marker
         options = new MarkerOptions();
-        options.position(wayPoint);
-        bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.shop1);
-        b = bitmapdraw.getBitmap();
-        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        if (wayPoint != null) {
+            options.position(wayPoint);
+            bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.shop1);
+            b = bitmapdraw.getBitmap();
+            smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        }
+
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(start);
-        builder.include(wayPoint);
+        if (wayPoint != null) {
+            builder.include(wayPoint);
+        }
         builder.include(end);
         LatLngBounds bounds = builder.build();
 

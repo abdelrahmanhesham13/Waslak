@@ -80,6 +80,7 @@
                     android:layout_width="240dp"
                     android:layout_height="wrap_content"
                     android:gravity="start"
+                    android:id="@+id/parent_layout"
                     android:layout_gravity="start"
                     android:weightSum="1"
                     android:orientation="horizontal">

@@ -2,17 +2,20 @@ package com.waslak.waslak;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -25,21 +28,24 @@ import com.directions.route.Route;
 import com.directions.route.RouteException;
 import com.directions.route.Routing;
 import com.directions.route.RoutingListener;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.maps.model.LatLng;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.nguyenhoanglam.imagepicker.model.Config;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
 import com.waslak.waslak.utils.Helper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -75,6 +81,9 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.send)
     Button mSendButton;
 
+    @BindView(R.id.estimated_price)
+    TextView mPrice;
+
 
 
     File mSelectedFile;
@@ -106,11 +115,34 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
     Connector mAddRequestConnector;
 
+    String mTotalDistance;
+
+    String mMinPrice;
+    String mPricePerKilo;
+    String mMaxPrice;
+
+    Connector mConnectorGetSettings;
+
+    String mCountryLocale;
+
+    String mCurrency;
+    String mCurrencyArabic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_package_delivery_details);
         ButterKnife.bind(this);
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        mCountryLocale = tm.getNetworkCountryIso();
+
+        if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
+            mCountryLocale = "Saudi arabia";
+        } else if (mCountryLocale.equalsIgnoreCase("eg")){
+            mCountryLocale = "Egypt";
+        } else {
+            mCountryLocale = "Jordan";
+        }
 
 
 
@@ -134,14 +166,14 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
         mStartDeliveryLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(PackageDeliveryDetailsActivity.this,MapActivity.class),1);
+                startActivityForResult(new Intent(PackageDeliveryDetailsActivity.this,MapActivity.class).putExtra("title","start"),1);
             }
         });
 
         mEndDeliveryLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(PackageDeliveryDetailsActivity.this,MapActivity.class),2);
+                startActivityForResult(new Intent(PackageDeliveryDetailsActivity.this,MapActivity.class).putExtra("title","destination"),2);
             }
         });
 
@@ -183,11 +215,15 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                     Helper.showSnackBarMessage(getString(R.string.enter_your_location),PackageDeliveryDetailsActivity.this);
                 } else {
                     if (getIntent().getStringExtra("type").equals("customer")) {
+                        mDescription = "Delivery from " + mAddress + " to " + mAddressEnd;
                         mProgressDialog = Helper.showProgressDialog(PackageDeliveryDetailsActivity.this, getString(R.string.loading), false);
                         mAddRequestConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId()
                                 + "&longitude=" + mLon + "&latitude=" + mLat + "&address=" + Uri.encode(mAddress) + "&latitude_to=" + mLatEnd + "&longitude_to=" + mLonEnd
                                 + "&address_to=" + Uri.encode(mAddressEnd) + "&shop_id=0" + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage) + "&type=2");
                     } else {
+                        if (mDescription.isEmpty()){
+                            mDescription = "Delivery from " + mAddress + " to " + mAddressEnd;
+                        }
                         mProgressDialog = Helper.showProgressDialog(PackageDeliveryDetailsActivity.this, getString(R.string.loading), false);
                         mAddRequestConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId()
                                 + "&longitude=" + mLon + "&latitude=" + mLat + "&address=" + Uri.encode(mAddress) + "&latitude_to=" + mLatEnd + "&longitude_to=" + mLonEnd
@@ -198,18 +234,43 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
             }
         });
 
+
+        mConnectorGetSettings = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    mMinPrice = jsonObject.getString("min_price");
+                    mPricePerKilo = jsonObject.getString("price_per_kilo");
+                    mCurrency = jsonObject.getString("currency");
+                    mCurrencyArabic = jsonObject.getString("currency_ar");
+                    if (getLocale().equals("ar"))
+                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
+                    else
+                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrency + " " + getString(R.string.maximum_price_now));
+                    mMaxPrice = mPrice.getText().toString();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+
     }
 
 
 
     private void pickImage() {
-        ImagePicker.with(this)
-                .setFolderMode(true) // folder mode (false by default)
-                .setFolderTitle("Image Folder") // folder selection title
-                .setImageTitle("Select Image") // image selection title
-                .setMaxSize(1) //  Max images can be selected
-                .setMultipleMode(false) //single mode
-                .setShowCamera(true) // show camera or not (true by default)
+        ImagePicker.create(this)
+                .folderMode(true) // folder mode (false by default)
+                .toolbarFolderTitle("Image Folder") // folder selection title
+                .toolbarImageTitle("Select Image") // image selection title
+                .single() //  Max images can be selected
+                .showCamera(true) // show camera or not (true by default)
                 .start(); // start image picker activity with Request code
     }
 
@@ -252,6 +313,18 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                 if (mLatEnd!= 0 && mLonEnd != 0) {
                     LatLng start = new LatLng(Double.valueOf(mLat), Double.valueOf(mLon));
                     LatLng end = new LatLng(mLatEnd, mLonEnd);
+                    Location wayPointLocation = new Location("");
+                    wayPointLocation.setLatitude(mLat);
+                    wayPointLocation.setLongitude(mLon);
+
+                    Location endLocation = new Location("");
+                    endLocation.setLatitude(mLatEnd);
+                    endLocation.setLongitude(mLonEnd);
+
+
+                    mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                    mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
+
                     Routing routing = new Routing.Builder()
                             .travelMode(Routing.TravelMode.DRIVING)
                             .withListener(PackageDeliveryDetailsActivity.this)
@@ -277,6 +350,17 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                 if (mLat != 0 && mLon != 0) {
                     LatLng start = new LatLng(Double.valueOf(mLat), Double.valueOf(mLon));
                     LatLng end = new LatLng(mLatEnd, mLonEnd);
+                    Location wayPointLocation = new Location("");
+                    wayPointLocation.setLatitude(mLat);
+                    wayPointLocation.setLongitude(mLon);
+
+                    Location endLocation = new Location("");
+                    endLocation.setLatitude(mLatEnd);
+                    endLocation.setLongitude(mLonEnd);
+
+
+                    mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                    mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
                     Routing routing = new Routing.Builder()
                             .travelMode(Routing.TravelMode.DRIVING)
                             .withListener(PackageDeliveryDetailsActivity.this)
@@ -293,8 +377,8 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
         }
 
 
-        if (requestCode == Config.RC_PICK_IMAGES && resultCode == RESULT_OK && data != null) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Config.EXTRA_IMAGES);
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            List<Image> images = ImagePicker.getImages(data);
             Image img = images.get(0);
             try {
                 Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
@@ -439,6 +523,21 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
             return f;
         }
         return null;
+    }
+
+    private String getLocale(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = preferences.getString("lang", "error");
+        if (lang.equals("error")) {
+            if (Locale.getDefault().getLanguage().equals("ar"))
+                return "ar";
+            else
+                return "en";
+        } else if (lang.equals("en")) {
+            return "en";
+        } else {
+            return "ar";
+        }
     }
 
 

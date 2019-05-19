@@ -45,7 +45,6 @@
                 android:id="@+id/national_id"
                 android:layout_below="@id/add_your_national_id"
                 android:src="@drawable/ic_add_a_photo_black_24dp"
-                android:layout_above="@id/mobile_verification_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_height="60dp" />
 
@@ -56,7 +55,7 @@
                 android:id="@+id/add_your_car_image"
                 android:gravity="center_vertical"
                 android:layout_below="@id/national_id"
-                android:text="@string/add_your_car_image"
+                android:text="@string/accomendation_prove"
                 android:layout_centerHorizontal="true"
                 android:textColor="@color/whiteColor"
                 android:layout_marginBottom="20dp"
@@ -67,7 +66,6 @@
                 android:id="@+id/car_image"
                 android:layout_below="@id/add_your_car_image"
                 android:src="@drawable/ic_add_a_photo_black_24dp"
-                android:layout_above="@id/mobile_verification_parent"
                 android:layout_centerHorizontal="true"
                 android:layout_height="60dp" />
 
@@ -107,6 +105,20 @@
                 android:text="@string/verify"
                 android:textAllCaps="false"
                 android:textColor="@color/whiteColor" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:text="@string/confidence"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="15dp"
+                android:gravity="center"
+                android:layout_marginRight="15dp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/send_data"
+                android:layout_height="wrap_content" />
 
         </RelativeLayout>
 

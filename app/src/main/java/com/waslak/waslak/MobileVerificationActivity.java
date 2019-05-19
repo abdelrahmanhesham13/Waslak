@@ -148,6 +148,12 @@ public class MobileVerificationActivity extends AppCompatActivity {
             }
         });
 
+
+        if (getIntent().hasExtra("mobile")){
+            mMobileEditText.setPhoneNumber(getIntent().getStringExtra("mobile"));
+            mVerifyPhone.performClick();
+        }
+
     }
 
 

@@ -90,7 +90,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
                     }
                 });
         } else {
-            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mOrderModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
+            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mOrderModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
                 @Override
                 public void onSuccess() {
 

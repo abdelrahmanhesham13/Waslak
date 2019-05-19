@@ -144,6 +144,7 @@ public class Helper {
         editor.putString("balance", userModel.getBalance());
         editor.putString("credit", userModel.getCredit());
         editor.putString("block",userModel.getBlocked());
+        editor.putString("advanced",userModel.getAdvanced());
         editor.apply();
     }
 
@@ -189,6 +190,7 @@ public class Helper {
         editor.remove("rejectCount");
         editor.remove("notification");
         editor.remove("block");
+        editor.remove("advanced");
         editor.apply();
     }
 
@@ -224,6 +226,7 @@ public class Helper {
         String balance = preferences.getString("balance", null);
         String credit = preferences.getString("credit", null);
         String block = preferences.getString("block",null);
+        String advanced = preferences.getString("advanced","0");
         if (role == null){
             role = "99";
         }
@@ -236,6 +239,7 @@ public class Helper {
         userModel.setBalance(balance);
         userModel.setComment(comment);
         userModel.setCredit(credit);
+        userModel.setAdvanced(advanced);
         return userModel;
     }
 

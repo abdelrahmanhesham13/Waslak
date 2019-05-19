@@ -44,6 +44,21 @@
             android:textColor="#FFD300"
             android:textSize="12sp" />
 
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_error"
+            android:drawablePadding="5dp"
+            android:drawableStart="@drawable/ic_error"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/featured_account"
+            android:text="عميل مميز"
+            android:textColor="#FFD300"
+            android:textSize="12sp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"

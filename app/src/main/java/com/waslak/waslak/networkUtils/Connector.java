@@ -886,6 +886,10 @@ public class Connector {
 
     public static RequestModel getRequest(String response, ShopModel shopModel) {
         RequestModel requestModel = null;
+        ShopModel shopModelCreated = new ShopModel();
+        String userRequestLat = "";
+        String userRequestLon = "";
+        String userAddress = "";
         if (Helper.isJSONValid(response)) {
             try {
                 JSONObject jsonObject = new JSONObject(response);
@@ -932,25 +936,32 @@ public class Connector {
                 String block = delivery.optString("block");
                 UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, rating, deliveryFlag,block);
                 String note = request.optString("note");
-                JSONObject shop = request.getJSONObject("shop");
-                String idShop = shop.optString("id");
-                String cityShop = shop.optString("city_id");
-                String addressShop = shop.optString("address");
-                String longitudeShop = shop.optString("longitude");
-                String latitudeShop = shop.optString("latitude");
-                String descriptionShop = shop.optString("description");
-                String nameShop = shop.optString("name");
-                String approvedShop = shop.optString("approved");
-                String createdShop = shop.optString("created");
-                String updatedShop = shop.optString("updated");
-                String userIdShop = shop.optString("user_id");
-                String countryShop = shop.optString("country");
-                String regionShop = shop.optString("region");
-                String imageShop = shop.optString("image");
-                String viewsShop = shop.optString("views");
-                ShopModel shopModelCreated = new ShopModel(idShop, cityShop, addressShop, longitudeShop, latitudeShop, descriptionShop, nameShop, approvedShop, createdShop, updatedShop, userIdShop, countryShop, regionShop, imageShop, viewsShop, new ArrayList<String>());
-                if (shopModel != null)
-                    shopModelCreated.setDistance(shopModel.getDistance());
+                JSONObject shop = request.optJSONObject("shop");
+                if (shop != null) {
+                    String idShop = shop.optString("id");
+                    String cityShop = shop.optString("city_id");
+                    String addressShop = shop.optString("address");
+                    String longitudeShop = shop.optString("longitude");
+                    String latitudeShop = shop.optString("latitude");
+                    String descriptionShop = shop.optString("description");
+                    String nameShop = shop.optString("name");
+                    String approvedShop = shop.optString("approved");
+                    String createdShop = shop.optString("created");
+                    String updatedShop = shop.optString("updated");
+                    String userIdShop = shop.optString("user_id");
+                    String countryShop = shop.optString("country");
+                    String regionShop = shop.optString("region");
+                    String imageShop = shop.optString("image");
+                    String viewsShop = shop.optString("views");
+                    shopModelCreated = new ShopModel(idShop, cityShop, addressShop, longitudeShop, latitudeShop, descriptionShop, nameShop, approvedShop, createdShop, updatedShop, userIdShop, countryShop, regionShop, imageShop, viewsShop, new ArrayList<String>());
+                    if (shopModel != null)
+                        shopModelCreated.setDistance(shopModel.getDistance());
+                } else {
+                    JSONObject userRequest = jsonObject.getJSONObject("user_request");
+                    userRequestLat = userRequest.getString("latitude");
+                    userRequestLon = userRequest.getString("longitude");
+                    userAddress = userRequest.getString("address");
+                }
                 JSONObject user = request.optJSONObject("user");
                 String nameUser = user.optString("name");
                 String usernameUser = user.optString("username");
@@ -975,6 +986,10 @@ public class Connector {
                     requestModel = new RequestModel(id, city, address, longitude, latitude, description, name, status, created, updated, userId, country, price, image, views, delivery_id, duration, shopId, detail, longitudeUpdate, latitudeUpdate, shopModel.getName(), deliveryModel, note, shopModelCreated, userModel, deleteStatus,promo);
                 else
                     requestModel = new RequestModel(id, city, address, longitude, latitude, description, name, status, created, updated, userId, country, price, image, views, delivery_id, duration, shopId, detail, longitudeUpdate, latitudeUpdate, "", deliveryModel, note, shopModelCreated, userModel, deleteStatus,promo);
+
+                requestModel.setUserRequestLat(userRequestLat);
+                requestModel.setUserRequestLon(userRequestLon);
+                requestModel.setUserAddress(userAddress);
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
@@ -1007,7 +1022,9 @@ public class Connector {
                 String delivery = user.optString("delivery");
                 String balance = user.optString("balance");
                 String block = user.optString("block");
+                String advanced = user.optString("advanced");
                 userModel = new UserModel(name, username, token, birthDate, password, mobile, longitude, latitude, city, country, image, 0, role, id, gender, rating, delivery,block);
+                userModel.setAdvanced(advanced);
                 String orders = String.valueOf(jsonObject.getInt("orders"));
                 String comments = String.valueOf(jsonObject.getInt("comments"));
                 String credit = user.optString("credit");

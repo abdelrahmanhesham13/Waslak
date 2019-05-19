@@ -121,7 +121,7 @@ public class SearchActivity extends AppCompatActivity {
                     mAdapter.notifyDataSetChanged();
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mShopsRecycler.setVisibility(View.VISIBLE);*/
-                    mConnectorGoogleShops.getRequest(TAG, "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + mLat + "," + mLon + "&radius=50000&keyword=" + Uri.encode(mSearchText.getText().toString()) + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ");
+                    mConnectorGoogleShops.getRequest(TAG, "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + mLat + "," + mLon + "&radius=50000&keyword=" + Uri.encode(mSearchText.getText().toString()) + "&key=AIzaSyDEQEjBg2PF7-zPywJnXP7JP6XMXE5d4hY");
 
                 }
             }

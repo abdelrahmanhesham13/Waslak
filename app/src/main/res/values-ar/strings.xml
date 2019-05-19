@@ -220,4 +220,9 @@
     <string name="add_receipt">قم بارفاق ايصال الدفع</string>
     <string name="estimated_price">سيتم حساب السعر تلقائيا</string>
     <string name="price">السعز</string>
+    <string name="confidence">هي لزياده الثقه بين العميل والمندوب عند قيام المندوب بشراء اغراض ودفع ثمنها منه</string>
+    <string name="search_for_store">ابحث عن متجر الطلب</string>
+    <string name="maximum_price_now">هذا الحد الاعلى لسعر التوصيل انتظر قليلا لياتيك سعر اقل من المندوبين</string>
+    <string name="accomendation_prove">اثبات سكن ارسال صوره فاتوره كهرباء او ماء</string>
+    <string name="start_location_map">مكان البدء</string>
 </resources>

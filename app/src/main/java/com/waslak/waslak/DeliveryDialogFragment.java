@@ -69,6 +69,8 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
     @BindView(R.id.verify_state)
     TextView mVerifyState;
     ProgressDialog mProgressDialog;
+    @BindView(R.id.featured_account)
+    TextView mFeaturedAccount;
 
     GPSTracker mTracker;
     boolean mLocated = false;
@@ -103,6 +105,12 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
             mVerifyState.setText(getString(R.string.verified_account));
         } else {
             mVerifyState.setText(getString(R.string.not_verified_account));
+        }
+
+        if (mUserModel.getAdvanced().equals("1")) {
+            mFeaturedAccount.setVisibility(View.VISIBLE);
+        } else {
+            mFeaturedAccount.setVisibility(View.GONE);
         }
 
         mGetOfferConnector = new Connector(getContext(), new Connector.LoadCallback() {

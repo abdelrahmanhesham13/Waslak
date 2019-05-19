@@ -43,6 +43,8 @@ public class CustomerDialogFragment extends AppCompatDialogFragment {
     TextView mComments;
     @BindView(R.id.verify_state)
     TextView mVerifyState;
+    @BindView(R.id.featured_account)
+            View mFeaturedAccount;
 
     UserModel mUserModel;
 
@@ -82,6 +84,11 @@ public class CustomerDialogFragment extends AppCompatDialogFragment {
                         mVerifyState.setText(getString(R.string.verified_account));
                     } else {
                         mVerifyState.setText(getString(R.string.not_verified_account));
+                    }
+                    if (mUserModel.getAdvanced().equals("1")) {
+                        mFeaturedAccount.setVisibility(View.VISIBLE);
+                    } else {
+                        mFeaturedAccount.setVisibility(View.GONE);
                     }
                     if (getContext() != null)
                         mComments.setText(String.format("%s %s", mUserModel.getComment(),getContext().getString(R.string.comments)));

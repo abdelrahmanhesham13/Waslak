@@ -32,11 +32,38 @@ public class RequestModel implements Serializable {
     UserModel user;
     boolean deleteStatus;
     String promo;
+    String userRequestLon;
+    String userRequestLat;
+    String userAddress;
 
     public RequestModel() {
     }
 
-    public RequestModel(String id, String city, String address, String longitude, String latitude, String description, String name, String status, String created, String updated, String user_id, String country, String price, String image, String views, String deliveryId, String duration, String shopId, String detail, String longitudeUpdate, String latitudeUpdate, String shopName, UserModel delivery, String note, ShopModel shop, UserModel user, boolean deleteStatus,String promo) {
+    public String getUserRequestLon() {
+        return userRequestLon;
+    }
+
+    public void setUserRequestLon(String userRequestLon) {
+        this.userRequestLon = userRequestLon;
+    }
+
+    public String getUserRequestLat() {
+        return userRequestLat;
+    }
+
+    public String getUserAddress() {
+        return userAddress;
+    }
+
+    public void setUserAddress(String userAddress) {
+        this.userAddress = userAddress;
+    }
+
+    public void setUserRequestLat(String userRequestLat) {
+        this.userRequestLat = userRequestLat;
+    }
+
+    public RequestModel(String id, String city, String address, String longitude, String latitude, String description, String name, String status, String created, String updated, String user_id, String country, String price, String image, String views, String deliveryId, String duration, String shopId, String detail, String longitudeUpdate, String latitudeUpdate, String shopName, UserModel delivery, String note, ShopModel shop, UserModel user, boolean deleteStatus, String promo) {
         this.id = id;
         this.city = city;
         this.address = address;

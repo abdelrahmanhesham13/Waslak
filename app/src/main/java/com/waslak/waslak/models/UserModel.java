@@ -26,6 +26,7 @@ public class UserModel implements Serializable {
     String balance = "";
     String blocked = "0";
     String credit;
+    String advanced = "0";
 
     public UserModel(String name, String image) {
         this.name = name;
@@ -230,5 +231,13 @@ public class UserModel implements Serializable {
 
     public String getId() {
         return id;
+    }
+
+    public String getAdvanced() {
+        return advanced;
+    }
+
+    public void setAdvanced(String advanced) {
+        this.advanced = advanced;
     }
 }

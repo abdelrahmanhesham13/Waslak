@@ -1,5 +1,6 @@
 package com.waslak.waslak;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,11 +26,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.Task;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.nguyenhoanglam.imagepicker.model.Config;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.squareup.picasso.Picasso;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
@@ -106,6 +109,8 @@ public class AccountActivity extends AppCompatActivity {
     String mCountry;
     String mCity;
 
+    List<Address> addresses;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +124,7 @@ public class AccountActivity extends AppCompatActivity {
                 if (Connector.checkStatus(response)) {
                     if (getIntent().getStringExtra("Type").equals("SignUp")) {
                         mUserModel = Connector.getUser(response);
-                        Helper.SaveToSharedPreferences(AccountActivity.this,mUserModel);
+                        Helper.SaveToSharedPreferences(AccountActivity.this, mUserModel);
                         startActivity(new Intent(AccountActivity.this, HomeActivity.class).putExtra("user", mUserModel).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         finish();
                     } else {
@@ -130,7 +135,7 @@ public class AccountActivity extends AppCompatActivity {
                         mUserModel.setMobile(mPhoneNumber);
                         mUserModel.setImage(mImage);
                         mUserModel.setGender(String.valueOf(mGender));
-                        Helper.SaveToSharedPreferences(AccountActivity.this,mUserModel);
+                        Helper.SaveToSharedPreferences(AccountActivity.this, mUserModel);
                         mProgressBar.setVisibility(View.INVISIBLE);
                         mParentLayout.setVisibility(View.VISIBLE);
                     }
@@ -292,7 +297,6 @@ public class AccountActivity extends AppCompatActivity {
     public List<Address> getAddress(double lat, double lon, final String type) {
         if (Geocoder.isPresent()) {
             Geocoder geocoder;
-            List<Address> addresses = null;
             geocoder = new Geocoder(AccountActivity.this, Locale.ENGLISH);
 
             try {
@@ -322,7 +326,7 @@ public class AccountActivity extends AppCompatActivity {
                                 }
                             }
 
-                            if (type.equals("edit")){
+                            if (type.equals("edit")) {
                                 String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
                                         mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                         "&address=" + Uri.encode(mFullAddress) + "&city_id=" + Uri.encode(mCity) +
@@ -344,25 +348,6 @@ public class AccountActivity extends AppCompatActivity {
                         }
                     });
             return null;
-        }
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Config.RC_PICK_IMAGES && resultCode == RESULT_OK && data != null) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Config.EXTRA_IMAGES);
-            if (images != null) {
-                Image img = images.get(0);
-                try {
-                    Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
-                    mProfileImage.setImageBitmap(bitmapImage);
-                    mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),200)));
-                    UploadImage();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -479,13 +464,12 @@ public class AccountActivity extends AppCompatActivity {
 
 
     private void pickImage() {
-        ImagePicker.with(this)
-                .setFolderMode(true) // folder mode (false by default)
-                .setFolderTitle("Image Folder") // folder selection title
-                .setImageTitle("Select Image") // image selection title
-                .setMaxSize(1) //  Max images can be selected
-                .setMultipleMode(false) //single mode
-                .setShowCamera(true) // show camera or not (true by default)
+        ImagePicker.create(this)
+                .folderMode(true) // folder mode (false by default)
+                .toolbarFolderTitle("Image Folder") // folder selection title
+                .toolbarImageTitle("Select Image") // image selection title
+                .single() //  Max images can be selected
+                .showCamera(true) // show camera or not (true by default)
                 .start(); // start image picker activity with Request code
     }
 
@@ -508,7 +492,7 @@ public class AccountActivity extends AppCompatActivity {
     }
 
 
-    public void getLocationEdit(){
+    public void getLocationEdit() {
         mTracker = new GPSTracker(this, new GPSTracker.OnGetLocation() {
             @Override
             public void onGetLocation(double lat, double lon) {
@@ -516,12 +500,56 @@ public class AccountActivity extends AppCompatActivity {
                     mLocated = true;
                     mLat = lat;
                     mLon = lon;
-                    List<Address> addresses = getAddress(mLat, mLon,"edit");
+                    addresses = getAddress(mLat, mLon, "edit");
                     if (addresses != null && addresses.size() > 0) {
-                        String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
+//                        String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
+//                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
+//                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
+//                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+//                        mConnector.getRequest(TAG, url);
+                        startActivityForResult(new Intent(AccountActivity.this, MobileVerificationActivity.class).putExtra("mobile",mPhoneNumber), 3);
+                    }
+                    mTracker.stopUsingGPS();
+                }
+            }
+        });
+
+        if (mTracker.canGetLocation() && !mLocated) {
+            Location location = mTracker.getLocation();
+            if (location != null) {
+                if (location.getLongitude() != 0 && location.getLatitude() != 0) {
+                    mLocated = true;
+                    mLat = location.getLatitude();
+                    mLon = location.getLongitude();
+                    addresses = getAddress(mLat, mLon, "edit");
+                    if (addresses != null && addresses.size() > 0) {
+//                        String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
+//                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
+//                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
+//                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+//                        mConnector.getRequest(TAG, url);
+                        }
+                    mTracker.stopUsingGPS();
+                }
+            }
+        }
+    }
+
+
+    public void getLocationSignUp() {
+        mTracker = new GPSTracker(this, new GPSTracker.OnGetLocation() {
+            @Override
+            public void onGetLocation(double lat, double lon) {
+                if (lon != 0 && lat != 0 && !mLocated) {
+                    mLocated = true;
+                    mLat = lat;
+                    mLon = lon;
+                    addresses = getAddress(mLat, mLon, "sign up");
+                    if (addresses != null && addresses.size() > 0) {
+                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
                                 mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                 "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
                         mConnector.getRequest(TAG, url);
                     }
                     mTracker.stopUsingGPS();
@@ -536,12 +564,12 @@ public class AccountActivity extends AppCompatActivity {
                     mLocated = true;
                     mLat = location.getLatitude();
                     mLon = location.getLongitude();
-                    List<Address> addresses = getAddress(mLat, mLon,"edit");
+                    addresses = getAddress(mLat, mLon, "sign up");
                     if (addresses != null && addresses.size() > 0) {
-                        String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
+                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
                                 mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                 "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
                         mConnector.getRequest(TAG, url);
                     }
                     mTracker.stopUsingGPS();
@@ -551,43 +579,45 @@ public class AccountActivity extends AppCompatActivity {
     }
 
 
-    public void getLocationSignUp(){
-        mTracker = new GPSTracker(this, new GPSTracker.OnGetLocation() {
-            @Override
-            public void onGetLocation(double lat, double lon) {
-                if (lon != 0 && lat != 0 && !mLocated) {
-                    mLocated = true;
-                    mLat = lat;
-                    mLon = lon;
-                    List<Address> addresses = getAddress(mLat, mLon,"sign up");
-                    if (addresses != null && addresses.size() > 0) {
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 3) {
+            if (resultCode == Activity.RESULT_OK) {
+                String result = data.getStringExtra("result");
+                if (result.equals("verified")) {
+                    mPhoneNumber = data.getStringExtra("phone");
+                    if (getIntent().getStringExtra("Type").equals("SignUp")) {
                         String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
                                 mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                 "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
                                 "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
                         mConnector.getRequest(TAG, url);
+                    } else {
+                        String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
+                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
+                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
+                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+                        mConnector.getRequest(TAG, url);
                     }
-                    mTracker.stopUsingGPS();
                 }
             }
-        });
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Helper.showSnackBarMessage(getString(R.string.not_verified_mobile), AccountActivity.this);
+            }
+        }
 
-        if (mTracker.canGetLocation() && !mLocated) {
-            Location location = mTracker.getLocation();
-            if (location != null) {
-                if (location.getLongitude() != 0 && location.getLatitude() != 0) {
-                    mLocated = true;
-                    mLat = location.getLatitude();
-                    mLon = location.getLongitude();
-                    List<Address> addresses = getAddress(mLat, mLon,"sign up");
-                    if (addresses != null && addresses.size() > 0) {
-                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
-                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
-                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
-                        mConnector.getRequest(TAG, url);
-                    }
-                    mTracker.stopUsingGPS();
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            List<Image> images = ImagePicker.getImages(data);
+            if (images != null) {
+                Image img = images.get(0);
+                try {
+                    Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
+                    mProfileImage.setImageBitmap(bitmapImage);
+                    mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(), 200)));
+                    UploadImage();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

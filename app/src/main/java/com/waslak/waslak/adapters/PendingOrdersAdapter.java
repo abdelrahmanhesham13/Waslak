@@ -53,11 +53,24 @@ public class PendingOrdersAdapter extends RecyclerView.Adapter<PendingOrdersAdap
         else
             holder.type.setText(mContext.getString(R.string.customer_orders));
         holder.name.setText(mRequestModels.get(position).getShopName());
-        holder.distance.setText(String.format(Locale.getDefault(),"%.2f KM",Double.parseDouble(mRequestModels.get(position).getShop().getDistance())));
+        try {
+            holder.mParentLayout.setVisibility(View.VISIBLE);
+            holder.distance.setText(String.format(Locale.getDefault(), "%.2f KM", Double.parseDouble(mRequestModels.get(position).getShop().getDistance())));
+        } catch (Exception e) {
+            holder.mParentLayout.setVisibility(View.GONE);
+            e.printStackTrace();
+        }
         if (URLUtil.isValidUrl(mRequestModels.get(position).getUser().getImage()))
             Picasso.get().load(mRequestModels.get(position).getUser().getImage()).fit().centerCrop().into(holder.mImage);
         else {
-            Picasso.get().load("http://www.cta3.com/waslk/prod_img/" + mRequestModels.get(position).getUser().getImage()).fit().centerCrop().into(holder.mImage);
+            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mRequestModels.get(position).getUser().getImage()).fit().centerCrop().into(holder.mImage);
+        }
+
+        if (mRequestModels.get(position).getShopName().equals("null")){
+            holder.name.setText(mContext.getString(R.string.delivery));
+            holder.mParentLayout.setVisibility(View.GONE);
+        } else {
+            //holder.mParentLayout.setVisibility(View.VISIBLE);
         }
     }
 
@@ -81,6 +94,8 @@ public class PendingOrdersAdapter extends RecyclerView.Adapter<PendingOrdersAdap
         TextView deliveryDate;
         @BindView(R.id.image)
         ImageView mImage;
+        @BindView(R.id.parent_layout)
+                View mParentLayout;
 
         PendingOrderViewHolder (View itemView){
             super(itemView);

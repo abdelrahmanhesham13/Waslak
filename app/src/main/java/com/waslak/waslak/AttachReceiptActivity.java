@@ -18,11 +18,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.nguyenhoanglam.imagepicker.model.Config;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.waslak.waslak.networkUtils.Connector;
 import com.waslak.waslak.utils.Helper;
 
@@ -31,6 +30,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -110,13 +110,12 @@ public class AttachReceiptActivity extends AppCompatActivity {
     }
 
     private void pickImage() {
-        ImagePicker.with(this)
-                .setFolderMode(true) // folder mode (false by default)
-                .setFolderTitle("Image Folder") // folder selection title
-                .setImageTitle("Select Image") // image selection title
-                .setMaxSize(1) //  Max images can be selected
-                .setMultipleMode(false) //single mode
-                .setShowCamera(true) // show camera or not (true by default)
+        ImagePicker.create(this)
+                .folderMode(true) // folder mode (false by default)
+                .toolbarFolderTitle("Image Folder") // folder selection title
+                .toolbarImageTitle("Select Image") // image selection title
+                .single() //  Max images can be selected
+                .showCamera(true) // show camera or not (true by default)
                 .start(); // start image picker activity with Request code
     }
 
@@ -162,8 +161,8 @@ public class AttachReceiptActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Config.RC_PICK_IMAGES && resultCode == RESULT_OK && data != null) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Config.EXTRA_IMAGES);
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            List<Image> images = ImagePicker.getImages(data);
             if (images != null) {
                 Image img = images.get(0);
                 try {

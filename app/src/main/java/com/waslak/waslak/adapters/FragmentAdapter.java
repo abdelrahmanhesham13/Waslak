@@ -22,47 +22,43 @@ public class FragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position) {
-            case 0:
-                RealStoresFragment realStoresFragment = new RealStoresFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("Type","Nearby");
-                realStoresFragment.setArguments(bundle);
-                return realStoresFragment;
-            case 1:
-                RealStoresFragment realStoresFragment2 = new RealStoresFragment();
-                Bundle bundle2 = new Bundle();
-                bundle2.putString("Type","All");
-                realStoresFragment2.setArguments(bundle2);
-                return realStoresFragment2;
-            case 2:
-                RealStoresFragment realStoresFragment3 = new RealStoresFragment();
-                Bundle bundle3 = new Bundle();
-                bundle3.putString("Type","Active");
-                realStoresFragment3.setArguments(bundle3);
-                return realStoresFragment3;
-            default:
-                return null;
+        if (position == 0) {
+            RealStoresFragment realStoresFragment = new RealStoresFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("Type", "Nearby");
+            realStoresFragment.setArguments(bundle);
+            return realStoresFragment;
+//            case 1:
+//                RealStoresFragment realStoresFragment2 = new RealStoresFragment();
+//                Bundle bundle2 = new Bundle();
+//                bundle2.putString("Type","All");
+//                realStoresFragment2.setArguments(bundle2);
+//                return realStoresFragment2;
+//            case 2:
+//                RealStoresFragment realStoresFragment3 = new RealStoresFragment();
+//                Bundle bundle3 = new Bundle();
+//                bundle3.putString("Type","Active");
+//                realStoresFragment3.setArguments(bundle3);
+//                return realStoresFragment3;
         }
+        return null;
     }
 
     @Override
     public int getCount() {
-        return 3;
+        return 1;
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return mContext.getString(R.string.nearby);
-            case 1:
-                return mContext.getString(R.string.all_stores);
-            case 2:
-                return mContext.getString(R.string.active);
-            default:
-                return null;
+        if (position == 0) {
+            return mContext.getString(R.string.nearby);
+//            case 1:
+//                return mContext.getString(R.string.all_stores);
+//            case 2:
+//                return mContext.getString(R.string.active);
         }
+        return null;
     }
 
 

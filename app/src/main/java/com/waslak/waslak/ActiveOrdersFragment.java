@@ -141,14 +141,16 @@ public class ActiveOrdersFragment extends Fragment {
                 if (Connector.checkStatus(response)) {
                     mRequestModels.clear();
                     mRequestModels.addAll(Connector.getRequests(response, new ShopModel()));
-                    mOrdersAdapter.notifyDataSetChanged();
-                    itemTouchHelper.attachToRecyclerView(mOrdersRecycler);
                     itemTouchHelper.attachToRecyclerView(mOrdersRecycler);
                     mOrdersRecycler.setAdapter(mOrdersAdapter);
+                    mOrdersAdapter.notifyDataSetChanged();
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mOrdersRecycler.setVisibility(View.VISIBLE);
                 } else {
                     mRequestModels.clear();
+                    itemTouchHelper.attachToRecyclerView(mOrdersRecycler);
+                    mOrdersRecycler.setAdapter(mOrdersAdapter);
+                    mOrdersAdapter.notifyDataSetChanged();
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mOrdersRecycler.setVisibility(View.VISIBLE);
                 }
@@ -180,6 +182,10 @@ public class ActiveOrdersFragment extends Fragment {
                         Toast.makeText(getContext(),getContext().getString(R.string.be_agent_first),Toast.LENGTH_LONG).show();
                     }
                 } else {
+                    mRequestModels.clear();
+                    mOrdersRecycler.setAdapter(mPendingOrdersAdapter);
+                    itemTouchHelper.attachToRecyclerView(null);
+                    mPendingOrdersAdapter.notifyDataSetChanged();
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mOrdersRecycler.setVisibility(View.INVISIBLE);
                 }

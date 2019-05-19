@@ -234,4 +234,9 @@
     <string name="added_successfully">Added Successfully</string>
     <string name="add_receipt">Add Your Receipt</string>
     <string name="price">Price</string>
+    <string name="confidence">To be more confidence between the customer and the delivery</string>
+    <string name="search_for_store">Search for Store</string>
+    <string name="maximum_price_now">this the maximum price for this order wait to get lower price from the delivery</string>
+    <string name="accomendation_prove">Accomendation Prove</string>
+    <string name="start_location_map">Start Location</string>
 </resources>

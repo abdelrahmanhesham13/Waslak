@@ -71,6 +71,8 @@ public class UserFragment extends Fragment {
     TextView mBalanceTextView;
     @BindView(R.id.attach_receipt)
     TextView mAttachReceipt;
+    @BindView(R.id.featured_account)
+    TextView mFeaturedAccount;
 
     OnMenuClicked mOnMenuClicked;
 
@@ -168,6 +170,11 @@ public class UserFragment extends Fragment {
                         mAuthorizedAcc.setText(context.getString(R.string.verified_account));
                     } else {
                         mAuthorizedAcc.setText(context.getString(R.string.not_verified_account));
+                    }
+                    if (mUserModel.getAdvanced().equals("1")) {
+                        mFeaturedAccount.setVisibility(View.VISIBLE);
+                    } else {
+                        mFeaturedAccount.setVisibility(View.GONE);
                     }
                     if (context != null) {
                         if (URLUtil.isValidUrl(mUserModel.getImage()))

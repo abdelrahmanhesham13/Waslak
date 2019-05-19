@@ -106,7 +106,7 @@ public class NotificationsFragment extends Fragment {
         mNotificationsAdapter = new NotificationsAdapter(getContext(), mNotificationModels, new NotificationsAdapter.OnItemClicked() {
             @Override
             public void setOnItemClicked(final int position) {
-                if (mNotificationModels.get(position).getStatus().equals("0"))
+                if (mNotificationModels.get(position).getStatus().equals("0") && !mNotificationModels.get(position).getType().equals("chat_admin"))
                     showDeliveryDialog(position);
                 else if (mNotificationModels.get(position).getStatus().equals("1")) {
                     if (mNotificationModels.get(position).getDelivery_id().equals(mUserModel.getId())) {
@@ -138,6 +138,8 @@ public class NotificationsFragment extends Fragment {
                             mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId() + "&status=7");
                         }
                     });
+                } else if (mNotificationModels.get(position).getType().equals("chat_admin")){
+                    startActivity(new Intent(getContext(),ChatActivity.class).putExtra("type","admin"));
                 }
 
             }
@@ -249,7 +251,7 @@ public class NotificationsFragment extends Fragment {
                     Iterator<NotificationModel> i = mNotificationModels.iterator();
                     while (i.hasNext()) {
                         NotificationModel n = i.next(); // must be called before you can call i.remove()
-                        if (n.getStatus().equals("0") && !mUserModel.getId().equals(n.getUserId()))
+                        if (n.getStatus().equals("0") && !mUserModel.getId().equals(n.getUserId()) && !n.getType().equals("chat_admin"))
                             i.remove();
                     }
                     mNotificationsAdapter.notifyDataSetChanged();

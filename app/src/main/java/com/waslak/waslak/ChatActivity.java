@@ -40,6 +40,8 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.crashlytics.android.Crashlytics;
+import com.esafirm.imagepicker.features.ImagePicker;
+import com.esafirm.imagepicker.model.Image;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,9 +49,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.nguyenhoanglam.imagepicker.model.Config;
-import com.nguyenhoanglam.imagepicker.model.Image;
-import com.nguyenhoanglam.imagepicker.ui.imagepicker.ImagePicker;
 import com.squareup.picasso.Picasso;
 import com.waslak.waslak.adapters.MessagesAdapter;
 import com.waslak.waslak.models.ChatModel;
@@ -66,6 +65,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -157,6 +157,21 @@ public class ChatActivity extends AppCompatActivity {
             mTrack.setVisibility(View.VISIBLE);
         }
 
+
+
+        if (getIntent().hasExtra("type")) {
+
+            if (getIntent().getStringExtra("type").equals("admin")) {
+                mReady.setVisibility(View.GONE);
+                mSendParent.setVisibility(View.VISIBLE);
+                mStoreName.setText("Admin Chat");
+                mOrderId.setVisibility(View.GONE);
+                mUsername.setVisibility(View.GONE);
+            }
+        } else {
+            getIntent().putExtra("type","5raaaa");
+        }
+
         if (getIntent() != null && getIntent().hasExtra("goToChat")) {
             mRequestModel = new RequestModel();
             mRequestModel.setId(getIntent().getStringExtra("request_id"));
@@ -178,7 +193,11 @@ public class ChatActivity extends AppCompatActivity {
         if (getIntent() != null && getIntent().hasExtra("request")) {
             mRequestModel = (RequestModel) getIntent().getSerializableExtra("request");
             mOrderId.setText(String.format("%s : %s", getString(R.string.order_id), mRequestModel.getId()));
-            mUsername.setText(mRequestModel.getUser().getName());
+            if (mRequestModel.getUser().getId().equals(mUserModel.getId())) {
+                mUsername.setText(mRequestModel.getDelivery().getName());
+            } else {
+                mUsername.setText(mRequestModel.getUser().getName());
+            }
         }
 
         if (getIntent() != null && getIntent().hasExtra("shopModel")) {
@@ -301,7 +320,11 @@ public class ChatActivity extends AppCompatActivity {
                     }
                     mMessagesRecycler.setAdapter(mAdapter);
                     mOrderId.setText(String.format("%s : %s", getString(R.string.order_id), mRequestModelDetails.getId()));
-                    mUsername.setText(mRequestModelDetails.getUser().getName());
+                    if (mRequestModel.getUser().getId().equals(mUserModel.getId())) {
+                        mUsername.setText(mRequestModel.getDelivery().getName());
+                    } else {
+                        mUsername.setText(mRequestModel.getUser().getName());
+                    }
                     mShopModel = mRequestModelDetails.getShop();
                     if (mShopModel != null) {
                         mStoreName.setText(mRequestModelDetails.getShop().getName());
@@ -311,9 +334,9 @@ public class ChatActivity extends AppCompatActivity {
                             Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                         }
                     }
-                    Crashlytics.setString("user",mUserModel.getId());
-                    Crashlytics.setString("user_name",mUserModel.getUsername());
-                    Crashlytics.setString("name",mUserModel.getName());
+                    Crashlytics.setString("user", mUserModel.getId());
+                    Crashlytics.setString("user_name", mUserModel.getUsername());
+                    Crashlytics.setString("name", mUserModel.getName());
                     if (mUserModel.getId().equals(mRequestModelDetails.getUser_id())) {
                         mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), mRequestModelDetails.getDescription(), "text", true));
                         if (mChatModel != null)
@@ -349,7 +372,12 @@ public class ChatActivity extends AppCompatActivity {
                         mMessagesRecycler.setVisibility(View.INVISIBLE);
                         mSendParent.setVisibility(View.INVISIBLE);
                         mProgressBar.setVisibility(View.VISIBLE);
-                        String url = Connector.createGetChatMessagesUrl() + "?chat_id=" + mChatModel.getChatId() + "&request_id=" + mRequestModel.getId();
+                        String url = "";
+                        if (getIntent().getStringExtra("type").equals("admin")) {
+                            url = Connector.createGetChatMessagesUrl() + "?user_id" + mUserModel.getId() + "&to_id=1&chat_id=0";
+                        } else {
+                            url = Connector.createGetChatMessagesUrl() + "?chat_id=" + mChatModel.getChatId() + "&request_id=" + mRequestModel.getId();
+                        }
                         if (mAdapter != null)
                             mConnectorMessages.getRequest(TAG, url);
                     }
@@ -367,17 +395,28 @@ public class ChatActivity extends AppCompatActivity {
         mConnectorMessages = new Connector(this, new Connector.LoadCallback() {
             @Override
             public void onComplete(String tag, String response) {
+                mProgressDialog.dismiss();
                 if (Connector.checkStatus(response)) {
                     mMessageModels.clear();
-                    if (mUserModel.getId().equals(mRequestModel.getDeliveryId())) {
-                        mAdapter.setFromUser(mRequestModel.getUser());
+                    if (!getIntent().getStringExtra("type").equals("admin")) {
+                        if (mUserModel.getId().equals(mRequestModel.getDeliveryId())) {
+                            mAdapter.setFromUser(mRequestModel.getUser());
+                        } else {
+                            mAdapter.setFromUser(mRequestModel.getDelivery());
+                        }
+                        if (mUserModel.getId().equals(mRequestModel.getUser_id()))
+                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), mRequestModel.getDescription(), "text", true));
+                        else
+                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), mRequestModel.getDescription(), "text", false));
                     } else {
-                        mAdapter.setFromUser(mRequestModel.getDelivery());
+                        mAdapter = new MessagesAdapter(ChatActivity.this, mMessageModels, new MessagesAdapter.OnItemClicked() {
+                            @Override
+                            public void setOnItemClicked(int position) {
+
+                            }
+                        }, new UserModel());
+                        mMessagesRecycler.setAdapter(mAdapter);
                     }
-                    if (mUserModel.getId().equals(mRequestModel.getUser_id()))
-                        mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), mRequestModel.getDescription(), "text", true));
-                    else
-                        mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), mRequestModel.getDescription(), "text", false));
                     mMessageModels.addAll(Connector.getChatMessagesJson(response, mUserModel));
                     mAdapter.notifyDataSetChanged();
                     mMessagesRecycler.scrollToPosition(mMessageModels.size() - 1);
@@ -417,11 +456,21 @@ public class ChatActivity extends AppCompatActivity {
                     mMessagesRecycler.setVisibility(View.INVISIBLE);
                     mSendParent.setVisibility(View.INVISIBLE);
                     mProgressBar.setVisibility(View.VISIBLE);
-                    String url = Connector.createSendMessageUrl() + "?chat_id=" + mChatModel.getChatId() +
-                            "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=text" + "&request_id=" + mRequestModel.getId();
-                    Uri builder = Uri.parse(url)
-                            .buildUpon()
-                            .appendQueryParameter("message", message).build();
+                    String url = "";
+                    Uri builder = null;
+                    if (getIntent().getStringExtra("type").equals("admin")) {
+                        url = Connector.createSendMessageUrl() + "?chat_id=0" +
+                                "&user_id=" + mUserModel.getId() + "&to_id=1" + "&type=text&request_id=0";
+                        builder = Uri.parse(url)
+                                .buildUpon()
+                                .appendQueryParameter("message", message).build();
+                    } else {
+                        url = Connector.createSendMessageUrl() + "?chat_id=" + mChatModel.getChatId() +
+                                "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=text" + "&request_id=" + mRequestModel.getId();
+                        builder = Uri.parse(url)
+                                .buildUpon()
+                                .appendQueryParameter("message", message).build();
+                    }
 
 
                     mConnectorSendMessage.getRequest(TAG, builder.toString());
@@ -434,7 +483,15 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onComplete(String tag, String response) {
                 mMessageText.setText("");
-                String url = Connector.createGetChatMessagesUrl() + "?chat_id=" + mChatModel.getChatId() + "&request_id=" + mRequestModel.getId();
+                String url = "";
+                if (getIntent().getStringExtra("type").equals("admin")) {
+                    url = Connector.createGetChatMessagesUrl() + "?user_id=" + mUserModel.getId() + "&to_id=1&chat_id=0&request_id=0";
+                } else {
+                    url = Connector.createGetChatMessagesUrl() + "?chat_id=" + mChatModel.getChatId() + "&request_id=" + mRequestModel.getId();
+                }
+                mConnectorMessages.getRequest(TAG, url);
+
+
                 if (mAdapter != null)
                     mConnectorMessages.getRequest(TAG, url);
                 FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -443,7 +500,12 @@ public class ChatActivity extends AppCompatActivity {
                 HashMap<String, String> set = new HashMap<>();
                 set.put("messageId", key);
                 if (key != null) {
-                    databaseReference.child("users/" + mChatModel.getToId()).child(key).setValue(set);
+                    if (getIntent().getStringExtra("type").equals("admin")) {
+                        databaseReference.child("users/" + "1").child(key).setValue(set);
+                    } else {
+                        databaseReference.child("users/" + mChatModel.getToId()).child(key).setValue(set);
+                    }
+
                 }
 
             }
@@ -458,7 +520,21 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         mProgressDialog = Helper.showProgressDialog(this, getString(R.string.loading), false);
-        mConnector.getRequest(TAG, Connector.createGetRequestUrl() + "?id=" + mRequestModel.getId());
+        if (getIntent().getStringExtra("type").equals("admin")) {
+            mMessagesRecycler.setVisibility(View.INVISIBLE);
+            mSendParent.setVisibility(View.INVISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
+            String url = "";
+            if (getIntent().getStringExtra("type").equals("admin")) {
+                url = Connector.createGetChatMessagesUrl() + "?user_id=" + mUserModel.getId() + "&to_id=1&chat_id=0";
+            } else {
+                url = Connector.createGetChatMessagesUrl() + "?chat_id=" + mChatModel.getChatId() + "&request_id=" + mRequestModel.getId();
+            }
+            mConnectorMessages.getRequest(TAG, url);
+        } else {
+            mConnector.getRequest(TAG, Connector.createGetRequestUrl() + "?id=" + mRequestModel.getId());
+        }
+
         mBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -491,6 +567,14 @@ public class ChatActivity extends AppCompatActivity {
                     if (mAdapter != null)
                         mConnectorMessages.getRequest(TAG, url);
                 }
+
+                if(getIntent().getStringExtra("type").equals("admin")) {
+                    mMessagesRecycler.setVisibility(View.INVISIBLE);
+                    mSendParent.setVisibility(View.INVISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    String url = Connector.createGetChatMessagesUrl() + "?user_id=" + mUserModel.getId() + "&request_id=0&to_id=1";
+                    mConnectorMessages.getRequest(TAG, url);
+                }
             }
         });
 
@@ -515,6 +599,11 @@ public class ChatActivity extends AppCompatActivity {
                         mConnectorMessages.getRequest(TAG, url);
                 }
 
+                if (getIntent().getStringExtra("type").equals("admin")) {
+                    String url = Connector.createGetChatMessagesUrl() + "?chat_id=0" + "&request_id=0" + "&user_id=" + mUserModel.getId() + "&to_id=1";
+                    mConnectorMessages.getRequest(TAG, url);
+                }
+
             }
 
             @Override
@@ -527,8 +616,8 @@ public class ChatActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Config.RC_PICK_IMAGES && resultCode == RESULT_OK && data != null) {
-            ArrayList<Image> images = data.getParcelableArrayListExtra(Config.EXTRA_IMAGES);
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            List<Image> images = ImagePicker.getImages(data);
             Image img = images.get(0);
             try {
                 Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
@@ -566,13 +655,21 @@ public class ChatActivity extends AppCompatActivity {
                             mMessagesRecycler.setVisibility(View.INVISIBLE);
                             mSendParent.setVisibility(View.INVISIBLE);
                             mProgressBar.setVisibility(View.VISIBLE);
-                            String url = Connector.createSendMessageUrl() + "?chat_id=" + mChatModel.getChatId() +
-                                    "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=image" + "&request_id=" + mRequestModel.getId();
-                            Uri builder = Uri.parse(url)
-                                    .buildUpon()
-                                    .appendQueryParameter("message", mImage).build();
-
-
+                            String url = "";
+                            Uri builder = null;
+                            if (getIntent().getStringExtra("type").equals("admin")) {
+                                url = Connector.createSendMessageUrl() + "?chat_id=0" +
+                                        "&user_id=" + mUserModel.getId() + "&to_id=1" + "&type=image&request_id=0";
+                                builder = Uri.parse(url)
+                                        .buildUpon()
+                                        .appendQueryParameter("message", mImage).build();
+                            } else {
+                                url = Connector.createSendMessageUrl() + "?chat_id=" + mChatModel.getChatId() +
+                                        "&user_id=" + mUserModel.getId() + "&to_id=" + mChatModel.getToId() + "&type=image" + "&request_id=" + mRequestModel.getId();
+                                builder = Uri.parse(url)
+                                        .buildUpon()
+                                        .appendQueryParameter("message", mImage).build();
+                            }
                             mConnectorSendMessage.getRequest(TAG, builder.toString());
                         } else {
                             Helper.showSnackBarMessage(getString(R.string.error), ChatActivity.this);
@@ -652,13 +749,12 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void pickImage() {
-        ImagePicker.with(this)
-                .setFolderMode(true) // folder mode (false by default)
-                .setFolderTitle("Image Folder") // folder selection title
-                .setImageTitle("Select Image") // image selection title
-                .setMaxSize(1) //  Max images can be selected
-                .setMultipleMode(false) //single mode
-                .setShowCamera(true) // show camera or not (true by default)
+        ImagePicker.create(this)
+                .folderMode(true) // folder mode (false by default)
+                .toolbarFolderTitle("Image Folder") // folder selection title
+                .toolbarImageTitle("Select Image") // image selection title
+                .single() //  Max images can be selected
+                .showCamera(true) // show camera or not (true by default)
                 .start(); // start image picker activity with Request code
     }
 
@@ -690,7 +786,12 @@ public class ChatActivity extends AppCompatActivity {
 
         CustomerDialogFragment customerDialogFragment = new CustomerDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("user", mRequestModelDetails.getUser());
+        if (mRequestModel.getUser().getId().equals(mUserModel.getId())) {
+            bundle.putSerializable("user", mRequestModelDetails.getDelivery());
+        } else {
+            bundle.putSerializable("user", mRequestModelDetails.getUser());
+        }
+
         customerDialogFragment.setArguments(bundle);
 
         customerDialogFragment.show(this.getSupportFragmentManager(), "dialog");

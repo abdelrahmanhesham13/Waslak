@@ -97,6 +97,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         setTitle(getString(R.string.delivery_location));
 
+        if (getIntent().hasExtra("title")) {
+            if (getIntent().getStringExtra("title").equals("start")) {
+                setTitle(getString(R.string.start_location_map));
+            } else if (getIntent().getStringExtra("title").equals("destination")) {
+                setTitle(getString(R.string.delivery_location));
+            }
+        }
+
         Places.initialize(getApplicationContext(), "AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ");
 
         mSendButton.setOnClickListener(new View.OnClickListener() {

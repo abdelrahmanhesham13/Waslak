@@ -233,8 +233,6 @@
             android:inputType="numberDecimal"
             android:layout_gravity="center"
             android:drawablePadding="10dp"
-            android:drawableLeft="@drawable/ic_dinar"
-            android:drawableStart="@drawable/ic_dinar"
             android:hint="@string/delivery_cost"
             android:layout_height="wrap_content"
             tools:ignore="NestedWeights" />

@@ -101,11 +101,17 @@ public class RealStoresFragment extends Fragment {
     String mCity;
     String mType;
 
+    Context mContext;
 
     public RealStoresFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -163,7 +169,7 @@ public class RealStoresFragment extends Fragment {
         mDeliveryParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(),PackageDeliveryActivity.class));
+                startActivity(new Intent(mContext,PackageDeliveryActivity.class));
             }
         });
 

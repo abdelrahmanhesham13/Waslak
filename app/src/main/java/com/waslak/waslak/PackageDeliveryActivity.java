@@ -8,6 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
+
+import com.android.volley.VolleyError;
+import com.waslak.waslak.networkUtils.Connector;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Locale;
 
@@ -16,10 +23,19 @@ import butterknife.ButterKnife;
 
 public class PackageDeliveryActivity extends AppCompatActivity {
 
+    private static final String TAG = "PackageDeliveryActivity";
+
     @BindView(R.id.customer_delivery)
     View mCustomerDelivery;
     @BindView(R.id.package_delivery)
     View mPackageDelivery;
+    @BindView(R.id.parent_layout)
+    View mParentLayout;
+    @BindView(R.id.progressIndicator)
+    ProgressBar mProgressIndicator;
+
+    Connector mConnectorGetSettings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +61,33 @@ public class PackageDeliveryActivity extends AppCompatActivity {
                 startActivity(new Intent(PackageDeliveryActivity.this,PackageDeliveryDetailsActivity.class).putExtra("type","customer"));
             }
         });
+
+
+        mConnectorGetSettings = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                mProgressIndicator.setVisibility(View.GONE);
+                mParentLayout.setVisibility(View.VISIBLE);
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean taxi = jsonObject.getBoolean("taxi");
+                    if (taxi){
+                        mCustomerDelivery.setVisibility(View.VISIBLE);
+                    } else {
+                        mCustomerDelivery.setVisibility(View.GONE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+                finish();
+            }
+        });
+
+        mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_settings?country=10");
 
     }
 
