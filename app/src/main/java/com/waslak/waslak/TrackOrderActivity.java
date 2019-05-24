@@ -173,14 +173,25 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                         start = new LatLng(lat, lon);
                         mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
                         mDeliveryLocation.setText(getAddress(start, "delivery"));
-                        wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+                        try {
+                            wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+                        } catch (Exception e) {
+                            wayPoint = new LatLng(Double.parseDouble(mRequestModel.getUserRequestLat()), Double.parseDouble(mRequestModel.getUserRequestLon()));
+                            e.printStackTrace();
+                        }
                         end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
                         Location startLocation = new Location("");
                         startLocation.setLatitude(lat);
                         startLocation.setLongitude(lon);
                         Location wayPointLocation = new Location("");
-                        wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
-                        wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+                        try {
+                            wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
+                            wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+                        } catch (Exception e) {
+                            wayPointLocation.setLatitude(Double.parseDouble(mRequestModel.getUserRequestLat()));
+                            wayPointLocation.setLongitude(Double.parseDouble(mRequestModel.getUserRequestLon()));
+                            e.printStackTrace();
+                        }
                         Location endLocation = new Location("");
                         endLocation.setLatitude(Double.parseDouble(mRequestModel.getLatitude()));
                         endLocation.setLongitude(Double.parseDouble(mRequestModel.getLongitude()));
@@ -189,16 +200,33 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
 
                         Helper.writeToLog("Distance : " + ((endLocation.distanceTo(startLocation) / 1000.0) + (wayPointLocation.distanceTo(startLocation) / 1000.0)));
 
-                        mTotalDistance = String.valueOf((endLocation.distanceTo(startLocation) + wayPointLocation.distanceTo(startLocation)) / 1000.0);
+                        if (wayPoint != null) {
+                            mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                            mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(wayPointLocation) / 1000.0));
+                        } else {
+                            mTotalDistance = String.valueOf((startLocation.distanceTo(endLocation)) / 1000.0);
+                            mToShopDistance.setVisibility(View.GONE);
+                        }
 
-                        Routing routing = new Routing.Builder()
-                                .travelMode(Routing.TravelMode.DRIVING)
-                                .withListener(TrackOrderActivity.this)
-                                .waypoints(start, wayPoint, end)
-                                .alternativeRoutes(false)
-                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                                .build();
-                        routing.execute();
+                        if (wayPoint != null) {
+                            Routing routing = new Routing.Builder()
+                                    .travelMode(Routing.TravelMode.DRIVING)
+                                    .withListener(TrackOrderActivity.this)
+                                    .waypoints(start, wayPoint, end)
+                                    .alternativeRoutes(false)
+                                    .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                    .build();
+                            routing.execute();
+                        } else {
+                            Routing routing = new Routing.Builder()
+                                    .travelMode(Routing.TravelMode.DRIVING)
+                                    .withListener(TrackOrderActivity.this)
+                                    .waypoints(start, end)
+                                    .alternativeRoutes(false)
+                                    .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                    .build();
+                            routing.execute();
+                        }
                         mTracker.stopUsingGPS();
                     }
                 }
@@ -209,15 +237,26 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                 start = new LatLng(location.getLatitude(), location.getLongitude());
                 mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
                 mDeliveryLocation.setText(getAddress(start, "delivery"));
-                wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+                try {
+                    wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+                } catch (Exception e) {
+                    wayPoint = new LatLng(Double.parseDouble(mRequestModel.getUserRequestLat()), Double.parseDouble(mRequestModel.getUserRequestLon()));
+                    e.printStackTrace();
+                }
                 end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
 
                 Location startLocation = new Location("");
                 startLocation.setLatitude(location.getLatitude());
                 startLocation.setLongitude(location.getLongitude());
                 Location wayPointLocation = new Location("");
-                wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
-                wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+                try {
+                    wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
+                    wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+                } catch (Exception e) {
+                    wayPointLocation.setLatitude(Double.parseDouble(mRequestModel.getUserRequestLat()));
+                    wayPointLocation.setLongitude(Double.parseDouble(mRequestModel.getUserRequestLon()));
+                    e.printStackTrace();
+                }
                 Location endLocation = new Location("");
                 endLocation.setLatitude(Double.parseDouble(mRequestModel.getLatitude()));
                 endLocation.setLongitude(Double.parseDouble(mRequestModel.getLongitude()));
@@ -226,17 +265,34 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
 
                 Helper.writeToLog("Distance : " + ((endLocation.distanceTo(startLocation) / 1000.0) + (wayPointLocation.distanceTo(startLocation) / 1000.0)));
 
-                mTotalDistance = String.valueOf((endLocation.distanceTo(startLocation) + wayPointLocation.distanceTo(startLocation)) / 1000.0);
+                if (wayPoint != null) {
+                    mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                    mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(wayPointLocation) / 1000.0));
+                } else {
+                    mTotalDistance = String.valueOf((startLocation.distanceTo(endLocation)) / 1000.0);
+                    mToShopDistance.setVisibility(View.GONE);
+                }
 
 
-                Routing routing = new Routing.Builder()
-                        .travelMode(Routing.TravelMode.DRIVING)
-                        .withListener(TrackOrderActivity.this)
-                        .waypoints(start, wayPoint, end)
-                        .alternativeRoutes(false)
-                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                        .build();
-                routing.execute();
+                if (wayPoint != null) {
+                    Routing routing = new Routing.Builder()
+                            .travelMode(Routing.TravelMode.DRIVING)
+                            .withListener(TrackOrderActivity.this)
+                            .waypoints(start, wayPoint, end)
+                            .alternativeRoutes(false)
+                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                            .build();
+                    routing.execute();
+                } else {
+                    Routing routing = new Routing.Builder()
+                            .travelMode(Routing.TravelMode.DRIVING)
+                            .withListener(TrackOrderActivity.this)
+                            .waypoints(start, end)
+                            .alternativeRoutes(false)
+                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                            .build();
+                    routing.execute();
+                }
                 mTracker.stopUsingGPS();
             }
         } else {
@@ -252,15 +308,26 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                 start = new LatLng(Double.valueOf(mRequestModel.getDelivery().getLatitude()), Double.valueOf(mRequestModel.getDelivery().getLongitude()));
 
             mDeliveryLocation.setText(getAddress(start, "delivery"));
-            wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+            try {
+                wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
+            } catch (Exception e) {
+                wayPoint = new LatLng(Double.parseDouble(mRequestModel.getUserRequestLat()), Double.parseDouble(mRequestModel.getUserRequestLon()));
+                e.printStackTrace();
+            }
             end = new LatLng(Double.parseDouble(mRequestModel.getLatitude()), Double.parseDouble(mRequestModel.getLongitude()));
 
             Location startLocation = new Location("");
             startLocation.setLatitude(start.latitude);
             startLocation.setLongitude(start.longitude);
             Location wayPointLocation = new Location("");
-            wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
-            wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+            try {
+                wayPointLocation.setLatitude(Double.parseDouble(mShopModel.getLat()));
+                wayPointLocation.setLongitude(Double.parseDouble(mShopModel.getLon()));
+            } catch (Exception e) {
+                wayPointLocation.setLatitude(Double.parseDouble(mRequestModel.getUserRequestLat()));
+                wayPointLocation.setLongitude(Double.parseDouble(mRequestModel.getUserRequestLon()));
+                e.printStackTrace();
+            }
             Location endLocation = new Location("");
             endLocation.setLatitude(Double.parseDouble(mRequestModel.getLatitude()));
             endLocation.setLongitude(Double.parseDouble(mRequestModel.getLongitude()));
@@ -269,17 +336,34 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
 
             Helper.writeToLog("Distance : " + ((endLocation.distanceTo(startLocation) / 1000.0) + (wayPointLocation.distanceTo(startLocation) / 1000.0)));
 
-            mTotalDistance = String.valueOf((endLocation.distanceTo(startLocation) + wayPointLocation.distanceTo(startLocation)) / 1000.0);
+            if (wayPoint != null) {
+                mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
+                mToShopDistance.setText(String.format(Locale.getDefault(), "%.2f " + getString(R.string.km), startLocation.distanceTo(wayPointLocation) / 1000.0));
+            } else {
+                mTotalDistance = String.valueOf((startLocation.distanceTo(endLocation)) / 1000.0);
+                mToShopDistance.setVisibility(View.GONE);
+            }
 
 
-            Routing routing = new Routing.Builder()
-                    .travelMode(Routing.TravelMode.DRIVING)
-                    .withListener(TrackOrderActivity.this)
-                    .waypoints(start, wayPoint, end)
-                    .alternativeRoutes(false)
-                    .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
-                    .build();
-            routing.execute();
+            if (wayPoint != null) {
+                Routing routing = new Routing.Builder()
+                        .travelMode(Routing.TravelMode.DRIVING)
+                        .withListener(TrackOrderActivity.this)
+                        .waypoints(start, wayPoint, end)
+                        .alternativeRoutes(false)
+                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .build();
+                routing.execute();
+            } else {
+                Routing routing = new Routing.Builder()
+                        .travelMode(Routing.TravelMode.DRIVING)
+                        .withListener(TrackOrderActivity.this)
+                        .waypoints(start, end)
+                        .alternativeRoutes(false)
+                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .build();
+                routing.execute();
+            }
 
         }
     }
@@ -385,16 +469,20 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
 
         // End marker
         options = new MarkerOptions();
-        options.position(wayPoint);
-        bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.shop1);
-        b = bitmapdraw.getBitmap();
-        smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+        if (wayPoint != null) {
+            options.position(wayPoint);
+            bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.shop1);
+            b = bitmapdraw.getBitmap();
+            smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        }
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         builder.include(start);
-        builder.include(wayPoint);
+        if (wayPoint != null) {
+            builder.include(wayPoint);
+        }
         builder.include(end);
         LatLngBounds bounds = builder.build();
 

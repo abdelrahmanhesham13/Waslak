@@ -202,14 +202,24 @@ public class ChatActivity extends AppCompatActivity {
 
         if (getIntent() != null && getIntent().hasExtra("shopModel")) {
             mShopModel = (ShopModel) getIntent().getSerializableExtra("shopModel");
-            mStoreName.setText(mShopModel.getName());
+            if (mShopModel.getName().equals("null"))
+                mStoreName.setText(getString(R.string.delivery));
+            else
+                mStoreName.setText(mShopModel.getName());
             if (!mShopModel.getImage().isEmpty())
                 Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
         } else {
             if (mRequestModel != null)
                 mShopModel = mRequestModel.getShop();
             if (mShopModel != null) {
-                mStoreName.setText(mRequestModel.getShop().getName());
+                if (mRequestModel.getShop().getName() != null) {
+                    if (mRequestModel.getShop().getName().equals("null"))
+                        mStoreName.setText(getString(R.string.delivery));
+                    else
+                        mStoreName.setText(mRequestModel.getShop().getName());
+                } else {
+                    mStoreName.setText(getString(R.string.delivery));
+                }
                 if (URLUtil.isValidUrl(mShopModel.getImage()))
                     Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                 else {
@@ -327,7 +337,15 @@ public class ChatActivity extends AppCompatActivity {
                     }
                     mShopModel = mRequestModelDetails.getShop();
                     if (mShopModel != null) {
-                        mStoreName.setText(mRequestModelDetails.getShop().getName());
+                        if (mRequestModelDetails.getShop().getName() != null) {
+                            if (mRequestModelDetails.getShop().getName().equals("null")) {
+                                mStoreName.setText(getString(R.string.delivery));
+                            } else {
+                                mStoreName.setText(mRequestModelDetails.getShop().getName());
+                            }
+                        } else {
+                            mStoreName.setText(getString(R.string.delivery));
+                        }
                         if (URLUtil.isValidUrl(mShopModel.getImage()))
                             Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                         else {

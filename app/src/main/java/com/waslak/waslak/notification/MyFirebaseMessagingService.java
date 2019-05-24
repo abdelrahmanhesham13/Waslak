@@ -111,11 +111,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 mBuilder.setSmallIcon(R.drawable.ic_notification_image);
             }
             Intent resultIntent = new Intent(this, SplashActivity.class);
+            Helper.writeToLog(notificationMessage.get("target_screen"));
             if (notificationMessage.containsKey("target_screen")) {
-                if (notificationMessage.get("target_screen").contains("chat")) {
+                if (notificationMessage.get("target_screen").contains("admin")) {
+                    resultIntent = new Intent(this,ChatActivity.class).putExtra("type","admin");
+                } else if (notificationMessage.get("target_screen").contains("chat")) {
                     resultIntent = new Intent(this, ChatActivity.class).putExtra("goToChat", true).putExtra("chat_id", notificationMessage.get("chat_id")).putExtra("request_id", notificationMessage.get("request_id"));
                 } else if (notificationMessage.get("target_screen").contains("request")) {
                     resultIntent = new Intent(this, ChatActivity.class).putExtra("goToRequest", true).putExtra("request_id", notificationMessage.get("request_id"));
+                } else if (notificationMessage.get("target_screen").contains("offer")) {
+                    resultIntent = new Intent(this, SplashActivity.class).putExtra("notification","1");
                 } else {
                     resultIntent = new Intent(this, SplashActivity.class);
                 }

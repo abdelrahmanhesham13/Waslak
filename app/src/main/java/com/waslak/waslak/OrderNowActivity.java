@@ -118,7 +118,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     String mPricePerKilo;
     String mMaxPrice;
 
-    String mCountryLocale;
+    String mCountryLocale = "Jordan";
 
     String mCurrency;
     String mCurrencyArabic;
@@ -132,7 +132,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
         mCountryLocale = tm.getNetworkCountryIso();
 
         if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
-            mCountryLocale = "Saudi arabia";
+            mCountryLocale = "Saudi%20arabia";
         } else if (mCountryLocale.equalsIgnoreCase("eg")){
             mCountryLocale = "Egypt";
         } else {

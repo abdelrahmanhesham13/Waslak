@@ -116,7 +116,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
     String mCity;
     String mMaxPrice;
 
-    String mCountryLocale;
+    String mCountryLocale = "Jordan";
 
     String mCurrency;
     String mCurrencyArabic;

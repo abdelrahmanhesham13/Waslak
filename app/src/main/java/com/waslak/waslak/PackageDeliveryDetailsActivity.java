@@ -84,6 +84,9 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
     @BindView(R.id.estimated_price)
     TextView mPrice;
 
+    @BindView(R.id.start_delivery_location)
+            TextView mStartDeliveryLocationTextView;
+
 
 
     File mSelectedFile;
@@ -123,7 +126,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
     Connector mConnectorGetSettings;
 
-    String mCountryLocale;
+    String mCountryLocale = "Jordan";
 
     String mCurrency;
     String mCurrencyArabic;
@@ -137,7 +140,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
         mCountryLocale = tm.getNetworkCountryIso();
 
         if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
-            mCountryLocale = "Saudi arabia";
+            mCountryLocale = "Saudi%20arabia";
         } else if (mCountryLocale.equalsIgnoreCase("eg")){
             mCountryLocale = "Egypt";
         } else {
@@ -159,6 +162,8 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
         } else {
             mAddPhoto.setVisibility(View.VISIBLE);
             mOrderDetailsEditText.setVisibility(View.VISIBLE);
+            mStartDeliveryLocationTextView.setText(getString(R.string.recieving_place));
+            startLocation.setText(getString(R.string.choose_recieving_place));
         }
 
 

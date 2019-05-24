@@ -80,7 +80,7 @@
     <string name="enter_code">Enter Code</string>
     <string name="submitted">Submitted</string>
     <string name="type_message">Type message</string>
-    <string name="ready_to_deliver">I am Ready to Deliver this Package</string>
+    <string name="ready_to_deliver">I am Ready to Deliver</string>
     <string name="delivery_location">Delivery Location</string>
     <string name="store_location">Store Location</string>
     <string name="delivery">Delivery</string>
@@ -219,7 +219,7 @@
     <string name="received_from_store">Received From Store</string>
     <string name="delivery_package">Delivery</string>
     <string name="customer_delivery">Customer Delivery</string>
-    <string name="package_delivery">Package Delivery</string>
+    <string name="package_delivery">Send or Get Packages</string>
     <string name="start_location">Start Location</string>
     <string name="end_location">End Location</string>
     <string name="choose_start_location">Choose Start Location</string>
@@ -239,4 +239,8 @@
     <string name="maximum_price_now">this the maximum price for this order wait to get lower price from the delivery</string>
     <string name="accomendation_prove">Accomendation Prove</string>
     <string name="start_location_map">Start Location</string>
+    <string name="recieving_place">Receiving place</string>
+    <string name="choose_recieving_place">Choose Receiving place</string>
+    <string name="delivery_account_verified">Your Delivery account has been verified</string>
+    <string name="blocked_account">Your Account is blocked due to payment issues</string>
 </resources>

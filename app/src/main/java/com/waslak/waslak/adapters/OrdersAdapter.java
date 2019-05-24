@@ -60,13 +60,17 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         holder.mExpireDate.setText(Html.fromHtml(mContext.getString(R.string.delivered_within) + mOrderModels.get(position).getDuration()));
         holder.mPrice.setText(mOrderModels.get(position).getPrice());
         holder.mState.setText(mContext.getString(R.string.approved));
-        holder.mTitle.setText(String.format("%s %s", mContext.getString(R.string.shop_name), mOrderModels.get(position).getShop().getName()));
+        if (mOrderModels.get(position).getShop().getName().equals("null")) {
+            holder.mTitle.setText(mContext.getString(R.string.delivery));
+        } else {
+            holder.mTitle.setText(String.format("%s %s", mContext.getString(R.string.shop_name), mOrderModels.get(position).getShop().getName()));
+        }
         if (URLUtil.isValidUrl(mOrderModels.get(position).getImage())) {
             Uri uri = Uri.parse(mOrderModels.get(position).getImage());
             String ref = uri.getQueryParameter("photoreference");
             Helper.writeToLog("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ");
             if (ref != null)
-                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ").fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
+                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyA-39lOKwrCfBv1N31ofGpgeCeh6KK0va4").fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
                     @Override
                     public void onSuccess() {
 

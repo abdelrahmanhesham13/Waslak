@@ -50,13 +50,17 @@ public class SplashActivity extends AppCompatActivity {
     UserModel mUserModel;
     Connector mConnector;
 
+    String notification = "0";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         ShortcutBadger.removeCount(this);
-        Helper.setNotificationCount(this,0);
-        mThread = new Thread(){
+        Helper.setNotificationCount(this, 0);
+        if (getIntent().hasExtra("notification"))
+            notification = getIntent().getStringExtra("notification");
+        mThread = new Thread() {
 
             @Override
             public void run() {
@@ -66,13 +70,12 @@ public class SplashActivity extends AppCompatActivity {
                     if (Helper.getShowIntroSharedPreferences(SplashActivity.this)) {
                         startActivity(new Intent(SplashActivity.this, LanguageActivity.class));
                         finish();
-                    }
-                    else if (Helper.PreferencesContainsUser(SplashActivity.this)) {
+                    } else if (Helper.PreferencesContainsUser(SplashActivity.this)) {
                         String url = Connector.createSignInUrl().build().toString() + "?username=" + Helper.getUserSharedPreferences(SplashActivity.this).getUsername() + "&token=" + Helper.getTokenFromSharedPreferences(SplashActivity.this);
                         mConnector.getRequest(TAG, url);
                     } else {
                         getLanguage();
-                        startActivity(new Intent(SplashActivity.this,LoginActivity.class));
+                        startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                         finish();
                     }
                 } catch (InterruptedException e) {
@@ -87,10 +90,10 @@ public class SplashActivity extends AppCompatActivity {
             public void onComplete(String tag, String response) {
                 if (Connector.checkStatus(response)) {
                     mUserModel = Connector.getUser(response);
-                    Helper.SaveToSharedPreferences(SplashActivity.this,mUserModel);
+                    Helper.SaveToSharedPreferences(SplashActivity.this, mUserModel);
                     if (isLocationEnabled() && isHighAccuracy()) {
                         getLanguage();
-                        startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("notification",notification).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         finish();
                     } else {
                         displayLocationSettingsRequest(SplashActivity.this);
@@ -108,10 +111,10 @@ public class SplashActivity extends AppCompatActivity {
 
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                || ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE},
                     PERMISSIONS_REQUEST);
 
         } else {
@@ -120,7 +123,6 @@ public class SplashActivity extends AppCompatActivity {
 
 
     }
-
 
 
     @Override
@@ -148,7 +150,7 @@ public class SplashActivity extends AppCompatActivity {
                 displayLocationSettingsRequest(this);
             } else if (resultCode == Activity.RESULT_OK) {
                 if (isHighAccuracy() && mUserModel != null) {
-                    startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("notification",notification).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     finish();
                 }
             }
@@ -243,7 +245,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    public void getLanguage(){
+    public void getLanguage() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         String lang = preferences.getString("lang", "error");
         if (lang.equals("error")) {

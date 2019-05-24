@@ -111,7 +111,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mAddressExtraDetails = mAddressDetails.getText().toString();
-                if (mLat != 0 && mLon != 0 && !mAddress.isEmpty() && !mCity.isEmpty() && !mCountry.isEmpty()) {
+                if (mLat != 0 && mLon != 0 && !mAddress.isEmpty()) {
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("lat", mLat);
                     returnIntent.putExtra("lon", mLon);

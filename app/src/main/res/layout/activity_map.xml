@@ -113,6 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/address"
                 android:layout_marginLeft="30dp"
+                android:visibility="gone"
                 android:layout_marginTop="15dp"
                 android:layout_marginRight="30dp"
                 android:layout_toStartOf="@id/send_btn"
