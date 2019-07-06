@@ -45,6 +45,12 @@ public class BeAgentActivity extends AppCompatActivity {
     ImageView mNationalIdPhoto;
     @BindView(R.id.mobile_number)
     EditText mMobileNumberEditText;
+    @BindView(R.id.car_model)
+    EditText mCarModelEditText;
+    @BindView(R.id.car_type)
+    EditText mCarTypeEditText;
+    @BindView(R.id.car_number)
+    EditText mCarNumberEditText;
     @BindView(R.id.send_data)
     Button mSendData;
     @BindView(R.id.non_convicts)
@@ -128,6 +134,12 @@ public class BeAgentActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone), BeAgentActivity.this);
                 } else if (mMobileNumberEditText.getText().toString().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone_number), BeAgentActivity.this);
+                } else if (mCarNumberEditText.getText().toString().isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.car_number), BeAgentActivity.this);
+                } else if (mCarModelEditText.getText().toString().isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.car_model), BeAgentActivity.this);
+                } else if (mCarTypeEditText.getText().toString().isEmpty()) {
+                    Helper.showSnackBarMessage(getString(R.string.car_type), BeAgentActivity.this);
                 } else {
                     startActivityForResult(new Intent(BeAgentActivity.this, MobileVerificationActivity.class).putExtra("mobile",mMobileNumberEditText.getText().toString()), 3);
                 }
@@ -157,17 +169,17 @@ public class BeAgentActivity extends AppCompatActivity {
                     if (mType == 0) {
                         Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 2080);
                         mNationalIdPhoto.setImageBitmap(bitmapImage);
-                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),2080)));
+                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath())));
                         UploadImage();
                     } else if (mType == 1) {
                         Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 2080);
                         mNonConvictsImage.setImageBitmap(bitmapImage);
-                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),2080)));
+                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath())));
                         UploadImage();
                     } else if (mType == 2) {
                         Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 2080);
                         mCarImage.setImageBitmap(bitmapImage);
-                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(),2080)));
+                        mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath())));
                         UploadImage();
                     }
                 } catch (IOException e) {
@@ -183,7 +195,7 @@ public class BeAgentActivity extends AppCompatActivity {
                 String result = data.getStringExtra("result");
                 if (result.equals("verified")) {
                     mProgressDialog = Helper.showProgressDialog(BeAgentActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/enroll_to_delivery?user_id=" + Helper.getUserSharedPreferences(BeAgentActivity.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&car_image=" + mCar + "&non_convicts=" + mNonConvicts);
+                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/enroll_to_delivery?user_id=" + Helper.getUserSharedPreferences(BeAgentActivity.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&car_image=" + mCar + "&non_convicts=" + mNonConvicts + "&car_number=" + Uri.encode(mCarNumberEditText.getText().toString()) + "&car_model=" + Uri.encode(mCarModelEditText.getText().toString()) + "&car_type=" + Uri.encode(mCarTypeEditText.getText().toString()));
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -244,43 +256,10 @@ public class BeAgentActivity extends AppCompatActivity {
     }
 
 
-    private Bitmap getBitmap(String path, int size) {
+    private Bitmap getBitmap(String path) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        // Calculate inSampleSize
-        bmOptions.inSampleSize = calculateInSampleSize(bmOptions, 1080, 2000);
-
-        // Decode bitmap with inSampleSize set
-        bmOptions.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
-        if (bitmap == null)
-            return null;
-
-        return getResizedBitmap(bitmap, size);
-    }
-
-    private static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
+        return getResizedBitmap(bitmap, 600);
     }
 
 

@@ -243,4 +243,7 @@
     <string name="choose_recieving_place">Choose Receiving place</string>
     <string name="delivery_account_verified">Your Delivery account has been verified</string>
     <string name="blocked_account">Your Account is blocked due to payment issues</string>
+    <string name="car_model">Car model</string>
+    <string name="car_number">Car number</string>
+    <string name="car_type">Car type</string>
 </resources>

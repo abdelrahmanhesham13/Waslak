@@ -71,6 +71,12 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
     ProgressDialog mProgressDialog;
     @BindView(R.id.featured_account)
     TextView mFeaturedAccount;
+    @BindView(R.id.car_number)
+            TextView mCarNumber;
+    @BindView(R.id.car_type)
+            TextView mCarType;
+    @BindView(R.id.car_model)
+            TextView mCarModel;
 
     GPSTracker mTracker;
     boolean mLocated = false;
@@ -123,6 +129,9 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                         mDuration.setText(mOfferModel.getDuration());
                         mPrice.setText(mOfferModel.getPrice());
                         mDescription.setText(mOfferModel.getDescription());
+                        mCarModel.setText(mOfferModel.getDelivery().getCarModel());
+                        mCarNumber.setText(mOfferModel.getDelivery().getCarNumber());
+                        mCarType.setText(mOfferModel.getDelivery().getCarType());
                         if (mOfferModel.getDelivery() != null) {
                             mDeliveryRating.setRating(Float.parseFloat(mOfferModel.getDelivery().getRating()));
                             mDeliveryName.setText(mOfferModel.getDelivery().getName());

@@ -70,6 +70,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.leolin.shortcutbadger.ShortcutBadger;
 
 import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
@@ -111,6 +112,8 @@ public class ChatActivity extends AppCompatActivity {
     ImageView mSendPhoto;
     @BindView(R.id.track_order)
     TextView mTrack;
+    @BindView(R.id.buttons_parent)
+    View mButtonsParent;
 
     RequestModel mRequestModel;
     RequestModel mRequestModelDetails;
@@ -356,11 +359,11 @@ public class ChatActivity extends AppCompatActivity {
                     Crashlytics.setString("user_name", mUserModel.getUsername());
                     Crashlytics.setString("name", mUserModel.getName());
                     if (mUserModel.getId().equals(mRequestModelDetails.getUser_id())) {
-                        mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), mRequestModelDetails.getDescription(), "text", true));
+                        mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(),"ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", true));
                         if (mChatModel != null)
                             mChatModel.setToId(mRequestModelDetails.getDeliveryId());
                     } else {
-                        mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), mRequestModelDetails.getDescription(), "text", false));
+                        mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), "ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", false));
                         if (mChatModel != null)
                             mChatModel.setToId(mRequestModelDetails.getUser_id());
                     }
@@ -371,12 +374,14 @@ public class ChatActivity extends AppCompatActivity {
                                 mMenu.getItem(0).setVisible(true);
                                 mMenu.getItem(1).setVisible(true);
                                 mMenu.getItem(2).setVisible(true);
+                                mButtonsParent.setVisibility(View.VISIBLE);
                             }
                         } else {
                             if (mMenu != null) {
                                 mMenu.getItem(0).setVisible(true);
                                 mMenu.getItem(1).setVisible(true);
                                 mMenu.getItem(2).setVisible(true);
+                                mButtonsParent.setVisibility(View.VISIBLE);
                             }
                         }
                     } else {
@@ -384,6 +389,7 @@ public class ChatActivity extends AppCompatActivity {
                             mMenu.getItem(0).setVisible(false);
                             mMenu.getItem(1).setVisible(false);
                             mMenu.getItem(2).setVisible(false);
+                            mButtonsParent.setVisibility(View.GONE);
                         }
                     }
                     if (mChatModel != null) {
@@ -423,9 +429,9 @@ public class ChatActivity extends AppCompatActivity {
                             mAdapter.setFromUser(mRequestModel.getDelivery());
                         }
                         if (mUserModel.getId().equals(mRequestModel.getUser_id()))
-                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), mRequestModel.getDescription(), "text", true));
+                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", true));
                         else
-                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), mRequestModel.getDescription(), "text", false));
+                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", false));
                     } else {
                         mAdapter = new MessagesAdapter(ChatActivity.this, mMessageModels, new MessagesAdapter.OnItemClicked() {
                             @Override
@@ -631,6 +637,8 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -931,6 +939,36 @@ public class ChatActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+
+    @OnClick(R.id.call)
+    public void call(View view) {
+        if (!mRequestModelDetails.getDeliveryId().equals("0")) {
+            if (mRequestModelDetails.getDeliveryId().equals(mUserModel.getId())) {
+                dialPhoneNumber(mRequestModelDetails.getUser().getMobile());
+            } else {
+                dialPhoneNumber(mRequestModelDetails.getDelivery().getMobile());
+            }
+        }
+    }
+
+
+    @OnClick(R.id.complete)
+    public void complete(View view) {
+        mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
+        if (mRequestModelDetails.getDeliveryId().equals(mUserModel.getId()))
+            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
+        else
+            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+        mType = "done";
+    }
+
+    @OnClick(R.id.cancel)
+    public void cancel(View view) {
+        mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
+        mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+        mType = "cancel";
     }
 
     private void show() {

@@ -133,8 +133,10 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
             mCountryLocale = "Saudi%20arabia";
         } else if (mCountryLocale.equalsIgnoreCase("eg")){
             mCountryLocale = "Egypt";
-        } else {
+        } else if (mCountryLocale.equalsIgnoreCase("jo")) {
             mCountryLocale = "Jordan";
+        } else {
+            mCountryLocale = "";
         }
 
         if (getIntent() != null && getIntent().hasExtra("user") && getIntent().hasExtra("shopModel") && getIntent().hasExtra("request")) {

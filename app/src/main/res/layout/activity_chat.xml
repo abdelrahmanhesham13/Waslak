@@ -178,7 +178,7 @@
         android:id="@+id/send_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@id/buttons_parent"
         android:background="#D3D3D3"
         android:orientation="horizontal"
         android:padding="8dp"
@@ -222,12 +222,66 @@
         android:id="@+id/ready"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:background="@drawable/bg_button_rectangle"
         android:text="@string/ready_to_deliver"
         android:textAllCaps="false"
+        android:layout_alignParentBottom="true"
+        android:layout_above="@id/buttons_parent"
         android:textColor="@android:color/white"
         android:visibility="visible" />
+
+
+    <LinearLayout
+        android:id="@+id/buttons_parent"
+        android:layout_marginTop="5dp"
+        android:visibility="gone"
+        android:layout_marginBottom="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_orange_button"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:id="@+id/cancel"
+            android:textColor="@android:color/white"
+            android:visibility="visible"
+            android:layout_marginStart="2.5dp"
+            android:layout_marginEnd="2.5dp" />
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button"
+            android:text="@string/order_delivered"
+            android:textAllCaps="false"
+            android:id="@+id/complete"
+            android:layout_marginStart="2.5dp"
+            android:layout_marginEnd="2.5dp"
+            android:textColor="@android:color/white"
+            android:visibility="visible" />
+
+        <Button
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:id="@+id/call"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_orange_button"
+            android:text="@string/call"
+            android:textAllCaps="false"
+            android:layout_marginStart="2.5dp"
+            android:layout_marginEnd="2.5dp"
+            android:textColor="@android:color/white"
+            android:visibility="visible" />
+
+
+    </LinearLayout>
 
 
 </RelativeLayout>

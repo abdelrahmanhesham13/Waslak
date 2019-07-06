@@ -378,20 +378,10 @@ public class AccountActivity extends AppCompatActivity {
                 });
     }
 
-    private Bitmap getBitmap(String path, int size) {
+    private Bitmap getBitmap(String path) {
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        // Calculate inSampleSize
-        bmOptions.inSampleSize = calculateInSampleSize(bmOptions, 500, 500);
-
-        // Decode bitmap with inSampleSize set
-        bmOptions.inJustDecodeBounds = false;
         Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
-        if (bitmap == null)
-            return null;
-
-        return getResizedBitmap(bitmap, size);
+        return getResizedBitmap(bitmap, 600);
     }
 
     private static int calculateInSampleSize(
@@ -614,7 +604,7 @@ public class AccountActivity extends AppCompatActivity {
                 try {
                     Bitmap bitmapImage = Helper.getBitmap(img.getPath(), 200);
                     mProfileImage.setImageBitmap(bitmapImage);
-                    mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath(), 200)));
+                    mSelectedFile = bitmapToFile(img.getName(), checkImage(img.getPath(), getBitmap(img.getPath())));
                     UploadImage();
                 } catch (IOException e) {
                     e.printStackTrace();

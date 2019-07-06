@@ -109,6 +109,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
     ShopModel mShopModel;
 
     Connector mConnectorGetSettings;
+    Connector mConnectorCheckPromo;
 
     File mSelectedFile;
 
@@ -135,8 +136,10 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             mCountryLocale = "Saudi%20arabia";
         } else if (mCountryLocale.equalsIgnoreCase("eg")){
             mCountryLocale = "Egypt";
-        } else {
+        } else if (mCountryLocale.equalsIgnoreCase("jo")) {
             mCountryLocale = "Jordan";
+        } else {
+            mCountryLocale = "";
         }
 
 
@@ -215,6 +218,32 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             }
         });
 
+        mConnectorCheckPromo = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    int price  = jsonObject.optInt("price");
+                    int code = jsonObject.optInt("code");
+                    if (price != 0) {
+                        if (getLocale().equals("ar"))
+                            mPrice.setText("تكلفة التوصيل ستكون : " + price  + mCurrencyArabic + " بدلا من " + mMaxPrice.split(" ")[0] + "لان لديك كود خصم : " + code + "\n" +  getString(R.string.maximum_price_now));
+                        else
+                            mPrice.setText("تكلفة التوصيل ستكون : " + price  + mCurrency + " بدلا من " + mMaxPrice.split(" ")[0] + "لان لديك كود خصم : " + code + "\n" + getString(R.string.maximum_price_now));
+                        mMaxPrice = String.valueOf(price);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+
 
         mConnectorGetSettings = new Connector(this, new Connector.LoadCallback() {
             @Override
@@ -230,6 +259,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
                     else
                         mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrency + " " + getString(R.string.maximum_price_now));
                     mMaxPrice = mPrice.getText().toString();
+                    mConnectorCheckPromo.getRequest(TAG,"http://www.as.cta3.com/waslk/api/check_promocode?user_id=" + mUserModel.getId() + "&price=" + mMaxPrice.split(" ")[0]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

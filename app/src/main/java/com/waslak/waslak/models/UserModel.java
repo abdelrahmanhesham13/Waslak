@@ -27,6 +27,9 @@ public class UserModel implements Serializable {
     String blocked = "0";
     String credit;
     String advanced = "0";
+    String carModel;
+    String carNumber;
+    String carType;
 
     public UserModel(String name, String image) {
         this.name = name;
@@ -36,7 +39,31 @@ public class UserModel implements Serializable {
     public UserModel() {
     }
 
-    public UserModel(String name, String username, String token, String birthDate, String password, String mobile, String longitude, String latitude, String city, String country, String image, int activate, int role, String id, String gender, String rating, String delivery,String blocked) {
+    public String getCarModel() {
+        return carModel;
+    }
+
+    public void setCarModel(String carModel) {
+        this.carModel = carModel;
+    }
+
+    public String getCarNumber() {
+        return carNumber;
+    }
+
+    public void setCarNumber(String carNumber) {
+        this.carNumber = carNumber;
+    }
+
+    public String getCarType() {
+        return carType;
+    }
+
+    public void setCarType(String carType) {
+        this.carType = carType;
+    }
+
+    public UserModel(String name, String username, String token, String birthDate, String password, String mobile, String longitude, String latitude, String city, String country, String image, int activate, int role, String id, String gender, String rating, String delivery, String blocked) {
         this.name = name;
         this.username = username;
         this.token = token;

@@ -203,12 +203,12 @@ public class ActiveOrdersFragment extends Fragment {
         mConnectorDeleteRequest = new Connector(getContext(), new Connector.LoadCallback() {
             @Override
             public void onComplete(String tag, String response) {
-                mProgressDialog.dismiss();
+                //mProgressDialog.dismiss();
                 if (Connector.checkStatus(response)) {
                     mRequestModels.remove(mPos);
                     mOrdersAdapter.notifyItemRemoved(mPos);
                 } else {
-                    Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity) getActivity());
+                    Helper.showSnackBarMessage(Connector.getMessage(response), (AppCompatActivity) getActivity());
                     mOrdersAdapter.notifyItemChanged(mPos);
                 }
             }
@@ -251,52 +251,7 @@ public class ActiveOrdersFragment extends Fragment {
                 Helper.writeToLog("Position " + pos);
                 mPos = pos;
                 Helper.writeToLog(String.valueOf(mRequestModels.get(pos).isDeleteStatus()));
-                if (mRequestModels.get(pos).isDeleteStatus()) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+3"));
-                    long time = 0;
-                    try {
-                        time = sdf.parse(mRequestModels.get(pos).getCreated()).getTime();
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    long now = System.currentTimeMillis();
-
-                    String ago =
-                            String.valueOf(DateUtils.getRelativeTimeSpanString(time, now, DateUtils.MINUTE_IN_MILLIS));
-
-                    Helper.writeToLog(ago);
-                    Crashlytics.setString("Ago",ago);
-
-                    try {
-                        if (ago.contains("In ") || ago.contains("in ") || ago.contains("قبل")) {
-                            if (Integer.valueOf(ago.split(" ")[1]) < 5 && ((ago.split(" ")[2].equals("minutes") || ago.split(" ")[2].equals("minute")))) {
-                                mProgressDialog = Helper.showProgressDialog(getContext(), "Loading", false);
-                                mConnectorDeleteRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
-                            } else {
-                                Helper.showSnackBarMessage(getString(R.string.cannot_be_deleted), (AppCompatActivity) getActivity());
-                                mOrdersAdapter.notifyItemChanged(pos);
-                            }
-                        } else {
-                            if (Integer.valueOf(ago.split(" ")[0]) < 5 && ((ago.split(" ")[1].equals("minutes") || ago.split(" ")[1].equals("minute")))) {
-                                mProgressDialog = Helper.showProgressDialog(getContext(), "Loading", false);
-                                mConnectorDeleteRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
-                            } else {
-                                Helper.showSnackBarMessage(getString(R.string.cannot_be_deleted), (AppCompatActivity) getActivity());
-                                mOrdersAdapter.notifyItemChanged(pos);
-                            }
-                        }
-                    } catch (Exception e) {
-                        Helper.showSnackBarMessage(getString(R.string.cannot_be_deleted), (AppCompatActivity) getActivity());
-                        mOrdersAdapter.notifyItemChanged(pos);
-                    }
-
-
-
-                } else {
-                    Helper.showSnackBarMessage(getString(R.string.cannot_be_deleted), (AppCompatActivity) getActivity());
-                    mOrdersAdapter.notifyItemChanged(pos);
-                }
+                mConnectorDeleteRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
             }
 
             @Override

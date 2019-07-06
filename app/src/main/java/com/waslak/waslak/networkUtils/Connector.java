@@ -464,13 +464,18 @@ public class Connector {
                 country = user.optString("country");
                 imageUser = user.optString("image");
                 role = user.optInt("role");
+                String carModel = user.getString("car_model");
+                String carNumber = user.getString("car_number");
+                String carType = user.getString("car_type");
                 idUser = user.optString("id");
                 gender = user.optString("gender");
                 ratingUser = user.optString("rating");
                 deliveryFlag = user.optString("delivery");
                 blocked = user.optString("block");
                 UserModel delivery = new UserModel(nameUser, username, token, birthDate, password, mobile, longitudeUser, latitudeUser, city, country, imageUser, 0, role, idUser, gender, ratingUser, deliveryFlag,blocked);
-
+                delivery.setCarModel(carModel);
+                delivery.setCarNumber(carNumber);
+                delivery.setCarType(carType);
 
                 offerModel = new OfferModel(id, deliveryId, userId, price, description, status, longitude, latitude, address, updated
                         , created, requestId, name, duration, rating, image, deliveryLongitude, deliveryLatitude, deliveryAddress, userLongitude, userLatitude, userAddress, requestOfferModel, customer, delivery);
