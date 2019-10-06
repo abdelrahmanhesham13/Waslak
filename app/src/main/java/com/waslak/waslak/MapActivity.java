@@ -40,6 +40,7 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -105,7 +106,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         }
 
-        Places.initialize(getApplicationContext(), "AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ");
+        Places.initialize(getApplicationContext(), Constants.API_KEY);
 
         mSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,7 +261,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
             return mAddress;
         } else {
-        new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+        new ReverseGeocoding(latLng.latitude, latLng.longitude, Constants.API_KEY)
                 .setLanguage("en")
                 .fetch(new Callback() {
                     @Override

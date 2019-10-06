@@ -141,7 +141,7 @@ public class StorePendingOrdersFragment extends Fragment {
                 if (!mRequestModels.get(position).getUser_id().equals(mUserModel.getId()))
                     startActivity(new Intent(getContext(), ChatActivity.class).putExtra("request",mRequestModels.get(position)).putExtra("shopModel",mShopModel).putExtra("user",mUserModel));
             }
-        },mUserModel);
+        },mUserModel,0);
 
 
         mPendingOrdersRecycler.setHasFixedSize(true);

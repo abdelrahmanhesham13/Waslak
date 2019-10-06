@@ -35,6 +35,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import org.json.JSONException;
@@ -83,6 +84,9 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
     @BindView(R.id.estimated_price)
     TextView mPrice;
+
+    @BindView(R.id.advice)
+    TextView mAdvice;
 
     @BindView(R.id.start_delivery_location)
             TextView mStartDeliveryLocationTextView;
@@ -167,6 +171,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
             mOrderDetailsEditText.setVisibility(View.VISIBLE);
             mStartDeliveryLocationTextView.setText(getString(R.string.recieving_place));
             startLocation.setText(getString(R.string.choose_recieving_place));
+            mAdvice.setVisibility(View.GONE);
         }
 
         mConnectorCheckPromo = new Connector(this, new Connector.LoadCallback() {
@@ -174,7 +179,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
             public void onComplete(String tag, String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    int price  = jsonObject.optInt("price");
+                    double price  = jsonObject.optDouble("price");
                     int code = jsonObject.optInt("code");
                     if (price != 0) {
                         if (getLocale().equals("ar"))
@@ -251,7 +256,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                     if (getIntent().getStringExtra("type").equals("customer")) {
                         mDescription = "Delivery from " + mAddress + " to " + mAddressEnd;
                         mProgressDialog = Helper.showProgressDialog(PackageDeliveryDetailsActivity.this, getString(R.string.loading), false);
-                        mAddRequestConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId()
+                        mAddRequestConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_request?user_id=" + mUserModel.getId()
                                 + "&longitude=" + mLon + "&latitude=" + mLat + "&address=" + Uri.encode(mAddress) + "&latitude_to=" + mLatEnd + "&longitude_to=" + mLonEnd
                                 + "&address_to=" + Uri.encode(mAddressEnd) + "&shop_id=0" + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage) + "&type=2");
                     } else {
@@ -259,7 +264,7 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                             mDescription = "Delivery from " + mAddress + " to " + mAddressEnd;
                         }
                         mProgressDialog = Helper.showProgressDialog(PackageDeliveryDetailsActivity.this, getString(R.string.loading), false);
-                        mAddRequestConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId()
+                        mAddRequestConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_request?user_id=" + mUserModel.getId()
                                 + "&longitude=" + mLon + "&latitude=" + mLat + "&address=" + Uri.encode(mAddress) + "&latitude_to=" + mLatEnd + "&longitude_to=" + mLonEnd
                                 + "&address_to=" + Uri.encode(mAddressEnd) + "&shop_id=0" + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage) + "&type=1");
 
@@ -278,12 +283,16 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
                     mPricePerKilo = jsonObject.getString("price_per_kilo");
                     mCurrency = jsonObject.getString("currency");
                     mCurrencyArabic = jsonObject.getString("currency_ar");
-                    if (getLocale().equals("ar"))
-                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
-                    else
-                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrency + " " + getString(R.string.maximum_price_now));
+                    if (Double.valueOf(mTotalDistance) <= 3) {
+                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
+                    } else {
+                        if (getLocale().equals("ar"))
+                            mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * (Double.valueOf(mTotalDistance) - 3) + Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
+                        else
+                            mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * (Double.valueOf(mTotalDistance) - 3) + Double.valueOf(mMinPrice)) + " " + mCurrency + " " + getString(R.string.maximum_price_now));
+                    }
                     mMaxPrice = mPrice.getText().toString();
-                    mConnectorCheckPromo.getRequest(TAG,"http://www.as.cta3.com/waslk/api/check_promocode?user_id=" + mUserModel.getId() + "&price=" + mMaxPrice.split(" ")[0]);
+                    mConnectorCheckPromo.getRequest(TAG,Constants.WASLAK_BASE_URL + "/mobile/api/check_promocode?user_id=" + mUserModel.getId() + "&price=" + mMaxPrice.split(" ")[0]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -358,14 +367,14 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
 
                     mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
-                    mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
+                    mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_prices?country=" + mCountryLocale);
 
                     Routing routing = new Routing.Builder()
                             .travelMode(Routing.TravelMode.DRIVING)
                             .withListener(PackageDeliveryDetailsActivity.this)
                             .waypoints(start, end)
                             .alternativeRoutes(false)
-                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                            .key(Constants.API_KEY)
                             .build();
                     routing.execute();
                 }
@@ -395,13 +404,13 @@ public class PackageDeliveryDetailsActivity extends AppCompatActivity implements
 
 
                     mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
-                    mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
+                    mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_prices?country=" + mCountryLocale);
                     Routing routing = new Routing.Builder()
                             .travelMode(Routing.TravelMode.DRIVING)
                             .withListener(PackageDeliveryDetailsActivity.this)
                             .waypoints(start, end)
                             .alternativeRoutes(false)
-                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                            .key("AIzaSyCbltU9nU7ZytFzEwJwPdVji-7Y71DV6B8")
                             .build();
                     routing.execute();
                 }

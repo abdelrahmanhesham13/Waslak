@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.Locale;
@@ -78,9 +79,9 @@ public class SettingActivity extends AppCompatActivity {
                 Helper.saveNotificationSharedPreferences(SettingActivity.this,b);
                 mProgressDialog = Helper.showProgressDialog(SettingActivity.this,getString(R.string.loading),false);
                 if (b){
-                    mUpdateNotification.getRequest(TAG,"http://www.as.cta3.com/waslk/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=1");
+                    mUpdateNotification.getRequest(TAG,Constants.WASLAK_BASE_URL + "/mobile/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=1");
                 } else {
-                    mUpdateNotification.getRequest(TAG,"http://www.as.cta3.com/waslk/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=0");
+                    mUpdateNotification.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/update_notification?id=" + Helper.getUserSharedPreferences(SettingActivity.this).getId() + "&status=0");
                 }
             }
         });

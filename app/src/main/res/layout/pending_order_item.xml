@@ -167,6 +167,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="10sp"
+                    android:id="@+id/delivery_date_text"
                     android:textAlignment="center"
                     android:gravity="center"
                     android:layout_gravity="center"

@@ -34,9 +34,12 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 
@@ -49,8 +52,11 @@ public class SplashActivity extends AppCompatActivity {
 
     UserModel mUserModel;
     Connector mConnector;
+    Connector mConnectorGetUrl;
 
     String notification = "0";
+    String offerId = "0";
+    String orders = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,11 @@ public class SplashActivity extends AppCompatActivity {
         Helper.setNotificationCount(this, 0);
         if (getIntent().hasExtra("notification"))
             notification = getIntent().getStringExtra("notification");
+        if (getIntent().hasExtra("offer_id"))
+            offerId = getIntent().getStringExtra("offer_id");
+        if (getIntent().hasExtra("orders"))
+            orders = getIntent().getStringExtra("orders");
+
         mThread = new Thread() {
 
             @Override
@@ -93,7 +104,7 @@ public class SplashActivity extends AppCompatActivity {
                     Helper.SaveToSharedPreferences(SplashActivity.this, mUserModel);
                     if (isLocationEnabled() && isHighAccuracy()) {
                         getLanguage();
-                        startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("notification",notification).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("orders",orders).putExtra("notification",notification).putExtra("offer_id",offerId).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         finish();
                     } else {
                         displayLocationSettingsRequest(SplashActivity.this);
@@ -109,16 +120,32 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
 
+        mConnectorGetUrl = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                Constants.WASLAK_BASE_URL = Connector.getUrl(response);
+                mThread.start();
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+                Helper.showSnackBarMessage(getString(R.string.error), SplashActivity.this);
+            }
+        });
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.READ_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST);
 
         } else {
-            mThread.start();
+            Map<String,String> stringStringMap = new HashMap<>();
+            stringStringMap.put("token","waslakgroup");
+            mConnectorGetUrl.setMap(stringStringMap);
+            mConnectorGetUrl.getRequest(TAG,"http://auth.waslaktech.com?test=test");
         }
 
 
@@ -132,8 +159,11 @@ public class SplashActivity extends AppCompatActivity {
             case PERMISSIONS_REQUEST: {
 
                 if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                    mThread.start();
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Map<String,String> stringStringMap = new HashMap<>();
+                    stringStringMap.put("token","waslakgroup");
+                    mConnectorGetUrl.setMap(stringStringMap);
+                    mConnectorGetUrl.getRequest(TAG,"http://auth.waslaktech.com?test=test");
                 } else {
                     finish();
                 }
@@ -150,7 +180,7 @@ public class SplashActivity extends AppCompatActivity {
                 displayLocationSettingsRequest(this);
             } else if (resultCode == Activity.RESULT_OK) {
                 if (isHighAccuracy() && mUserModel != null) {
-                    startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("notification",notification).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("notification",notification).putExtra("offer_id",offerId).putExtra("orders",orders).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                     finish();
                 }
             }
@@ -223,7 +253,7 @@ public class SplashActivity extends AppCompatActivity {
                     case LocationSettingsStatusCodes.SUCCESS:
                         if (isHighAccuracy()) {
                             Log.i(TAG, "All location settings are satisfied.");
-                            startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                            startActivity(new Intent(SplashActivity.this, HomeActivity.class).putExtra("user", mUserModel).putExtra("offer_id",offerId).putExtra("notification",notification).putExtra("orders",orders).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         }
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:

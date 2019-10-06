@@ -2,6 +2,7 @@ package com.waslak.waslak;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -12,6 +13,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
+import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,7 +26,9 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.lamudi.phonefield.PhoneInputLayout;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.io.ByteArrayOutputStream;
@@ -43,8 +48,8 @@ public class BeAgentActivity extends AppCompatActivity {
 
     @BindView(R.id.national_id)
     ImageView mNationalIdPhoto;
-    @BindView(R.id.mobile_number)
-    EditText mMobileNumberEditText;
+    @BindView(R.id.phone_input_layout)
+    PhoneInputLayout mMobileNumberEditText;
     @BindView(R.id.car_model)
     EditText mCarModelEditText;
     @BindView(R.id.car_type)
@@ -64,6 +69,7 @@ public class BeAgentActivity extends AppCompatActivity {
     String mNonConvicts = "";
     String mCar = "";
     Connector mConnector;
+    int mobileLength;
 
     int mType = -1;
 
@@ -74,6 +80,11 @@ public class BeAgentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_be_agent);
         ButterKnife.bind(this);
+
+
+        mMobileNumberEditText.setHint(R.string.enter_phone);
+        mMobileNumberEditText.setDefaultCountry("SA");
+        mMobileNumberEditText.setTextColor(getResources().getColor(R.color.colorPrimary));
 
 
         mConnector = new Connector(this, new Connector.LoadCallback() {
@@ -130,9 +141,9 @@ public class BeAgentActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.add_your_national_id), BeAgentActivity.this);
                 } else if (mCar.isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.add_your_car_image), BeAgentActivity.this);
-                } else if (mMobileNumberEditText.getText().toString().isEmpty()) {
+                } else if (mMobileNumberEditText.getPhoneNumber().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone), BeAgentActivity.this);
-                } else if (mMobileNumberEditText.getText().toString().isEmpty()) {
+                } else if (mMobileNumberEditText.getPhoneNumber().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone_number), BeAgentActivity.this);
                 } else if (mCarNumberEditText.getText().toString().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.car_number), BeAgentActivity.this);
@@ -140,11 +151,27 @@ public class BeAgentActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.car_model), BeAgentActivity.this);
                 } else if (mCarTypeEditText.getText().toString().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.car_type), BeAgentActivity.this);
+                } else if (!mMobileNumberEditText.isValid()) {
+                    Helper.showSnackBarMessage(getString(R.string.invalid_phone_number), BeAgentActivity.this);
                 } else {
-                    startActivityForResult(new Intent(BeAgentActivity.this, MobileVerificationActivity.class).putExtra("mobile",mMobileNumberEditText.getText().toString()), 3);
+                    startActivityForResult(new Intent(BeAgentActivity.this, MobileVerificationActivity.class).putExtra("mobile",mMobileNumberEditText.getPhoneNumber()), 3);
                 }
             }
         });
+
+
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        String mCountryLocale = tm.getNetworkCountryIso();
+
+        if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
+            mobileLength = 13;
+        } else if (mCountryLocale.equalsIgnoreCase("eg")){
+            mobileLength = 13;
+        } else if (mCountryLocale.equalsIgnoreCase("jo")) {
+            mobileLength = 14;
+        } else {
+            mCountryLocale = "";
+        }
     }
 
 
@@ -195,7 +222,7 @@ public class BeAgentActivity extends AppCompatActivity {
                 String result = data.getStringExtra("result");
                 if (result.equals("verified")) {
                     mProgressDialog = Helper.showProgressDialog(BeAgentActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/enroll_to_delivery?user_id=" + Helper.getUserSharedPreferences(BeAgentActivity.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&car_image=" + mCar + "&non_convicts=" + mNonConvicts + "&car_number=" + Uri.encode(mCarNumberEditText.getText().toString()) + "&car_model=" + Uri.encode(mCarModelEditText.getText().toString()) + "&car_type=" + Uri.encode(mCarTypeEditText.getText().toString()));
+                    mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/enroll_to_delivery?user_id=" + Helper.getUserSharedPreferences(BeAgentActivity.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getPhoneNumber()) + "&car_image=" + mCar + "&non_convicts=" + mNonConvicts + "&car_number=" + Uri.encode(mCarNumberEditText.getText().toString()) + "&car_model=" + Uri.encode(mCarModelEditText.getText().toString()) + "&car_type=" + Uri.encode(mCarTypeEditText.getText().toString()));
                 }
             }
             if (resultCode == Activity.RESULT_CANCELED) {

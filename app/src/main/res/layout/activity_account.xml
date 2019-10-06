@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/im_background"
     tools:context=".AccountActivity">
 
@@ -88,21 +89,26 @@
                         android:textColorHint="@color/whiteColor"
                         android:textSize="15sp" />
 
-                    <EditText
+                    <android.support.v7.widget.CardView
                         android:id="@+id/mobile_number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:background="@drawable/bg_edit_text"
-                        android:hint="@string/mobile"
-                        android:inputType="phone"
-                        android:paddingBottom="12.5dp"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:paddingTop="12.5dp"
-                        android:textColor="@color/whiteColor"
-                        android:textColorHint="@color/whiteColor"
-                        android:textSize="15sp" />
+                        android:layout_margin="35dp"
+                        android:layout_marginTop="35dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:descendantFocusability="beforeDescendants"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center"
+                        app:cardCornerRadius="10dp">
+
+                        <com.lamudi.phonefield.PhoneInputLayout
+                            android:id="@+id/phone_input_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp" />
+
+                    </android.support.v7.widget.CardView>
 
                     <EditText
                         android:layout_width="match_parent"

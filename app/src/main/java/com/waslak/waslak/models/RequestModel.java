@@ -35,6 +35,15 @@ public class RequestModel implements Serializable {
     String userRequestLon;
     String userRequestLat;
     String userAddress;
+    String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public RequestModel() {
     }

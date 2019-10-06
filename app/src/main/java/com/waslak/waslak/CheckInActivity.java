@@ -57,6 +57,7 @@ public class CheckInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_in);
+        finish();
         ButterKnife.bind(this);
 
         mMenuButton.setVisibility(View.GONE);

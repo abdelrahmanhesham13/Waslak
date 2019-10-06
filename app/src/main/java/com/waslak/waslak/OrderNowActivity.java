@@ -41,6 +41,7 @@ import com.squareup.picasso.Picasso;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import org.json.JSONException;
@@ -186,7 +187,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
                     Helper.showSnackBarMessage(getString(R.string.enter_your_duration), OrderNowActivity.this);
                 } else {
                     mProgressDialog = Helper.showProgressDialog(OrderNowActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_request?user_id=" + mUserModel.getId() + "&shop_id=" + mShopModel.getId() + "&longitude=" + mLon + "&latitude=" + mLat + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&address=" + Uri.encode(mAddress) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage));
+                    mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_request?user_id=" + mUserModel.getId() + "&shop_id=" + mShopModel.getId() + "&longitude=" + mLon + "&latitude=" + mLat + "&city_id=" + Uri.encode(mCity) + "&country=" + Uri.encode(mCountry) + "&address=" + Uri.encode(mAddress) + "&duration=" + Uri.encode(mDuration) + "&description=" + Uri.encode(mDescription) + "&detail=" + Uri.encode(mAddressExtraDetails) + "&image=" + Uri.encode(mImage));
                 }
             }
         });
@@ -223,7 +224,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             public void onComplete(String tag, String response) {
                 try {
                     JSONObject jsonObject = new JSONObject(response);
-                    int price  = jsonObject.optInt("price");
+                    double price  = jsonObject.optDouble("price");
                     int code = jsonObject.optInt("code");
                     if (price != 0) {
                         if (getLocale().equals("ar"))
@@ -249,17 +250,22 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
             @Override
             public void onComplete(String tag, String response) {
                 try {
+                    Helper.writeToLog(mTotalDistance);
                     JSONObject jsonObject = new JSONObject(response);
                     mMinPrice = jsonObject.getString("min_price");
                     mPricePerKilo = jsonObject.getString("price_per_kilo");
                     mCurrency = jsonObject.getString("currency");
                     mCurrencyArabic = jsonObject.getString("currency_ar");
-                    if (getLocale().equals("ar"))
-                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
-                    else
-                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)) + " " + mCurrency + " " + getString(R.string.maximum_price_now));
+                    if (Double.valueOf(mTotalDistance) <= 3) {
+                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
+                    } else {
+                        if (getLocale().equals("ar"))
+                            mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * (Double.valueOf(mTotalDistance) - 3) + Double.valueOf(mMinPrice)) + " " + mCurrencyArabic + " " + getString(R.string.maximum_price_now));
+                        else
+                            mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * (Double.valueOf(mTotalDistance) - 3) + Double.valueOf(mMinPrice)) + " " + mCurrency + " " + getString(R.string.maximum_price_now));
+                    }
                     mMaxPrice = mPrice.getText().toString();
-                    mConnectorCheckPromo.getRequest(TAG,"http://www.as.cta3.com/waslk/api/check_promocode?user_id=" + mUserModel.getId() + "&price=" + mMaxPrice.split(" ")[0]);
+                    mConnectorCheckPromo.getRequest(TAG,Constants.WASLAK_BASE_URL + "/mobile/api/check_promocode?user_id=" + mUserModel.getId() + "&price=" + mMaxPrice.split(" ")[0]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -325,7 +331,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
 
 
                 mTotalDistance = String.valueOf((wayPointLocation.distanceTo(endLocation)) / 1000.0);
-                mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
+                mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_prices?country=" + mCountryLocale);
                 LatLng start = new LatLng(Double.valueOf(mShopModel.getLat()), Double.valueOf(mShopModel.getLon()));
                 LatLng end = new LatLng(mLat, mLon);
                 Routing routing = new Routing.Builder()
@@ -333,7 +339,7 @@ public class OrderNowActivity extends AppCompatActivity implements RoutingListen
                         .withListener(OrderNowActivity.this)
                         .waypoints(start, end)
                         .alternativeRoutes(false)
-                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .key(Constants.API_KEY)
                         .build();
                 routing.execute();
             }

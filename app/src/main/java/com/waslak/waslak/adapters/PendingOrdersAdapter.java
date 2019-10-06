@@ -15,6 +15,7 @@ import com.waslak.waslak.R;
 import com.waslak.waslak.models.PendingOrderModel;
 import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.UserModel;
+import com.waslak.waslak.networkUtils.Constants;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -28,12 +29,14 @@ public class PendingOrdersAdapter extends RecyclerView.Adapter<PendingOrdersAdap
     private ArrayList<RequestModel> mRequestModels;
     private OnItemClicked onItemClicked;
     private UserModel mUserModel;
+    private int flag;
 
-    public PendingOrdersAdapter(Context mContext, ArrayList<RequestModel> mRequestModels, OnItemClicked onItemClicked, UserModel mUserModel) {
+    public PendingOrdersAdapter(Context mContext, ArrayList<RequestModel> mRequestModels, OnItemClicked onItemClicked, UserModel mUserModel,int flag) {
         this.mContext = mContext;
         this.mRequestModels = mRequestModels;
         this.onItemClicked = onItemClicked;
         this.mUserModel = mUserModel;
+        this.flag = flag;
     }
 
     @NonNull
@@ -46,7 +49,15 @@ public class PendingOrdersAdapter extends RecyclerView.Adapter<PendingOrdersAdap
 
     @Override
     public void onBindViewHolder(@NonNull PendingOrderViewHolder holder, int position) {
-        holder.deliveryDate.setText(mRequestModels.get(position).getDuration());
+        if (flag == 1) {
+            holder.deliveryDate.setVisibility(View.GONE);
+            holder.mDeliveryDateText.setVisibility(View.GONE);
+        } else {
+            holder.deliveryDate.setText(mRequestModels.get(position).getDuration());
+            holder.deliveryDate.setVisibility(View.VISIBLE);
+            holder.mDeliveryDateText.setVisibility(View.VISIBLE);
+        }
+
         holder.description.setText(mRequestModels.get(position).getDescription());
         if (mRequestModels.get(position).getUser_id().equals(mUserModel.getId()))
             holder.type.setText(mContext.getString(R.string.my_orders));
@@ -63,7 +74,7 @@ public class PendingOrdersAdapter extends RecyclerView.Adapter<PendingOrdersAdap
         if (URLUtil.isValidUrl(mRequestModels.get(position).getUser().getImage()))
             Picasso.get().load(mRequestModels.get(position).getUser().getImage()).fit().centerCrop().into(holder.mImage);
         else {
-            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mRequestModels.get(position).getUser().getImage()).fit().centerCrop().into(holder.mImage);
+            Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mRequestModels.get(position).getUser().getImage()).fit().centerCrop().into(holder.mImage);
         }
 
         if (mRequestModels.get(position).getShopName().equals("null")){
@@ -96,6 +107,8 @@ public class PendingOrdersAdapter extends RecyclerView.Adapter<PendingOrdersAdap
         ImageView mImage;
         @BindView(R.id.parent_layout)
                 View mParentLayout;
+        @BindView(R.id.delivery_date_text)
+                TextView mDeliveryDateText;
 
         PendingOrderViewHolder (View itemView){
             super(itemView);

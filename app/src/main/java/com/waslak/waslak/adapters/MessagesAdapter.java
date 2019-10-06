@@ -15,6 +15,7 @@ import com.waslak.waslak.R;
 import com.waslak.waslak.models.ChatModel;
 import com.waslak.waslak.models.MessageModel;
 import com.waslak.waslak.models.UserModel;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (URLUtil.isValidUrl(Helper.getUserSharedPreferences(mContext).getImage()))
                 Picasso.get().load(Helper.getUserSharedPreferences(mContext).getImage()).fit().centerCrop().error(R.drawable.shop1).into(((MessageViewHolder)holder).mProfileImage);
             else {
-                Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + Helper.getUserSharedPreferences(mContext).getImage()).fit().centerCrop().error(R.drawable.shop1).into(((MessageViewHolder)holder).mProfileImage);
+                Picasso.get().load( Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + Helper.getUserSharedPreferences(mContext).getImage()).fit().centerCrop().error(R.drawable.shop1).into(((MessageViewHolder)holder).mProfileImage);
             }
 
             if (mMessagesModel.get(position).getType().equals("text") || mMessagesModel.get(position).getType().equals("0")) {
@@ -82,7 +83,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             } else {
                 ((MessageViewHolder)holder).mImage.setVisibility(View.VISIBLE);
                 ((MessageViewHolder)holder).mMessageText.setVisibility(View.GONE);
-                Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mMessagesModel.get(position).getMessage()).into(((MessageViewHolder)holder).mImage);
+                Picasso.get().load(Constants.WASLAK_BASE_URL+"/mobile/prod_img/" + mMessagesModel.get(position).getMessage()).into(((MessageViewHolder)holder).mImage);
             }
         } else {
             if (URLUtil.isValidUrl(fromUser.getImage())) {
@@ -90,7 +91,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 Picasso.get().load(fromUser.getImage()).fit().centerCrop().error(R.drawable.shop1).into(((MessageViewHolder) holder).mProfileImage);
             } else {
                 Helper.writeToLog(fromUser.getImage());
-                Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + fromUser.getImage()).fit().centerCrop().error(R.drawable.shop1).into(((MessageViewHolder)holder).mProfileImage);
+                Picasso.get().load(Constants.WASLAK_BASE_URL+"/mobile/prod_img/" + fromUser.getImage()).fit().centerCrop().error(R.drawable.shop1).into(((MessageViewHolder)holder).mProfileImage);
             }
 
             if (mMessagesModel.get(position).getType().equals("text") || mMessagesModel.get(position).getType().equals("0")) {
@@ -100,7 +101,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             } else {
                 ((MessageViewHolder)holder).mImage.setVisibility(View.VISIBLE);
                 ((MessageViewHolder)holder).mMessageText.setVisibility(View.GONE);
-                Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mMessagesModel.get(position).getMessage()).into(((MessageViewHolder)holder).mImage);
+                Picasso.get().load(Constants.WASLAK_BASE_URL+"/mobile/prod_img/" + mMessagesModel.get(position).getMessage()).into(((MessageViewHolder)holder).mImage);
             }
         }
     }

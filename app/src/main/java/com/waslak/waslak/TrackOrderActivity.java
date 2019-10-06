@@ -38,10 +38,12 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -146,7 +148,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
         mReceived.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&status=3" + "&user_id=" + mRequestModel.getUser_id());
+                mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&status=3" + "&user_id=" + mRequestModel.getUser_id());
                 mReceived.setEnabled(false);
             }
         });
@@ -171,7 +173,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                     if (!mLocated) {
                         mLocated = true;
                         start = new LatLng(lat, lon);
-                        mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
+                        mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
                         mDeliveryLocation.setText(getAddress(start, "delivery"));
                         try {
                             wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
@@ -214,7 +216,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                                     .withListener(TrackOrderActivity.this)
                                     .waypoints(start, wayPoint, end)
                                     .alternativeRoutes(false)
-                                    .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                    .key(Constants.API_KEY)
                                     .build();
                             routing.execute();
                         } else {
@@ -223,7 +225,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                                     .withListener(TrackOrderActivity.this)
                                     .waypoints(start, end)
                                     .alternativeRoutes(false)
-                                    .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                    .key(Constants.API_KEY)
                                     .build();
                             routing.execute();
                         }
@@ -235,7 +237,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                 mLocated = true;
                 Location location = mTracker.getLocation();
                 start = new LatLng(location.getLatitude(), location.getLongitude());
-                mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
+                mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/update_request_status?id=" + mRequestModel.getId() + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&user_id=" + mRequestModel.getUser_id() + "&status=" + mRequestModel.getStatus());
                 mDeliveryLocation.setText(getAddress(start, "delivery"));
                 try {
                     wayPoint = new LatLng(Double.parseDouble(mShopModel.getLat()), Double.parseDouble(mShopModel.getLon()));
@@ -280,7 +282,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                             .withListener(TrackOrderActivity.this)
                             .waypoints(start, wayPoint, end)
                             .alternativeRoutes(false)
-                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                            .key(Constants.API_KEY)
                             .build();
                     routing.execute();
                 } else {
@@ -289,7 +291,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                             .withListener(TrackOrderActivity.this)
                             .waypoints(start, end)
                             .alternativeRoutes(false)
-                            .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                            .key(Constants.API_KEY)
                             .build();
                     routing.execute();
                 }
@@ -351,7 +353,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                         .withListener(TrackOrderActivity.this)
                         .waypoints(start, wayPoint, end)
                         .alternativeRoutes(false)
-                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .key(Constants.API_KEY)
                         .build();
                 routing.execute();
             } else {
@@ -360,7 +362,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
                         .withListener(TrackOrderActivity.this)
                         .waypoints(start, end)
                         .alternativeRoutes(false)
-                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .key(Constants.API_KEY)
                         .build();
                 routing.execute();
             }
@@ -386,7 +388,7 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
             }
             return address;
         } else {
-            new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(latLng.latitude, latLng.longitude, Constants.API_KEY)
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override
@@ -439,13 +441,15 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
         CameraUpdate center = CameraUpdateFactory.newLatLng(start);
 
+        IconGenerator iconFactory = new IconGenerator(this);
+
         mMap.moveCamera(center);
 
 
         PolylineOptions polyOptions = new PolylineOptions();
         polyOptions.width(5);
         polyOptions.color(getResources().getColor(R.color.blue));
-        polyOptions.addAll(route.get(0).getPoints());
+        polyOptions.addAll(route.get(shortestRouteIndex).getPoints());
         mMap.addPolyline(polyOptions);
         // Start marker
         MarkerOptions options = new MarkerOptions();
@@ -456,7 +460,8 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
         Bitmap b = bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        //mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("الكابتن")));
 
         // End marker
         options = new MarkerOptions();
@@ -465,7 +470,12 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
         b = bitmapdraw.getBitmap();
         smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        //mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        if (mRequestModel.getType().equals("2") || mRequestModel.getType().equals("1")) {
+            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("مكان التحميل")));
+        } else {
+            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("جهة التوصيل")));
+        }
 
         // End marker
         options = new MarkerOptions();
@@ -475,7 +485,12 @@ public class TrackOrderActivity extends AppCompatActivity implements OnMapReadyC
             b = bitmapdraw.getBitmap();
             smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            //mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            if (mRequestModel.getType().equals("2") || mRequestModel.getType().equals("1")) {
+                mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("جهة التوصيل")));
+            } else {
+                mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("مكان التحميل")));
+            }
         }
 
         LatLngBounds.Builder builder = new LatLngBounds.Builder();

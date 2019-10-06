@@ -10,6 +10,7 @@ import android.widget.EditText;
 
 import com.android.volley.VolleyError;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import butterknife.BindView;
@@ -81,7 +82,7 @@ public class ComplaintsActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_title),ComplaintsActivity.this);
                 } else {
                     mProgressDialog = Helper.showProgressDialog(ComplaintsActivity.this,getString(R.string.loading),false);
-                    mConnector.getRequest(TAG,"http://www.as.cta3.com/waslk/api/send_feedback?name=" + mFullNameEditText.getText().toString().replaceAll(" ","%20") +"&title="+mTitleEditText.getText().toString().replaceAll(" ","%20")+"&comment=" + mBodyEditText.getText().toString().replaceAll(" ","%20") +"&user_id=" + Helper.getUserSharedPreferences(ComplaintsActivity.this).getId() + "&email=" + mEmailEditText.getText().toString());
+                    mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/send_feedback?name=" + mFullNameEditText.getText().toString().replaceAll(" ","%20") +"&title="+mTitleEditText.getText().toString().replaceAll(" ","%20")+"&comment=" + mBodyEditText.getText().toString().replaceAll(" ","%20") +"&user_id=" + Helper.getUserSharedPreferences(ComplaintsActivity.this).getId() + "&email=" + mEmailEditText.getText().toString());
                 }
             }
         });

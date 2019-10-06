@@ -48,7 +48,7 @@
     <string name="number_of_couriers">0 مندوب موجودون</string>
     <string name="number_of_couriers_1">1 مندوب موجودون</string>
     <string name="show_on_map">العرض في الخريطه</string>
-    <string name="store">المتجر</string>
+    <string name="store">مكان التحميل</string>
     <string name="customer">العميل</string>
     <string name="order_now">اطلب الان</string>
     <string name="address">العنوان</string>
@@ -202,7 +202,7 @@
     <string name="track_order">تتبع الطلب</string>
     <string name="received_from_store">تم الاستلام من المتجر</string>
     <string name="max_price_is">اعلي سعر :</string>
-    <string name="delivery_package">توصيله</string>
+    <string name="delivery_package">وصلني</string>
     <string name="customer_delivery">توصيلة زبائن</string>
     <string name="package_delivery">ارسال او إحضار طرد او اغراض</string>
     <string name="start_location">مكان البدايه</string>
@@ -213,7 +213,7 @@
     <string name="my_orders_new">طلباتي</string>
     <string name="customer_orders_new">طلبات العملاء</string>
     <string name="featured_customer">الانضمام عميل مميز</string>
-    <string name="attach_receipt">ارفاق ايصال الدفع</string>
+    <string name="attach_receipt">اشحن رصيد</string>
     <string name="become_featured_client">كيف تصبح عميل مميز</string>
     <string name="living_prove">ثبات السكن (صورة فاتورة الكهرباء او فاتورة الماء)</string>
     <string name="added_successfully">تم الاضافه بنجاح</string>
@@ -229,4 +229,9 @@
     <string name="choose_recieving_place">اختر مكان الاستلام</string>
     <string name="delivery_account_verified">تم تفعيل حسابك كمندوب</string>
     <string name="blocked_account">تم اغلاق حسابك لغايات الدفع</string>
+    <string name="car_model">موديل المركبه</string>
+    <string name="car_number">رقم المركبه</string>
+    <string name="car_type">نوع المركبه</string>
+    <string name="you_can_cancel_request_within_5_minutes">يمكنك الغاء الطلب في خلال ٥ دقائق فقط</string>
+    <string name="captain">الكابتن</string>
 </resources>

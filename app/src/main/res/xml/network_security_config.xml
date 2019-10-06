@@ -3,5 +3,10 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">www.as.cta3.com</domain>
         <domain includeSubdomains="true">as.cta3.com</domain>
+        <domain includeSubdomains="true">www.waslakapp.com</domain>
+        <domain includeSubdomains="true">www.waslakgroup.com</domain>
+        <domain includeSubdomains="true">waslakgroup.com</domain>
+        <domain includeSubdomains="true">http://auth.waslaktech.com/</domain>
+        <domain includeSubdomains="true">auth.waslaktech.com</domain>
     </domain-config>
 </network-security-config>

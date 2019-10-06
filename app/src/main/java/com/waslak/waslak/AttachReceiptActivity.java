@@ -23,6 +23,7 @@ import com.esafirm.imagepicker.model.Image;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.io.ByteArrayOutputStream;
@@ -102,7 +103,7 @@ public class AttachReceiptActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.add_receipt), AttachReceiptActivity.this);
                 } else {
                     mProgressDialog = Helper.showProgressDialog(AttachReceiptActivity.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_deposite?user_id=" + Helper.getUserSharedPreferences(AttachReceiptActivity.this).getId() + "&image=" + mImage);
+                    mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_deposite?user_id=" + Helper.getUserSharedPreferences(AttachReceiptActivity.this).getId() + "&image=" + mImage);
                 }
             }
         });

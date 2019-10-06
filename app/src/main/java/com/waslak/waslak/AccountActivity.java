@@ -2,6 +2,7 @@ package com.waslak.waslak;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -15,6 +16,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.View;
@@ -31,11 +34,16 @@ import com.esafirm.imagepicker.model.Image;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.lamudi.phonefield.PhoneInputLayout;
 import com.squareup.picasso.Picasso;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -71,8 +79,8 @@ public class AccountActivity extends AppCompatActivity {
     ImageView mMenuButton;
     @BindView(R.id.save_register)
     Button mSaveRegisterButton;
-    @BindView(R.id.mobile_number)
-    EditText mMobileNumberEditText;
+    @BindView(R.id.phone_input_layout)
+    PhoneInputLayout mMobileNumberEditText;
     @BindView(R.id.progressIndicator)
     ProgressBar mProgressBar;
     @BindView(R.id.parent_layout)
@@ -108,6 +116,7 @@ public class AccountActivity extends AppCompatActivity {
     String mFullAddress;
     String mCountry;
     String mCity;
+    int mobileLength;
 
     List<Address> addresses;
 
@@ -117,6 +126,10 @@ public class AccountActivity extends AppCompatActivity {
         setContentView(R.layout.activity_account);
 
         ButterKnife.bind(this);
+
+        mMobileNumberEditText.setHint(R.string.enter_phone);
+        mMobileNumberEditText.setDefaultCountry("SA");
+        mMobileNumberEditText.setTextColor(getResources().getColor(R.color.colorPrimary));
 
         mConnector = new Connector(this, new Connector.LoadCallback() {
             @Override
@@ -140,7 +153,7 @@ public class AccountActivity extends AppCompatActivity {
                         mParentLayout.setVisibility(View.VISIBLE);
                     }
                 } else {
-                    Helper.showSnackBarMessage(getString(R.string.registered_before), AccountActivity.this);
+                    Helper.showSnackBarMessage(Connector.getMessage(response), AccountActivity.this);
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mParentLayout.setVisibility(View.VISIBLE);
                 }
@@ -195,14 +208,24 @@ public class AccountActivity extends AppCompatActivity {
                             signUp();
                         }
                     });
-                    mMobileNumberEditText.setText(getIntent().getStringExtra("Phone"));
+
+                    PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+                    Phonenumber.PhoneNumber numberProto = null;
+                    try {
+                        numberProto = phoneUtil.parse(getIntent().getStringExtra("Phone"), "");
+                    } catch (NumberParseException e) {
+                        e.printStackTrace();
+                    }
+                    int countryCode = numberProto.getCountryCode();
+                    long nationalNumber = numberProto.getNationalNumber();
+                    mMobileNumberEditText.setPhoneNumber(String.valueOf(getIntent().getStringExtra("Phone")));
                     mMobileNumberEditText.setEnabled(false);
                     mSettingButton.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 } else if (type.equals("Edit")) {
                     mUserModel = (UserModel) getIntent().getSerializableExtra("user");
                     mUserModel = Helper.getUserSharedPreferences(AccountActivity.this);
                     mSaveRegisterButton.setText(getString(R.string.save));
-                    mMobileNumberEditText.setText(mUserModel.getMobile());
+                    mMobileNumberEditText.setPhoneNumber(mUserModel.getMobile());
                     mEmailEditText.setText(mUserModel.getUsername());
                     mBirthDateEditText.setText(mUserModel.getBirthDate());
                     mFullNameEditText.setText(mUserModel.getName());
@@ -216,7 +239,7 @@ public class AccountActivity extends AppCompatActivity {
                     if (URLUtil.isValidUrl(mUserModel.getImage()))
                         Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                     else {
-                        Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+                        Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                     }
                     if (mUserModel.getGender().equals("0")) {
                         mMaleTextView.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -238,11 +261,26 @@ public class AccountActivity extends AppCompatActivity {
             }
         });
 
+
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        String mCountryLocale = tm.getNetworkCountryIso();
+
+        if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
+            mobileLength = 13;
+        } else if (mCountryLocale.equalsIgnoreCase("eg")){
+            mobileLength = 13;
+        } else if (mCountryLocale.equalsIgnoreCase("jo")) {
+            mobileLength = 14;
+        } else {
+            mCountryLocale = "";
+        }
+
+
     }
 
     public void signUp() {
         mFullName = mFullNameEditText.getText().toString();
-        mPhoneNumber = mMobileNumberEditText.getText().toString();
+        mPhoneNumber = mMobileNumberEditText.getPhoneNumber();
         mBirthDate = mBirthDateEditText.getText().toString();
         mEmail = mEmailEditText.getText().toString();
 
@@ -269,7 +307,7 @@ public class AccountActivity extends AppCompatActivity {
 
     public void editProfile() {
         mFullName = mFullNameEditText.getText().toString();
-        mPhoneNumber = mMobileNumberEditText.getText().toString();
+        mPhoneNumber = mMobileNumberEditText.getPhoneNumber();
         mBirthDate = mBirthDateEditText.getText().toString();
         mEmail = mEmailEditText.getText().toString();
 
@@ -285,6 +323,8 @@ public class AccountActivity extends AppCompatActivity {
             Helper.showSnackBarMessage(getString(R.string.enter_your_gender), AccountActivity.this);
         } else if (mImage.isEmpty()) {
             Helper.showSnackBarMessage(getString(R.string.insert_your_photo), AccountActivity.this);
+        } else if (!mMobileNumberEditText.isValid()) {
+            Helper.showSnackBarMessage(getString(R.string.invalid_phone_number), AccountActivity.this);
         } else {
             mLocated = false;
             mParentLayout.setVisibility(View.INVISIBLE);
@@ -306,7 +346,7 @@ public class AccountActivity extends AppCompatActivity {
             }
             return addresses;
         } else {
-            new ReverseGeocoding(lat, lon, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(lat, lon, Constants.API_KEY)
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override
@@ -330,13 +370,13 @@ public class AccountActivity extends AppCompatActivity {
                                 String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
                                         mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                         "&address=" + Uri.encode(mFullAddress) + "&city_id=" + Uri.encode(mCity) +
-                                        "&country=" + Uri.encode(mCountry) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+                                        "&country=" + Uri.encode(mCountry) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + Uri.encode(mPhoneNumber) + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
                                 mConnector.getRequest(TAG, url);
                             } else {
                                 String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
                                         mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                         "&address=" + Uri.encode(mFullAddress) + "&city_id=" + Uri.encode(mCity) +
-                                        "&country=" + Uri.encode(mCountry) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
+                                        "&country=" + Uri.encode(mCountry) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + Uri.encode(mPhoneNumber) + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
                                 mConnector.getRequest(TAG, url);
                             }
 
@@ -518,7 +558,8 @@ public class AccountActivity extends AppCompatActivity {
 //                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
 //                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
 //                        mConnector.getRequest(TAG, url);
-                        }
+                        startActivityForResult(new Intent(AccountActivity.this, MobileVerificationActivity.class).putExtra("mobile",mPhoneNumber), 3);
+                    }
                     mTracker.stopUsingGPS();
                 }
             }
@@ -536,11 +577,13 @@ public class AccountActivity extends AppCompatActivity {
                     mLon = lon;
                     addresses = getAddress(mLat, mLon, "sign up");
                     if (addresses != null && addresses.size() > 0) {
-                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
-                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
-                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
-                        mConnector.getRequest(TAG, url);
+//                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
+//                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
+//                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
+//                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
+//                        mConnector.getRequest(TAG, url);
+                        startActivityForResult(new Intent(AccountActivity.this, MobileVerificationActivity.class).putExtra("mobile",mPhoneNumber), 3);
+
                     }
                     mTracker.stopUsingGPS();
                 }
@@ -556,11 +599,13 @@ public class AccountActivity extends AppCompatActivity {
                     mLon = location.getLongitude();
                     addresses = getAddress(mLat, mLon, "sign up");
                     if (addresses != null && addresses.size() > 0) {
-                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
-                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
-                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
-                        mConnector.getRequest(TAG, url);
+//                        String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
+//                                mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
+//                                "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
+//                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
+//                        mConnector.getRequest(TAG, url);
+                        startActivityForResult(new Intent(AccountActivity.this, MobileVerificationActivity.class).putExtra("mobile",mPhoneNumber), 3);
+
                     }
                     mTracker.stopUsingGPS();
                 }
@@ -581,13 +626,13 @@ public class AccountActivity extends AppCompatActivity {
                         String url = Connector.createSignUpUrl().build().toString() + "?username=" + mEmail + "&name=" +
                                 mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                 "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
+                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + Uri.encode(mPhoneNumber) + "&gender=" + String.valueOf(mGender) + "&birth_date=" + mBirthDate;
                         mConnector.getRequest(TAG, url);
                     } else {
                         String url = Connector.createEditProfileUrl() + "?username=" + mEmail + "&name=" +
                                 mFullName.replaceAll(" ", "%20") + "&longitude=" + String.valueOf(mLon) + "&latitude=" + String.valueOf(mLat) +
                                 "&address=" + Uri.encode(addresses.get(0).getAddressLine(0)) + "&city_id=" + Uri.encode(addresses.get(0).getAdminArea()) +
-                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + mPhoneNumber + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
+                                "&country=" + Uri.encode(addresses.get(0).getCountryName()) + "&image=" + mImage + "&token=" + Helper.getTokenFromSharedPreferences(AccountActivity.this) + "&mobile=" + Uri.encode(mPhoneNumber) + "&gender=" + String.valueOf(mGender) + "&id=" + mUserModel.getId() + "&birth_date=" + mBirthDate;
                         mConnector.getRequest(TAG, url);
                     }
                 }

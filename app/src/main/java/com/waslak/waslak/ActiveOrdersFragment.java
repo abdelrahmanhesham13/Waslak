@@ -42,6 +42,7 @@ import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.text.ParseException;
@@ -80,7 +81,7 @@ public class ActiveOrdersFragment extends Fragment {
     View mSpinnerParent;
 
 
-    OrdersAdapter mOrdersAdapter;
+    PendingOrdersAdapter mOrdersAdapter;
     PendingOrdersAdapter mPendingOrdersAdapter;
 
     OnMenuClicked onMenuClicked;
@@ -133,7 +134,7 @@ public class ActiveOrdersFragment extends Fragment {
                 if (!mRequestModels.get(position).getUser_id().equals(mUserModel.getId()))
                     startActivity(new Intent(getContext(), ChatActivity.class).putExtra("request",mRequestModels.get(position)).putExtra("shopModel",mRequestModels.get(position).getShop()).putExtra("user",mUserModel));
             }
-        },mUserModel);
+        },mUserModel,1);
 
         mConnector = new Connector(getContext(), new Connector.LoadCallback() {
             @Override
@@ -221,12 +222,12 @@ public class ActiveOrdersFragment extends Fragment {
             }
         });
 
-        mOrdersAdapter = new OrdersAdapter(getContext(), mRequestModels, new OrdersAdapter.OnItemClicked() {
+        mOrdersAdapter = new PendingOrdersAdapter(getContext(), mRequestModels, new PendingOrdersAdapter.OnItemClicked() {
             @Override
             public void setOnItemClicked(int position) {
                 startActivity(new Intent(getContext(), OrderDetailsActivity.class).putExtra("request",mRequestModels.get(position)));
             }
-        });
+        },mUserModel,1);
 
         mSettingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -251,7 +252,7 @@ public class ActiveOrdersFragment extends Fragment {
                 Helper.writeToLog("Position " + pos);
                 mPos = pos;
                 Helper.writeToLog(String.valueOf(mRequestModels.get(pos).isDeleteStatus()));
-                mConnectorDeleteRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
+                mConnectorDeleteRequest.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/delete_request?user_id=" + mRequestModels.get(pos).getUser_id() + "&id=" + mRequestModels.get(pos).getId());
             }
 
             @Override
@@ -313,6 +314,10 @@ public class ActiveOrdersFragment extends Fragment {
                 }
             }
         });
+
+        if (getActivity().getIntent().hasExtra("orders"))
+            if (getActivity().getIntent().getStringExtra("orders").equals("1"))
+                mCustomerOrders.performClick();
 
         return view;
     }

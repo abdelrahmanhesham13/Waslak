@@ -129,6 +129,8 @@ public class Connector {
 
     public static String createGetShopsUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_SHOPS_PATH);
 
         return builder.toString();
@@ -138,6 +140,8 @@ public class Connector {
     public static Uri.Builder createSignUpUrl() {
 
         return Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.SIGN_UP_PATH);
 
     }
@@ -145,6 +149,8 @@ public class Connector {
     public static Uri.Builder createSignInUrl() {
 
         return Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.LOGIN_PATH);
 
     }
@@ -152,12 +158,16 @@ public class Connector {
     public static String createEditProfileUrl() {
 
         return Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.EDIT_PROFILE).build().toString();
 
     }
 
     public static String createUploadImageUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.UPLOAD_IMAGE);
 
         return builder.toString();
@@ -166,6 +176,8 @@ public class Connector {
 
     public static String createGetShopUrl(String id) {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_SHOP_PATH)
                 .appendQueryParameter("id", id);
 
@@ -175,6 +187,8 @@ public class Connector {
 
     public static String createGetRequestsUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_REQUESTS);
 
         return builder.toString();
@@ -183,6 +197,8 @@ public class Connector {
 
     public static String createAddRequestUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.ADD_REQUEST);
 
         return builder.toString();
@@ -192,6 +208,8 @@ public class Connector {
 
     public static String createEnrollInShopUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.ENROLL_TO_SHOP);
 
         return builder.toString();
@@ -201,6 +219,8 @@ public class Connector {
 
     public static String createGetRequestUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_REQUEST);
 
         return builder.toString();
@@ -209,6 +229,8 @@ public class Connector {
 
     public static String createGetUserUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_USER);
 
         return builder.toString();
@@ -217,6 +239,8 @@ public class Connector {
 
     public static String createSendOfferUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.SEND_OFFER);
 
         return builder.toString();
@@ -226,6 +250,8 @@ public class Connector {
 
     public static String createWebViewUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.WEB_VIEW);
 
         return builder.toString();
@@ -235,6 +261,8 @@ public class Connector {
 
     public static String createGetCommentsUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_COMMENTS);
 
         return builder.toString();
@@ -243,6 +271,8 @@ public class Connector {
 
     public static String createGetNotificationsUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_NOTIFICATIONS);
 
         return builder.toString();
@@ -251,6 +281,8 @@ public class Connector {
 
     public static String createGetOfferUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_OFFERS);
 
         return builder.toString();
@@ -259,6 +291,8 @@ public class Connector {
 
     public static String createAcceptOfferUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.ACCEPT_OFFER);
 
         return builder.toString();
@@ -324,6 +358,8 @@ public class Connector {
 
     public static String createSendMessageUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.SEND_MESSAGE);
 
         return builder.toString();
@@ -331,6 +367,8 @@ public class Connector {
 
     public static String createGetChatMessagesUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.GET_CHAT_MESSAGES);
 
         return builder.toString();
@@ -338,6 +376,8 @@ public class Connector {
 
     public static String createStartChatUrl() {
         Uri.Builder builder = Uri.parse(Constants.WASLAK_BASE_URL).buildUpon()
+                .appendPath(Constants.MOBILE_PATH)
+                .appendPath(Constants.API_PATH)
                 .appendPath(Constants.START_CHAT);
 
         return builder.toString();
@@ -424,12 +464,14 @@ public class Connector {
                 String durationRequest = request.optString("duration");
                 String shopIdRequest = request.optString("shop_id");
                 String detailRequest = request.optString("detail");
+                String type = request.optString("type");
                 String longitudeUpdateRequest = request.optString("longitude_update");
                 String LatitudeUpdateRequest = request.optString("latitude_update");
                 RequestOfferModel requestOfferModel = new RequestOfferModel(idRequest, cityIdRequest, addressRequest, longitudeRequest
                         , latitudeRequest, descriptionRequest, nameRequest, statusRequest, createdRequest, updatedRequest, userIdRequest
                         , countryRequest, priceRequest, imageRequest, viewsRequest, deliveryIdRequest, durationRequest, shopIdRequest
                         , detailRequest, longitudeUpdateRequest, LatitudeUpdateRequest);
+                requestOfferModel.setType(type);
 
                 JSONObject user = offer.getJSONObject("customer");
                 String nameUser = user.optString("name");
@@ -521,8 +563,12 @@ public class Connector {
                 JSONArray comments = jsonObject.getJSONArray("comments");
                 for (int i = 0; i < comments.length(); i++) {
                     JSONObject comment = comments.getJSONObject(i);
-                    String commentString = comment.optString("delivery_comment");
-                    String deliveryRating = comment.optString("delivery_rating");
+                    String commentString = comment.optString("user_comment");
+                    String deliveryRating = comment.optString("user_rating");
+                    if (commentString.isEmpty()) {
+                        commentString = comment.optString("delivery_comment");
+                        deliveryRating = comment.optString("delivery_rating");
+                    }
                     reviews.add(new ReviewModel("", deliveryRating, commentString, ""));
                 }
             } catch (JSONException ex) {
@@ -591,7 +637,7 @@ public class Connector {
                     String imageFullPath = "";
                     if (photos != null) {
                         String image = photos.optJSONObject(0).optString("photo_reference");
-                        imageFullPath = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + image + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ";
+                        imageFullPath = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + image + "&key=" + Constants.API_KEY;
                     } else {
                         imageFullPath = shop.optString("icon");
                     }
@@ -910,6 +956,7 @@ public class Connector {
                 String created = request.optString("created");
                 String updated = request.optString("updated");
                 String userId = request.optString("user_id");
+                String type = request.optString("type");
                 boolean deleteStatus = request.optBoolean("delete_status");
                 String country = request.optString("country");
                 String price = request.optString("price");
@@ -933,6 +980,9 @@ public class Connector {
                 String cityDelivery = delivery.optString("city_id");
                 String countryDelivery = delivery.optString("country");
                 String imageDelivery = delivery.optString("image");
+                String carModel = delivery.getString("car_model");
+                String carNumber = delivery.getString("car_number");
+                String carType = delivery.getString("car_type");
                 int roleDelivery = delivery.optInt("role");
                 String idDelivery = delivery.optString("id");
                 String genderDelivery = delivery.optString("gender");
@@ -940,6 +990,9 @@ public class Connector {
                 String deliveryFlag = delivery.optString("delivery");
                 String block = delivery.optString("block");
                 UserModel deliveryModel = new UserModel(nameDelivery, usernameDelivery, tokenDelivery, birthDateDelivery, passwordDelivery, mobileDelivery, longitudeDelivery, latitudeDelivery, cityDelivery, countryDelivery, imageDelivery, 0, roleDelivery, idDelivery, genderDelivery, rating, deliveryFlag,block);
+                deliveryModel.setCarModel(carModel);
+                deliveryModel.setCarNumber(carNumber);
+                deliveryModel.setCarType(carType);
                 String note = request.optString("note");
                 JSONObject shop = request.optJSONObject("shop");
                 if (shop != null) {
@@ -995,11 +1048,26 @@ public class Connector {
                 requestModel.setUserRequestLat(userRequestLat);
                 requestModel.setUserRequestLon(userRequestLon);
                 requestModel.setUserAddress(userAddress);
+                requestModel.setType(type);
             } catch (JSONException ex) {
                 ex.printStackTrace();
             }
         }
         return requestModel;
+    }
+
+
+    public static String getUrl(String response) {
+        String url = null;
+        if (Helper.isJSONValid(response)) {
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                url = jsonObject.optString("url");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return url;
     }
 
 

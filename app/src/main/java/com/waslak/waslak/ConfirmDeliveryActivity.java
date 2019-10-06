@@ -47,10 +47,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.ui.IconGenerator;
 import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -120,6 +122,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
 
     String mCurrency;
     String mCurrencyArabic;
+    private Connector mConnectorCheckPromo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,6 +203,32 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
             }
         });
 
+        mConnectorCheckPromo = new Connector(this, new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    double price  = jsonObject.optDouble("price");
+                    int code = jsonObject.optInt("code");
+                    if (price != 0) {
+                        if (getLocale().equals("ar"))
+                            mPrice.setText("تكلفة التوصيل ستكون : " + price  + mCurrencyArabic + " بدلا من " + mMaxPrice.split(" ")[0] + "لان لديك كود خصم : " + code + "\n" +  getString(R.string.maximum_price_now));
+                        else
+                            mPrice.setText("تكلفة التوصيل ستكون : " + price  + mCurrency + " بدلا من " + mMaxPrice.split(" ")[0] + "لان لديك كود خصم : " + code + "\n" + getString(R.string.maximum_price_now));
+                        mMaxPrice = String.valueOf(price);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+
+            }
+        });
+
 
         mConnectorGetSettings = new Connector(this, new Connector.LoadCallback() {
             @Override
@@ -208,14 +237,18 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                     JSONObject jsonObject = new JSONObject(response);
                     mMinPrice = jsonObject.getString("min_price");
                     mPricePerKilo = jsonObject.getString("price_per_kilo");
-                    mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance) + Double.valueOf(mMinPrice)));
-                    if (mRequestModel.getPromo().equals("0")) {
-                        mMaxPrice = mPrice.getText().toString();
+                    mCurrency = jsonObject.getString("currency");
+                    mCurrencyArabic = jsonObject.getString("currency_ar");
+                    if (Double.valueOf(mTotalDistance) <= 3) {
+                        mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mMinPrice)));
                     } else {
-                        mMaxPrice = String.valueOf((Double.valueOf(mPricePerKilo) * Double.valueOf(mTotalDistance)) * (Double.valueOf(mRequestModel.getPromo())/100.0));
-                        mMaxPrice = String.valueOf(Double.valueOf(mMaxPrice) + 1);
-                        mPrice.setText(mMaxPrice);
+                        if (getLocale().equals("ar"))
+                            mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * (Double.valueOf(mTotalDistance) - 3) + Double.valueOf(mMinPrice)));
+                        else
+                            mPrice.setText(String.format(Locale.ENGLISH, "%.2f", Double.valueOf(mPricePerKilo) * (Double.valueOf(mTotalDistance) - 3) + Double.valueOf(mMinPrice)));
                     }
+                    mMaxPrice = mPrice.getText().toString();
+                    mConnectorCheckPromo.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/check_promocode?user_id=" + mUserModel.getId() + "&price=" + mMaxPrice.split(" ")[0]);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -227,6 +260,22 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
             }
         });
 
+    }
+
+
+    private String getLocale(){
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String lang = preferences.getString("lang", "error");
+        if (lang.equals("error")) {
+            if (Locale.getDefault().getLanguage().equals("ar"))
+                return "ar";
+            else
+                return "en";
+        } else if (lang.equals("en")) {
+            return "en";
+        } else {
+            return "ar";
+        }
     }
 
 
@@ -280,7 +329,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                         mToShopDistance.setVisibility(View.GONE);
                     }
                     Helper.writeToLog(mTotalDistance);
-                    mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
+                    mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_prices?country=" + mCountryLocale);
 
 
                     if (wayPoint != null) {
@@ -289,7 +338,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                                 .withListener(ConfirmDeliveryActivity.this)
                                 .waypoints(start, wayPoint, end)
                                 .alternativeRoutes(false)
-                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                .key(Constants.API_KEY)
                                 .build();
                         routing.execute();
                     } else {
@@ -298,7 +347,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                                 .withListener(ConfirmDeliveryActivity.this)
                                 .waypoints(start, end)
                                 .alternativeRoutes(false)
-                                .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                                .key(Constants.API_KEY)
                                 .build();
                         routing.execute();
                     }
@@ -347,7 +396,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                 mToShopDistance.setVisibility(View.GONE);
             }
             Helper.writeToLog(mTotalDistance);
-            mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_prices?country=" + mCountryLocale);
+            mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_prices?country=" + mCountryLocale);
 
             if (wayPoint != null) {
                 Routing routing = new Routing.Builder()
@@ -355,7 +404,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                         .withListener(ConfirmDeliveryActivity.this)
                         .waypoints(start, wayPoint, end)
                         .alternativeRoutes(false)
-                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .key(Constants.API_KEY)
                         .build();
                 routing.execute();
             } else {
@@ -364,7 +413,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                         .withListener(ConfirmDeliveryActivity.this)
                         .waypoints(start, end)
                         .alternativeRoutes(false)
-                        .key("AIzaSyAcazeBKVO9e7HvHB9ssU1jc9NhTj_AFsQ")
+                        .key(Constants.API_KEY)
                         .build();
                 routing.execute();
             }
@@ -390,13 +439,16 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
     public void onRoutingSuccess(ArrayList<Route> route, int shortestRouteIndex) {
         CameraUpdate center = CameraUpdateFactory.newLatLng(start);
 
+
+        IconGenerator iconFactory = new IconGenerator(this);
+
         mMap.moveCamera(center);
 
 
         PolylineOptions polyOptions = new PolylineOptions();
         polyOptions.width(5);
         polyOptions.color(getResources().getColor(R.color.blue));
-        polyOptions.addAll(route.get(0).getPoints());
+        polyOptions.addAll(route.get(shortestRouteIndex).getPoints());
         mMap.addPolyline(polyOptions);
         // Start marker
         MarkerOptions options = new MarkerOptions();
@@ -407,7 +459,8 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
         Bitmap b = bitmapdraw.getBitmap();
         Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        //mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("الكابتن")));
 
         // End marker
         options = new MarkerOptions();
@@ -416,7 +469,13 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
         b = bitmapdraw.getBitmap();
         smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-        mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        //mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+        if (mRequestModel.getType().equals("2") || mRequestModel.getType().equals("1")) {
+            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("مكان التحميل")));
+        } else {
+            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("جهة التوصيل")));
+        }
+
 
         // End marker
         options = new MarkerOptions();
@@ -426,7 +485,12 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
             b = bitmapdraw.getBitmap();
             smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
 
-            mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            //mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            if (mRequestModel.getType().equals("2") || mRequestModel.getType().equals("1")) {
+                mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("جهة التوصيل")));
+            } else {
+                mMap.addMarker(options).setIcon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("مكان التحميل")));
+            }
         }
 
 
@@ -467,7 +531,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                 } else if (getAddress(start, "request") != null) {
                     mProgressDialog = Helper.showProgressDialog(ConfirmDeliveryActivity.this, "Loading", false);
                     mConnector.getRequest(TAG, Connector.createSendOfferUrl() + "?request_id=" + mRequestModel.getId()
-                            + "&price=" + arabicToDecimal(mPrice.getText().toString()).replace("٫", ".") + "&delivery_id=" + mUserModel.getId() + "&user_id=" + mRequestModel.getUser_id()
+                            + "&price=" + arabicToDecimal(mMaxPrice) + "&delivery_id=" + mUserModel.getId() + "&user_id=" + mRequestModel.getUser_id()
                             + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&address=" + Uri.encode(getAddress(start, "request")) + "&description=i%20can%20deliver%20it");
 
                 }
@@ -511,7 +575,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
             }
             return address;
         } else {
-            new ReverseGeocoding(latLng.latitude, latLng.longitude, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(latLng.latitude, latLng.longitude, Constants.API_KEY)
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override
@@ -536,7 +600,7 @@ public class ConfirmDeliveryActivity extends AppCompatActivity implements OnMapR
                             } else {
                                 mProgressDialog = Helper.showProgressDialog(ConfirmDeliveryActivity.this, "Loading", false);
                                 mConnector.getRequest(TAG, Connector.createSendOfferUrl() + "?request_id=" + mRequestModel.getId()
-                                        + "&price=" + mPrice.getText().toString() + "&delivery_id=" + mUserModel.getId() + "&user_id=" + mRequestModel.getUser_id()
+                                        + "&price=" + mMaxPrice + "&delivery_id=" + mUserModel.getId() + "&user_id=" + mRequestModel.getUser_id()
                                         + "&longitude=" + start.longitude + "&latitude=" + start.latitude + "&address=" + Uri.encode(mFullAddress) + "&description=i%20can%20deliver%20it");
                             }
 

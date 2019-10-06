@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 
 import java.util.Locale;
 
@@ -95,7 +96,7 @@ public class CustomerDialogFragment extends AppCompatDialogFragment {
                     if (URLUtil.isValidUrl(mUserModel.getImage()))
                         Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mDelegateImage);
                     else {
-                        Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mDelegateImage);
+                        Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mDelegateImage);
                     }
                 } else {
                     dismiss();

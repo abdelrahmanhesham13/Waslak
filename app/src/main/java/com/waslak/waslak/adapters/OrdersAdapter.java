@@ -17,6 +17,7 @@ import com.squareup.picasso.Picasso;
 import com.waslak.waslak.R;
 import com.waslak.waslak.models.OrderModel;
 import com.waslak.waslak.models.RequestModel;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.ArrayList;
@@ -68,9 +69,9 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
         if (URLUtil.isValidUrl(mOrderModels.get(position).getImage())) {
             Uri uri = Uri.parse(mOrderModels.get(position).getImage());
             String ref = uri.getQueryParameter("photoreference");
-            Helper.writeToLog("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ");
+            Helper.writeToLog("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyClSyKLKa-cKPzu4AFUU1lQJrlrZi1lKR8");
             if (ref != null)
-                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyA-39lOKwrCfBv1N31ofGpgeCeh6KK0va4").fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
+                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=" + Constants.API_KEY).fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -94,7 +95,7 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.OrderViewH
                     }
                 });
         } else {
-            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mOrderModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
+            Picasso.get().load(Constants.WASLAK_BASE_URL +"/mobile/prod_img/" + mOrderModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.mImage, new Callback() {
                 @Override
                 public void onSuccess() {
 

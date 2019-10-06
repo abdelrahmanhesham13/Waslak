@@ -2,6 +2,7 @@ package com.waslak.waslak.utils;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,13 +13,21 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.util.Log;
+
+import com.android.volley.VolleyError;
+import com.waslak.waslak.R;
+import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 
 /**
  * Created by Abdelrahman Hesham on 8/28/2017.
  */
 
 public class GPSTracker implements LocationListener {
+
+    private static final String TAG = "GPSTracker";
 
     private final Context mContext;
 
@@ -34,13 +43,15 @@ public class GPSTracker implements LocationListener {
     double latitude; // latitude
     double longitude; // longitude
     OnGetLocation onGetLocation;
+    Connector mUpdateAddress;
+
 
     public interface OnGetLocation {
         void onGetLocation(double longtiude, double lantitude);
     }
 
     // The minimum distance to change Updates in meters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 200; // 10 meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
 
     // The minimum time between updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 1; // 1 minute
@@ -117,10 +128,11 @@ public class GPSTracker implements LocationListener {
 
         return location;
     }
+
     @Override
     public void onLocationChanged(Location location) {
         if (location.getLatitude() != 0.0 && location.getLongitude() != 0.0) {
-            onGetLocation.onGetLocation(location.getLatitude(),location.getLongitude());
+            onGetLocation.onGetLocation(location.getLatitude(), location.getLongitude());
         }
 
     }
@@ -136,11 +148,12 @@ public class GPSTracker implements LocationListener {
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
     }
+
     /**
      * Function to get latitude
-     * */
-    public double getLatitude(){
-        if(location != null){
+     */
+    public double getLatitude() {
+        if (location != null) {
             latitude = location.getLatitude();
         }
 
@@ -150,9 +163,9 @@ public class GPSTracker implements LocationListener {
 
     /**
      * Function to get longitude
-     * */
-    public double getLongitude(){
-        if(location != null){
+     */
+    public double getLongitude() {
+        if (location != null) {
             longitude = location.getLongitude();
         }
 
@@ -162,16 +175,17 @@ public class GPSTracker implements LocationListener {
 
     /**
      * Function to check if best network provider
+     *
      * @return boolean
-     * */
+     */
     public boolean canGetLocation() {
         return this.canGetLocation;
     }
 
     /**
      * Function to show settings alert dialog
-     * */
-    public void showSettingsAlert(){
+     */
+    public void showSettingsAlert() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(mContext);
 
         // Setting Dialog Title
@@ -185,7 +199,7 @@ public class GPSTracker implements LocationListener {
 
         // On pressing Settings button
         alertDialog.setPositiveButton("الاعدادات", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 mContext.startActivity(intent);
             }
@@ -206,16 +220,16 @@ public class GPSTracker implements LocationListener {
     /**
      * Stop using GPS listener
      * Calling this function will stop using GPS in your app
-     * */
-    public void stopUsingGPS(){
-        if(locationManager != null){
+     */
+    public void stopUsingGPS() {
+        if (locationManager != null) {
             locationManager.removeUpdates(this);
         }
     }
 
 
-    public boolean providerAndNetworkEnabled(){
-       return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    public boolean providerAndNetworkEnabled() {
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
 }

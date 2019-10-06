@@ -16,6 +16,7 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -118,9 +119,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 } else if (notificationMessage.get("target_screen").contains("chat")) {
                     resultIntent = new Intent(this, ChatActivity.class).putExtra("goToChat", true).putExtra("chat_id", notificationMessage.get("chat_id")).putExtra("request_id", notificationMessage.get("request_id"));
                 } else if (notificationMessage.get("target_screen").contains("request")) {
-                    resultIntent = new Intent(this, ChatActivity.class).putExtra("goToRequest", true).putExtra("request_id", notificationMessage.get("request_id"));
+                    resultIntent = new Intent(this, SplashActivity.class).putExtra("orders", "1");
                 } else if (notificationMessage.get("target_screen").contains("offer")) {
-                    resultIntent = new Intent(this, SplashActivity.class).putExtra("notification","1");
+                    resultIntent = new Intent(this, SplashActivity.class).putExtra("notification","1").putExtra("offer_id",notificationMessage.get("offer_id"));
                 } else {
                     resultIntent = new Intent(this, SplashActivity.class);
                 }

@@ -6,7 +6,7 @@
     <string name="me">Me</string>
     <string name="full_name">Full Name</string>
     <string name="email">Email</string>
-    <string name="mobile">Mobile</string>
+    <string name="mobile">Mobile (+201144352683)</string>
     <string name="birth_date">Birth Date</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
@@ -228,7 +228,7 @@
     <string name="my_orders_new">My Orders</string>
     <string name="customer_orders_new">Customer Orders</string>
     <string name="featured_customer">Join Featured Customers</string>
-    <string name="attach_receipt">Attach Receipt</string>
+    <string name="attach_receipt">Recharge Balance</string>
     <string name="become_featured_client">Become Feature Client</string>
     <string name="living_prove">Living Prove</string>
     <string name="added_successfully">Added Successfully</string>
@@ -246,4 +246,6 @@
     <string name="car_model">Car model</string>
     <string name="car_number">Car number</string>
     <string name="car_type">Car type</string>
+    <string name="you_can_cancel_request_within_5_minutes">You can cancel request within 5 minutes</string>
+    <string name="captain">Captain</string>
 </resources>

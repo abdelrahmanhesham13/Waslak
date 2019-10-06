@@ -11,6 +11,7 @@
         android:layout_weight="1"
         android:contentDescription="@string/in_my_way"
         android:scaleType="centerCrop"
+        android:visibility="gone"
         android:src="@drawable/im_person_logo"/>
 
     <FrameLayout

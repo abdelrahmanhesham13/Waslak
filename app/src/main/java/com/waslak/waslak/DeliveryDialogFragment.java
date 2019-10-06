@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -77,6 +79,12 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
             TextView mCarType;
     @BindView(R.id.car_model)
             TextView mCarModel;
+    @BindView(R.id.car_model_parent)
+    View mCarModelParent;
+    @BindView(R.id.car_type_parent)
+    View mCarTypeParent;
+    @BindView(R.id.car_number_parent)
+    View mCarNumberParent;
 
     GPSTracker mTracker;
     boolean mLocated = false;
@@ -129,9 +137,16 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                         mDuration.setText(mOfferModel.getDuration());
                         mPrice.setText(mOfferModel.getPrice());
                         mDescription.setText(mOfferModel.getDescription());
-                        mCarModel.setText(mOfferModel.getDelivery().getCarModel());
-                        mCarNumber.setText(mOfferModel.getDelivery().getCarNumber());
-                        mCarType.setText(mOfferModel.getDelivery().getCarType());
+                        Log.d(TAG, "onComplete: " + mOfferModel.getRequest().getType());
+                        if (mOfferModel.getRequest().getType().equals("2")) {
+                            mCarModel.setText(mOfferModel.getDelivery().getCarModel());
+                            mCarNumber.setText(mOfferModel.getDelivery().getCarNumber());
+                            mCarType.setText(mOfferModel.getDelivery().getCarType());
+                        } else {
+                            mCarModelParent.setVisibility(View.GONE);
+                            mCarNumberParent.setVisibility(View.GONE);
+                            mCarTypeParent.setVisibility(View.GONE);
+                        }
                         if (mOfferModel.getDelivery() != null) {
                             mDeliveryRating.setRating(Float.parseFloat(mOfferModel.getDelivery().getRating()));
                             mDeliveryName.setText(mOfferModel.getDelivery().getName());
@@ -146,7 +161,7 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                         if (URLUtil.isValidUrl(mOfferModel.getImage()))
                             Picasso.get().load(mOfferModel.getImage()).fit().centerCrop().into(mDelegateImage);
                         else {
-                            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mOfferModel.getImage()).fit().centerCrop().into(mDelegateImage);
+                            Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mOfferModel.getImage()).fit().centerCrop().into(mDelegateImage);
                         }
                     } else {
                         dismiss();
@@ -190,7 +205,7 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                 if (Connector.checkStatus(response)) {
 
                     mChatModel = Connector.getChatModelJson(response, "", mOfferModel.getDeliveryId(), mUserModel.getId());
-                    mConnectorGetRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_request?id=" + mOfferModel.getRequestId());
+                    mConnectorGetRequest.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_request?id=" + mOfferModel.getRequestId());
 
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity) getActivity());
@@ -254,7 +269,7 @@ public class DeliveryDialogFragment extends AppCompatDialogFragment {
                     Helper.writeToLog(String.valueOf(Helper.getRejectCountSharedPreferences(getContext())));
                     mProgressDialog = Helper.showProgressDialog(getContext(), getString(R.string.loading), false);
                     mProgressDialog.show();
-                    mBlockUserConnector.getRequest("DeliveryFragment", "http://www.as.cta3.com/waslk/api/block_user?id=" + mOfferModel.getUserId());
+                    mBlockUserConnector.getRequest("DeliveryFragment", Constants.WASLAK_BASE_URL + "/mobile/api/block_user?id=" + mOfferModel.getUserId());
                     Helper.setRejectCountSharedPreferences(getContext(), 0);
                 } else {
                     int rejectCount = Helper.getRejectCountSharedPreferences(getContext());

@@ -304,7 +304,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             return addresses;
         } else {
-            new ReverseGeocoding(lat, lon, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(lat, lon, "AIzaSyCbltU9nU7ZytFzEwJwPdVji-7Y71DV6B8")
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override

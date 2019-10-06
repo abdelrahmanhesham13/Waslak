@@ -26,6 +26,7 @@ import com.waslak.waslak.models.ShopDetailsModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -82,6 +83,7 @@ public class SearchActivity extends AppCompatActivity {
     String mLat;
     String mLon;
 
+
     boolean mLocated = false;
 
     @Override
@@ -121,7 +123,7 @@ public class SearchActivity extends AppCompatActivity {
                     mAdapter.notifyDataSetChanged();
                     mProgressBar.setVisibility(View.INVISIBLE);
                     mShopsRecycler.setVisibility(View.VISIBLE);*/
-                    mConnectorGoogleShops.getRequest(TAG, "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + mLat + "," + mLon + "&radius=50000&keyword=" + Uri.encode(mSearchText.getText().toString()) + "&key=AIzaSyDEQEjBg2PF7-zPywJnXP7JP6XMXE5d4hY");
+                    mConnectorGoogleShops.getRequest(TAG, "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=" + mLat + "," + mLon + "&radius=50000&keyword=" + Uri.encode(mSearchText.getText().toString()) + "&key=" + Constants.API_KEY);
 
                 }
             }
@@ -174,7 +176,7 @@ public class SearchActivity extends AppCompatActivity {
                 if (mShopModels.get(position).getId().equals("0")) {
                     mShopModel = mShopModels.get(position);
                     mProgressDialog = Helper.showProgressDialog(SearchActivity.this,getString(R.string.loading),false);
-                    mConnectorAddShop.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_shop?name=" + Uri.encode(mShopModel.getName()) + "&description=description&longitude=" + mShopModel.getLon() + "&latitude=" + mShopModel.getLat() + "&address=" + Uri.encode(mShopModel.getAddress()) + "&city=city&country=country&image=" + Uri.encode(mShopModel.getImage()));
+                    mConnectorAddShop.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_shop?name=" + Uri.encode(mShopModel.getName()) + "&description=description&longitude=" + mShopModel.getLon() + "&latitude=" + mShopModel.getLat() + "&address=" + Uri.encode(mShopModel.getAddress()) + "&city=city&country=country&image=" + Uri.encode(mShopModel.getImage()));
                 } else {
                     startActivity(new Intent(SearchActivity.this, StoreActivity.class).putExtra("ShopModel", mShopModels.get(position)).putExtra("user", mUserModel));
                 }
@@ -348,7 +350,7 @@ public class SearchActivity extends AppCompatActivity {
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
             mShopsRecycler.setVisibility(View.GONE);
-            new ReverseGeocoding(lat, lon, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(lat, lon, "AIzaSyCbltU9nU7ZytFzEwJwPdVji-7Y71DV6B8")
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override

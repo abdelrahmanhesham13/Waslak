@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import com.waslak.waslak.R;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.StoreModel;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.ArrayList;
@@ -53,9 +54,9 @@ public class StoresAdapter extends RecyclerView.Adapter<StoresAdapter.StoreViewH
         if (URLUtil.isValidUrl(mShopModels.get(position).getImage())) {
             Uri uri = Uri.parse(mShopModels.get(position).getImage());
             String ref = uri.getQueryParameter("photoreference");
-            Helper.writeToLog("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyChKwGm9z5bnNLPnzjCKkdbQl2owplxYvQ");
+            Helper.writeToLog("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyClSyKLKa-cKPzu4AFUU1lQJrlrZi1lKR8");
             if (ref != null)
-                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=AIzaSyA-39lOKwrCfBv1N31ofGpgeCeh6KK0va4").fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
+                Picasso.get().load("https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=" + ref + "&key=" + Constants.API_KEY).fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
                     @Override
                     public void onSuccess() {
 
@@ -79,7 +80,7 @@ public class StoresAdapter extends RecyclerView.Adapter<StoresAdapter.StoreViewH
                     }
                 });
         } else {
-            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
+            Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mShopModels.get(position).getImage()).fit().centerCrop().error(R.drawable.shop1).into(holder.image, new Callback() {
                 @Override
                 public void onSuccess() {
 

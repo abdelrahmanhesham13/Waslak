@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -25,14 +26,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
+import com.github.javiersantos.appupdater.AppUpdater;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.koushikdutta.ion.Ion;
 import com.squareup.picasso.Picasso;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Locale;
+
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -86,6 +95,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+
+        Ion.getDefault(this).getHttpClient().getSSLSocketMiddleware().setTrustManagers(new TrustManager[] {new X509TrustManager() {
+            @Override
+            public void checkClientTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {}
+
+            @Override
+            public void checkServerTrusted(final X509Certificate[] chain, final String authType) throws CertificateException {}
+
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return new X509Certificate[0];
+            }
+        }});
+
         ButterKnife.bind(this);
         setupBottomNavigationView();
         StoresFragment storesFragment = new StoresFragment();
@@ -93,12 +117,15 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         goToFragment(storesFragment, "StoresFragment");
         mNavigationView.setNavigationItemSelectedListener(this);
 
+        AppUpdater appUpdater = new AppUpdater(this);
+        appUpdater.start();
+
         mUserModel = Helper.getUserSharedPreferences(this);
 
         if (URLUtil.isValidUrl(mUserModel.getImage()))
             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(((ImageView) (mNavigationView.getHeaderView(0).findViewById(R.id.profile_image))));
         else {
-            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(((ImageView) (mNavigationView.getHeaderView(0).findViewById(R.id.profile_image))));
+            Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(((ImageView) (mNavigationView.getHeaderView(0).findViewById(R.id.profile_image))));
         }
         ((TextView) mNavigationView.getHeaderView(0).findViewById(R.id.name)).setText(String.format("%s %s", getString(R.string.hello), mUserModel.getName()));
 
@@ -147,16 +174,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
 
         if (mUserModel.getDelivery().equals("1")) {
-            mTracker = new GPSTracker(this, new GPSTracker.OnGetLocation() {
-                @Override
-                public void onGetLocation(double longtiude, double lantitude) {
-                    if (longtiude != 0 && lantitude != 0) {
-                        Helper.writeToLog("Update : " + lantitude + " " + longtiude);
-                        mUpdateAddress.getRequest(TAG, "http://www.as.cta3.com/waslk/api/update_address?longitude=" + longtiude + "&latitude=" + lantitude + "&id=" + mUserModel.getId());
-                    }
-                }
-            });
+//            mTracker = new GPSTracker(this, new GPSTracker.OnGetLocation() {
+//                @Override
+//                public void onGetLocation(double longtiude, double lantitude) {
+//                    if (longtiude != 0 && lantitude != 0) {
+//                        Helper.writeToLog("Update : " + lantitude + " " + longtiude);
+//                        mUpdateAddress.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/update_address?longitude=" + longtiude + "&latitude=" + lantitude + "&id=" + mUserModel.getId());
+//                    }
+//                }
+//            });
+//            if (mTracker.canGetLocation() && mTracker.getLatitude() != 0) {
+//                Helper.writeToLog("Update : " + mTracker.getLatitude() + " " + mTracker.getLongitude());
+//                mUpdateAddress.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/update_address?longitude=" + mTracker.getLatitude() + "&latitude=" + mTracker.getLongitude() + "&id=" + mUserModel.getId());
+//            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(new Intent(HomeActivity.this,LocationTracker.class));
+            } else {
+                startService(new Intent(HomeActivity.this,LocationTracker.class));
+            }
         }
+
+
 
 
         if (getIntent().hasExtra("notification"))
@@ -165,6 +203,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 notificationsFragment.setOnMenuClicked(onMenuClickedNotification);
                 goToFragment(notificationsFragment, "NotificationsFragment");
                 mBottomNavigationView.setCurrentItem(2);
+            }
+
+        if (getIntent().hasExtra("orders"))
+            if (getIntent().getStringExtra("orders").equals("1")) {
+                ActiveOrdersFragment notificationsFragment = new ActiveOrdersFragment();
+                notificationsFragment.setOnMenuClicked(onMenuClickedOrders);
+                goToFragment(notificationsFragment, "ActiveOrdersFragment");
+                mBottomNavigationView.setCurrentItem(1);
             }
 
     }

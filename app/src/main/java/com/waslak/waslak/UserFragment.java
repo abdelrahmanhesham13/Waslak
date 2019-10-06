@@ -28,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.squareup.picasso.Picasso;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.Locale;
@@ -147,7 +148,7 @@ public class UserFragment extends Fragment {
         mAttachReceipt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getContext(),AttachReceiptActivity.class));
+                startActivity(new Intent(getContext(),WebViewActivity.class).putExtra("type","recharge"));
             }
         });
 
@@ -180,7 +181,7 @@ public class UserFragment extends Fragment {
                         if (URLUtil.isValidUrl(mUserModel.getImage()))
                             Picasso.get().load(mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                         else {
-                            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
+                            Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mUserModel.getImage()).fit().centerCrop().into(mProfileImage);
                         }
                     }
                 } else {

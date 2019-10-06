@@ -239,9 +239,12 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:id="@+id/attach_receipt"
+                    android:padding="10dp"
+                    android:layout_marginBottom="5dp"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bg_button"
                     android:text="@string/attach_receipt"
-                    android:textColor="@color/colorPrimary"
+                    android:textColor="@color/whiteColor"
                     android:layout_gravity="center" />
 
 

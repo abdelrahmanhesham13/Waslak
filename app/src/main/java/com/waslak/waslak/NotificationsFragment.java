@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.ArrayList;
@@ -82,6 +84,7 @@ public class NotificationsFragment extends Fragment {
 
     int mPos;
     Connector mConnectorRate;
+    NotificationModel sendOffer;
 
     public NotificationsFragment() {
         // Required empty public constructor
@@ -129,13 +132,13 @@ public class NotificationsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mProgressDialog.show();
-                            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId());
+                            mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/complete_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId());
                         }
                     }, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             mProgressDialog.show();
-                            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId() + "&status=7");
+                            mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/cancel_offer?price=" + "" + "&id=" + mNotificationModels.get(position).getRequest_id() + "&delivery_id=" + mNotificationModels.get(position).getDelivery_id() + "&user_id=" + mNotificationModels.get(position).getUserId() + "&status=7");
                         }
                     });
                 } else if (mNotificationModels.get(position).getType().equals("chat_admin")){
@@ -190,7 +193,7 @@ public class NotificationsFragment extends Fragment {
                         mChatModel = Connector.getChatModelJson(response, "", mNotificationModels.get(mPos).getDelivery_id(), mUserModel.getId());
                     }
 
-                    mConnectorGetRequest.getRequest(TAG,"http://www.as.cta3.com/waslk/api/get_request?id=" + mRequestId);
+                    mConnectorGetRequest.getRequest(TAG,Constants.WASLAK_BASE_URL + "/mobile/api/get_request?id=" + mRequestId);
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), (AppCompatActivity)getActivity());
                 }
@@ -248,13 +251,31 @@ public class NotificationsFragment extends Fragment {
                 if (Connector.checkStatus(response)){
                     mNotificationModels.clear();
                     mNotificationModels.addAll(Connector.getNotifications(response));
-                    Iterator<NotificationModel> i = mNotificationModels.iterator();
-                    while (i.hasNext()) {
-                        NotificationModel n = i.next(); // must be called before you can call i.remove()
+                    int i = 0;
+                    for (Iterator<NotificationModel> it = mNotificationModels.iterator(); it.hasNext(); i++) {
+                        NotificationModel n = it.next(); // must be called before you can call i.remove()
                         if (n.getStatus().equals("0") && !mUserModel.getId().equals(n.getUserId()) && !n.getType().equals("chat_admin"))
-                            i.remove();
+                            it.remove();
+
+                        if (getActivity() != null) {
+                            if (getActivity().getIntent().hasExtra("offer_id")) {
+                                if (getActivity().getIntent().hasExtra("offer_id") && !getActivity().getIntent().getStringExtra("offer_id").equals("0")) {
+                                    Log.d(TAG, "onComplete: " + getActivity().getIntent().getStringExtra("offer_id"));
+                                    if (n.getSecondary_id().equals(getActivity().getIntent().getStringExtra("offer_id"))) {
+                                        sendOffer = n;
+                                    }
+                                }
+                            }
+                        }
                     }
                     mNotificationsAdapter.notifyDataSetChanged();
+                    if (getActivity() != null) {
+                        if (getActivity().getIntent().hasExtra("offer_id")) {
+                            if (getActivity().getIntent().hasExtra("offer_id") && !getActivity().getIntent().getStringExtra("offer_id").equals("0")) {
+                                showDeliveryDialog(mNotificationModels.indexOf(sendOffer));
+                            }
+                        }
+                    }
                 }
             }
         }, new Connector.ErrorCallback() {
@@ -374,7 +395,7 @@ public class NotificationsFragment extends Fragment {
                 if (TextUtils.isEmpty(commentText)) {
                     Helper.showSnackBarMessage(getString(R.string.enter_comment), (AppCompatActivity)getActivity());
                 } else {
-                        mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mNotificationModels.get(mPos).getRequest_id() + "&delivery_id=" + mNotificationModels.get(mPos).getDelivery_id());
+                        mConnectorRate.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mNotificationModels.get(mPos).getRequest_id() + "&delivery_id=" + mNotificationModels.get(mPos).getDelivery_id());
 
                 }
             }

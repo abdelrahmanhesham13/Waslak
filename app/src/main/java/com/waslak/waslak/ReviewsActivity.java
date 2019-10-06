@@ -84,7 +84,11 @@ public class ReviewsActivity extends AppCompatActivity {
         });
 
         mProgressDialog = Helper.showProgressDialog(this,getString(R.string.loading),false);
-        mConnector.getRequest("ReviewsActivity",Connector.createGetCommentsUrl() + "?user_id=" + mUserModel.getId());
+        if (mUserModel.getId().equals(Helper.getUserSharedPreferences(this).getId())) {
+            mConnector.getRequest("ReviewsActivity", Connector.createGetCommentsUrl() + "?user_id=" + mUserModel.getId());
+        } else {
+            mConnector.getRequest("ReviewsActivity", Connector.createGetCommentsUrl() + "?delivery_id=" + mUserModel.getId());
+        }
 
     }
 

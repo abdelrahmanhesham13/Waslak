@@ -36,6 +36,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -57,6 +58,7 @@ import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.io.ByteArrayOutputStream;
@@ -161,7 +163,6 @@ public class ChatActivity extends AppCompatActivity {
         }
 
 
-
         if (getIntent().hasExtra("type")) {
 
             if (getIntent().getStringExtra("type").equals("admin")) {
@@ -172,7 +173,7 @@ public class ChatActivity extends AppCompatActivity {
                 mUsername.setVisibility(View.GONE);
             }
         } else {
-            getIntent().putExtra("type","5raaaa");
+            getIntent().putExtra("type", "5raaaa");
         }
 
         if (getIntent() != null && getIntent().hasExtra("goToChat")) {
@@ -226,7 +227,7 @@ public class ChatActivity extends AppCompatActivity {
                 if (URLUtil.isValidUrl(mShopModel.getImage()))
                     Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                 else {
-                    Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
+                    Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                 }
             }
         }
@@ -282,7 +283,7 @@ public class ChatActivity extends AppCompatActivity {
                         finish();
                     }
                 } else {
-                    Helper.showSnackBarMessage(getString(R.string.error), ChatActivity.this);
+                    Helper.showSnackBarMessage(Connector.getMessage(response), ChatActivity.this);
                 }
             }
         }, new Connector.ErrorCallback() {
@@ -352,20 +353,36 @@ public class ChatActivity extends AppCompatActivity {
                         if (URLUtil.isValidUrl(mShopModel.getImage()))
                             Picasso.get().load(mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                         else {
-                            Picasso.get().load("http://www.as.cta3.com/waslk/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
+                            Picasso.get().load(Constants.WASLAK_BASE_URL + "/mobile/prod_img/" + mShopModel.getImage()).fit().centerCrop().into(mStoreImage);
                         }
                     }
                     Crashlytics.setString("user", mUserModel.getId());
                     Crashlytics.setString("user_name", mUserModel.getUsername());
                     Crashlytics.setString("name", mUserModel.getName());
                     if (mUserModel.getId().equals(mRequestModelDetails.getUser_id())) {
-                        mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(),"ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", true));
+                        if (mRequestModelDetails.getType().equals("2")) {
+                            mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), "ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(),"text",true));
+                        } else {
+                            mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), "ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", true));
+                        }
                         if (mChatModel != null)
                             mChatModel.setToId(mRequestModelDetails.getDeliveryId());
                     } else {
-                        mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), "ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", false));
+                        if (mRequestModelDetails.getType().equals("2")) {
+                            mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), "ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", false));
+                        } else {
+                            mMessageModels.add(new MessageModel("", mRequestModelDetails.getDeliveryId(), mRequestModelDetails.getUser_id(), mRequestModelDetails.getCreated(), "ثمن التوصيل : " + mRequestModelDetails.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModelDetails.getDescription(), "text", false));
+                        }
                         if (mChatModel != null)
                             mChatModel.setToId(mRequestModelDetails.getUser_id());
+                    }
+
+                    if (!mRequestModelDetails.getDelivery().getCarNumber().equals("null") && mRequestModelDetails.getDelivery().getId().equals(mUserModel.getId()) && mRequestModelDetails.getType().equals("2")){
+                        Log.d(TAG, "onComplete: Here1");
+                        mMessageModels.add(new MessageModel("",mRequestModelDetails.getDeliveryId(),mRequestModelDetails.getUser_id(),mRequestModelDetails.getCreated(),"نوع المركبه : " + mRequestModelDetails.getDelivery().getCarType() + "\n" + "رقم المركبه : " + mRequestModelDetails.getDelivery().getCarNumber() + "\n" + "موديل المركبه : " + mRequestModelDetails.getDelivery().getCarModel(),"text",true));
+                    } else if (!mRequestModel.getDelivery().getCarNumber() .equals("null") && !mRequestModel.getDelivery().getId().equals(mUserModel.getId()) && mRequestModel.getType().equals("2")) {
+                        Log.d(TAG, "onComplete: Here2");
+                        mMessageModels.add(new MessageModel("",mRequestModelDetails.getDeliveryId(),mRequestModelDetails.getUser_id(),mRequestModelDetails.getCreated(),"نوع المركبه : " + mRequestModelDetails.getDelivery().getCarType() + "\n" + "رقم المركبه : " + mRequestModelDetails.getDelivery().getCarNumber() + "\n" + "موديل المركبه : " + mRequestModelDetails.getDelivery().getCarModel(),"text",false));
                     }
                     mAdapter.notifyDataSetChanged();
                     if (!mRequestModelDetails.getDeliveryId().equals("0")) {
@@ -428,10 +445,29 @@ public class ChatActivity extends AppCompatActivity {
                         } else {
                             mAdapter.setFromUser(mRequestModel.getDelivery());
                         }
+
+
+
                         if (mUserModel.getId().equals(mRequestModel.getUser_id()))
-                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", true));
-                        else
-                            mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", false));
+                            if (mRequestModelDetails.getType().equals("2")) {
+                                mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription() ,"text",true));
+                            } else {
+                                mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", true));
+                            }
+                        else {
+                            if (mRequestModelDetails.getType().equals("2")) {
+                                mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", false));
+
+                            } else {
+                                mMessageModels.add(new MessageModel("", mRequestModel.getDeliveryId(), mRequestModel.getUser_id(), mRequestModel.getCreated(), "ثمن التوصيل : " + mRequestModel.getPrice() + "\n" + "بيانات التوصيل : " + mRequestModel.getDescription(), "text", false));
+                            }
+                        }
+
+                        if (mRequestModel.getDelivery().getCarNumber() != null && mRequestModel.getDelivery().getId().equals(mUserModel.getId()) && mRequestModel.getType().equals("2")){
+                            mMessageModels.add(new MessageModel("",mRequestModel.getDeliveryId(),mRequestModel.getUser_id(),mRequestModel.getCreated(),"نوع المركبه : " + mRequestModel.getDelivery().getCarType() + "\n" + "رقم المركبه : " + mRequestModel.getDelivery().getCarNumber() + "\n" + "موديل المركبه : " + mRequestModel.getDelivery().getCarModel(),"text",true));
+                        } else if (mRequestModel.getDelivery().getCarNumber() != null && !mRequestModel.getDelivery().getId().equals(mUserModel.getId()) && mRequestModel.getType().equals("2")) {
+                            mMessageModels.add(new MessageModel("",mRequestModel.getDeliveryId(),mRequestModel.getUser_id(),mRequestModel.getCreated(),"نوع المركبه : " + mRequestModel.getDelivery().getCarType() + "\n" + "رقم المركبه : " + mRequestModel.getDelivery().getCarNumber() + "\n" + "موديل المركبه : " + mRequestModel.getDelivery().getCarModel(),"text",false));
+                        }
                     } else {
                         mAdapter = new MessagesAdapter(ChatActivity.this, mMessageModels, new MessagesAdapter.OnItemClicked() {
                             @Override
@@ -592,7 +628,7 @@ public class ChatActivity extends AppCompatActivity {
                         mConnectorMessages.getRequest(TAG, url);
                 }
 
-                if(getIntent().getStringExtra("type").equals("admin")) {
+                if (getIntent().getStringExtra("type").equals("admin")) {
                     mMessagesRecycler.setVisibility(View.INVISIBLE);
                     mSendParent.setVisibility(View.INVISIBLE);
                     mProgressBar.setVisibility(View.VISIBLE);
@@ -637,7 +673,6 @@ public class ChatActivity extends AppCompatActivity {
         });
 
     }
-
 
 
     @Override
@@ -914,15 +949,15 @@ public class ChatActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.order_canceled) {
             mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
-            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+            mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
             mType = "cancel";
             return true;
         } else if (id == R.id.done_order) {
             mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
             if (mRequestModelDetails.getDeliveryId().equals(mUserModel.getId()))
-                mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
+                mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
             else
-                mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+                mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
             mType = "done";
             return true;
         } else if (id == R.id.call) {
@@ -958,16 +993,16 @@ public class ChatActivity extends AppCompatActivity {
     public void complete(View view) {
         mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
         if (mRequestModelDetails.getDeliveryId().equals(mUserModel.getId()))
-            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
+            mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id() + "&delivery=true");
         else
-            mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+            mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/complete_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
         mType = "done";
     }
 
     @OnClick(R.id.cancel)
     public void cancel(View view) {
         mProgressDialogCancelOrder = Helper.showProgressDialog(this, getString(R.string.loading), false);
-        mConnectorCancelOrder.getRequest(TAG, "http://www.as.cta3.com/waslk/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
+        mConnectorCancelOrder.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/cancel_offer?price=" + mRequestModelDetails.getPrice() + "&id=" + mRequestModelDetails.getId() + "&delivery_id=" + mRequestModelDetails.getDeliveryId() + "&user_id=" + mRequestModelDetails.getUser_id());
         mType = "cancel";
     }
 
@@ -1000,9 +1035,9 @@ public class ChatActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_comment), ChatActivity.this);
                 } else {
                     if (mUserModel.getId().equals(mRequestModel.getDeliveryId())) {
-                        mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&delivery_id=" + mUserModel.getId());
+                        mConnectorRate.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&from_id=" + mUserModel.getId() + "&to_id=" + mRequestModel.getUser_id() + "&user_id=" + mRequestModel.getUser_id() + "&delivery_id= " + mRequestModel.getDeliveryId());
                     } else {
-                        mConnectorRate.getRequest(TAG, "http://www.as.cta3.com/waslk/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&user_id=" + mUserModel.getId());
+                        mConnectorRate.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_comment?comment=" + Uri.encode(commentText) + "&rating=" + mRatingNumber + "&request_id=" + mRequestModel.getId() + "&from_id=" + mUserModel.getId() + "&to_id=" + mRequestModel.getDeliveryId() + "&user_id=" + mRequestModel.getUser_id() + "&delivery_id= " + mRequestModel.getDeliveryId());
                     }
                 }
             }

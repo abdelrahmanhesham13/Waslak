@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +35,7 @@ public class PackageDeliveryActivity extends AppCompatActivity {
     View mParentLayout;
     @BindView(R.id.progressIndicator)
     ProgressBar mProgressIndicator;
+
 
     Connector mConnectorGetSettings;
 
@@ -87,7 +90,7 @@ public class PackageDeliveryActivity extends AppCompatActivity {
             }
         });
 
-        mConnectorGetSettings.getRequest(TAG, "http://as.cta3.com/waslk/api/get_settings?country=10");
+        mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_settings?country=10");
 
     }
 

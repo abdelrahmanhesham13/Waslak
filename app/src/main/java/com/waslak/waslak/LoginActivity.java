@@ -51,6 +51,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -593,7 +594,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             return addresses;
         } else {
-            new ReverseGeocoding(lat, lon, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(lat, lon, Constants.API_KEY)
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override

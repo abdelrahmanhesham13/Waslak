@@ -22,6 +22,7 @@ public class RequestOfferModel {
     String detailRequest;
     String longitudeUpdateRequest;
     String latitudeUpdateRequest;
+    String type;
 
 
     public RequestOfferModel(String idRequest, String cityIdRequest, String addressRequest, String longitudeRequest, String latitudeRequest, String descriptionRequest, String nameRequest, String statusRequest, String createdRequest, String updatedRequest, String userIdRequest, String countryRequest, String priceRequest, String imageRequest, String viewsRequest, String deliveryIdRequest, String durationRequest, String shopIdRequest, String detailRequest, String longitudeUpdateRequest, String latitudeUpdateRequest) {
@@ -46,6 +47,14 @@ public class RequestOfferModel {
         this.detailRequest = detailRequest;
         this.longitudeUpdateRequest = longitudeUpdateRequest;
         this.latitudeUpdateRequest = latitudeUpdateRequest;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getIdRequest() {

@@ -2,6 +2,7 @@ package com.waslak.waslak;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -12,6 +13,8 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.text.InputFilter;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -24,7 +27,9 @@ import com.esafirm.imagepicker.features.ImagePicker;
 import com.esafirm.imagepicker.model.Image;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.lamudi.phonefield.PhoneInputLayout;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.io.ByteArrayOutputStream;
@@ -45,8 +50,8 @@ public class BecomeFeaturedClient extends AppCompatActivity {
 
     @BindView(R.id.national_id)
     ImageView mNationalIdPhoto;
-    @BindView(R.id.mobile_number)
-    EditText mMobileNumberEditText;
+    @BindView(R.id.phone_input_layout)
+    PhoneInputLayout mMobileNumberEditText;
     @BindView(R.id.send_data)
     Button mSendData;
     @BindView(R.id.car_image)
@@ -58,6 +63,7 @@ public class BecomeFeaturedClient extends AppCompatActivity {
     String mNonConvicts = "";
     String mCar = "";
     Connector mConnector;
+    int mobileLength;
 
     int mType = -1;
 
@@ -72,6 +78,10 @@ public class BecomeFeaturedClient extends AppCompatActivity {
 
 
         ButterKnife.bind(this);
+
+        mMobileNumberEditText.setHint(R.string.enter_phone);
+        mMobileNumberEditText.setDefaultCountry("SA");
+        mMobileNumberEditText.setTextColor(getResources().getColor(R.color.colorPrimary));
 
 
         mConnector = new Connector(this, new Connector.LoadCallback() {
@@ -120,17 +130,32 @@ public class BecomeFeaturedClient extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.add_your_national_id), BecomeFeaturedClient.this);
                 } else if (mCar.isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.add_your_car_image), BecomeFeaturedClient.this);
-                } else if (mMobileNumberEditText.getText().toString().isEmpty()) {
+                } else if (mMobileNumberEditText.getPhoneNumber().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone), BecomeFeaturedClient.this);
-                } else if (mMobileNumberEditText.getText().toString().isEmpty()) {
+                } else if (mMobileNumberEditText.getPhoneNumber().isEmpty()) {
                     Helper.showSnackBarMessage(getString(R.string.enter_phone_number), BecomeFeaturedClient.this);
-                } else {
+                } else if (!mMobileNumberEditText.isValid()) {
+                    Helper.showSnackBarMessage(getString(R.string.invalid_phone_number), BecomeFeaturedClient.this);
+                }  else {
 //                    mProgressDialog = Helper.showProgressDialog(BecomeFeaturedClient.this, getString(R.string.loading), false);
 //                    mConnector.getRequest(TAG, "http://www.waslakbooking.com/waslk/api/become_client?user_id=" + Helper.getUserSharedPreferences(BecomeFeaturedClient.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&address_photo=" + mCar);
-                    startActivityForResult(new Intent(BecomeFeaturedClient.this, MobileVerificationActivity.class).putExtra("mobile",mMobileNumberEditText.getText().toString()), 3);
+                    startActivityForResult(new Intent(BecomeFeaturedClient.this, MobileVerificationActivity.class).putExtra("mobile",mMobileNumberEditText.getPhoneNumber().toString()), 3);
                 }
             }
         });
+
+        TelephonyManager tm = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+        String mCountryLocale = tm.getNetworkCountryIso();
+
+        if (mCountryLocale.contains("sa") || mCountryLocale.contains("SA")) {
+            mobileLength = 13;
+        } else if (mCountryLocale.equalsIgnoreCase("eg")){
+            mobileLength = 13;
+        } else if (mCountryLocale.equalsIgnoreCase("jo")) {
+            mobileLength = 14;
+        } else {
+            mCountryLocale = "";
+        }
 
     }
 
@@ -217,7 +242,7 @@ public class BecomeFeaturedClient extends AppCompatActivity {
                 if (result.equals("verified")) {
                     //mPhoneNumber = data.getStringExtra("phone");
                     mProgressDialog = Helper.showProgressDialog(BecomeFeaturedClient.this, getString(R.string.loading), false);
-                    mConnector.getRequest(TAG, "http://www.as.cta3.com/waslk/api/become_client?user_id=" + Helper.getUserSharedPreferences(BecomeFeaturedClient.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getText().toString()) + "&address_photo=" + mCar);
+                    mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/become_client?user_id=" + Helper.getUserSharedPreferences(BecomeFeaturedClient.this).getId() + "&national_photo=" + mImage + "&mobile=" + Uri.encode(mMobileNumberEditText.getPhoneNumber()) + "&address_photo=" + mCar);
 
                 }
             }

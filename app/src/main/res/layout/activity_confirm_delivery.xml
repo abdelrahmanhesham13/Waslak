@@ -23,8 +23,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.12"
-        android:gravity="center"
         android:baselineAligned="false"
+        android:gravity="center"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -48,20 +48,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:text="@string/delivery_location"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/delivery_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:maxLines="3"
-                    android:id="@+id/delivery_location"
                     android:textSize="12sp"
                     tools:text="11 Hasbo St,Mohrem Bek Alexandria" />
 
@@ -77,9 +77,9 @@
 
             <ImageView
                 android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/enter_code"
-                android:layout_height="40dp"
                 android:src="@drawable/ic_store" />
 
             <LinearLayout
@@ -90,20 +90,20 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:text="@string/store_location"
                     android:textColor="@android:color/black"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/store_location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:maxLines="3"
-                    android:id="@+id/store_location"
                     android:textSize="12sp"
                     tools:text="11 Hasbo St,Mohrem Bek Alexandria" />
 
@@ -123,37 +123,50 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.095"
-        android:weightSum="1"
         android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="0.1"
-            android:gravity="center"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:drawableTop="@drawable/ic_store"
-            android:text="@string/store"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="10sp"
-            tools:ignore="NestedWeights,SmallSp" />
+        android:orientation="horizontal"
+        android:weightSum="1">
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.3"
             android:layout_height="wrap_content"
+            android:layout_weight="0.1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:src="@drawable/coruier"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:text="@string/store"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/to_shop_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:layout_gravity="center"
                 android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
                 tools:text="0.25 KM" />
 
             <View
@@ -162,34 +175,47 @@
                 android:background="#434343" />
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.1"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:drawableTop="@drawable/ic_person"
-            android:text="@string/delivery"
+            android:layout_weight="0.1"
             android:gravity="center"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="8sp"
-            tools:ignore="SmallSp" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:src="@drawable/shop1"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:text="@string/delivery"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.3"
             android:layout_height="wrap_content"
+            android:layout_weight="0.3"
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/to_customer_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:id="@+id/to_customer_distance"
                 android:layout_gravity="center"
                 android:textColor="@android:color/darker_gray"
+                android:textSize="12sp"
                 tools:text="0.25 KM" />
 
             <View
@@ -198,19 +224,33 @@
                 android:background="#434343" />
         </LinearLayout>
 
-        <TextView
+
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.1"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:drawableTop="@drawable/ic_person"
-            android:text="@string/customer"
+            android:layout_weight="0.1"
             android:gravity="center"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="8sp"
-            tools:ignore="SmallSp" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:src="@drawable/home"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:text="@string/customer"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
 
 
     </LinearLayout>
@@ -226,27 +266,27 @@
         android:layout_weight="0.085">
 
         <EditText
-            android:layout_width="0dp"
-            android:layout_weight="0.8"
-            android:textSize="12sp"
             android:id="@+id/price"
-            android:inputType="numberDecimal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight="0.8"
             android:drawablePadding="10dp"
             android:hint="@string/delivery_cost"
-            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:textSize="12sp"
             tools:ignore="NestedWeights" />
 
         <TextView
-            android:layout_width="0dp"
-            tools:text="1 Hour"
-            android:layout_weight="0.2"
-            android:layout_gravity="center"
-            android:textStyle="bold"
-            android:textSize="18sp"
             android:id="@+id/duration"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.2"
             android:textColor="@android:color/holo_red_dark"
-            android:layout_height="wrap_content" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="1 Hour" />
 
 
     </LinearLayout>

@@ -225,6 +225,17 @@
                 android:tint="@color/colorPrimary" />
 
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginTop="25dp"
+                android:textSize="18sp"
+                android:id="@+id/advice"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:layout_below="@id/add_photo"
+                android:layout_height="wrap_content"
+                android:text="((اسعار الكباتن تاتيك على التنبهات داخل التطبيق ويمكنك اختيار الكابتن حسب موقعه او الاقرب لك ونوع وموديل المركبه وتقييمه))"/>
+
         </RelativeLayout>
 
     </ScrollView>

@@ -45,8 +45,12 @@ import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.models.StoreModel;
 import com.waslak.waslak.models.UserModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -77,8 +81,10 @@ public class RealStoresFragment extends Fragment {
     RecyclerView mShopsRecycler;
     @BindView(R.id.progressIndicator)
     ProgressBar mProgressBar;
-    @BindView(R.id.deliver)
-    View mDeliveryParent;
+    @BindView(R.id.customer_delivery)
+    View mCustomerDelivery;
+    @BindView(R.id.package_delivery)
+    View mPackageDelivery;
 
 
     ArrayList<ShopModel> mShopModels;
@@ -102,6 +108,7 @@ public class RealStoresFragment extends Fragment {
     String mType;
 
     Context mContext;
+    private Connector mConnectorGetSettings;
 
     public RealStoresFragment() {
         // Required empty public constructor
@@ -166,12 +173,43 @@ public class RealStoresFragment extends Fragment {
         mShopsRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         mShopsRecycler.setAdapter(mAdapter);
 
-        mDeliveryParent.setOnClickListener(new View.OnClickListener() {
+        mPackageDelivery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mContext,PackageDeliveryActivity.class));
+                startActivity(new Intent(getContext(),PackageDeliveryDetailsActivity.class).putExtra("type","package"));
             }
         });
+
+
+        mCustomerDelivery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),PackageDeliveryDetailsActivity.class).putExtra("type","customer"));
+            }
+        });
+
+        mConnectorGetSettings = new Connector(getContext(), new Connector.LoadCallback() {
+            @Override
+            public void onComplete(String tag, String response) {
+                try {
+                    JSONObject jsonObject = new JSONObject(response);
+                    boolean taxi = jsonObject.getBoolean("taxi");
+                    if (taxi){
+                        mCustomerDelivery.setVisibility(View.VISIBLE);
+                    } else {
+                        mCustomerDelivery.setVisibility(View.GONE);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Connector.ErrorCallback() {
+            @Override
+            public void onError(VolleyError error) {
+            }
+        });
+
+        mConnectorGetSettings.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_settings?country=10");
 
 
         return view;
@@ -334,7 +372,7 @@ public class RealStoresFragment extends Fragment {
         } else {
             mProgressBar.setVisibility(View.VISIBLE);
             mShopsRecycler.setVisibility(View.GONE);
-            new ReverseGeocoding(lat, lon, "AIzaSyATc3Nte8Pj1oWTFKAbLWUiJbzSIJEDzxc")
+            new ReverseGeocoding(lat, lon, "AIzaSyCbltU9nU7ZytFzEwJwPdVji-7Y71DV6B8")
                     .setLanguage("en")
                     .fetch(new Callback() {
                         @Override

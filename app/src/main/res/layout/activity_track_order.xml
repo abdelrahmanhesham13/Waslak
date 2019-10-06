@@ -111,6 +111,7 @@
                     android:layout_width="wrap_content"
                     android:text="@string/received_from_store"
                     android:textSize="12sp"
+                    android:visibility="gone"
                     android:id="@+id/received"
                     android:textColor="@android:color/black"
                     android:layout_height="wrap_content" />
@@ -135,19 +136,32 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0.1"
             android:gravity="center"
-            android:layout_gravity="center"
-            android:textAlignment="center"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:drawableTop="@drawable/ic_store"
-            android:text="@string/store"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="10sp"
-            tools:ignore="NestedWeights,SmallSp" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:src="@drawable/coruier"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:text="@string/store"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="0dp"
@@ -170,19 +184,32 @@
                 android:background="#434343" />
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.1"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:drawableTop="@drawable/ic_person"
-            android:text="@string/delivery"
+            android:layout_weight="0.1"
             android:gravity="center"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="8sp"
-            tools:ignore="SmallSp" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:src="@drawable/shop1"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:text="@string/captain"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
 
 
         <LinearLayout
@@ -206,19 +233,32 @@
                 android:background="#434343" />
         </LinearLayout>
 
-        <TextView
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_weight="0.1"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:drawableTop="@drawable/ic_person"
-            android:text="@string/customer"
+            android:layout_weight="0.1"
             android:gravity="center"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:textColor="@android:color/darker_gray"
-            android:textSize="8sp"
-            tools:ignore="SmallSp" />
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32dp"
+                android:src="@drawable/home"
+                android:layout_height="32dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="2dp"
+                android:layout_weight="0.1"
+                android:gravity="center"
+                android:text="@string/customer"
+                android:textAlignment="center"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="8sp"
+                tools:ignore="SmallSp" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

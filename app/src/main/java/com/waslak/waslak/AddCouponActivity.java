@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.Helper;
 
 import java.util.Locale;
@@ -86,7 +87,7 @@ public class AddCouponActivity extends AppCompatActivity {
                     Helper.showSnackBarMessage(getString(R.string.enter_code),AddCouponActivity.this);
                 } else {
                     mProgressDialog = Helper.showProgressDialog(AddCouponActivity.this,getString(R.string.loading),false);
-                    mConnector.getRequest(TAG,"http://www.as.cta3.com/waslk/api/add_promocode?promo=" + Uri.encode(mCouponEditText.getText().toString()) + "&user_id=" + Helper.getUserSharedPreferences(AddCouponActivity.this).getId());
+                    mConnector.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/add_promocode?promo=" + Uri.encode(mCouponEditText.getText().toString()) + "&user_id=" + Helper.getUserSharedPreferences(AddCouponActivity.this).getId());
                 }
             }
         });

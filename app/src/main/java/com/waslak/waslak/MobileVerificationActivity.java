@@ -66,6 +66,10 @@ public class MobileVerificationActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
+
+
+
         mMobileEditText.setHint(R.string.enter_phone);
         mMobileEditText.setDefaultCountry("SA");
         mMobileEditText.setTextColor(getResources().getColor(R.color.colorPrimary));

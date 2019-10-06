@@ -34,6 +34,7 @@ import com.waslak.waslak.models.ChatModel;
 import com.waslak.waslak.models.RequestModel;
 import com.waslak.waslak.models.ShopModel;
 import com.waslak.waslak.networkUtils.Connector;
+import com.waslak.waslak.networkUtils.Constants;
 import com.waslak.waslak.utils.GPSTracker;
 import com.waslak.waslak.utils.Helper;
 
@@ -126,7 +127,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements OnMapRead
                 if (Connector.checkStatus(response)) {
                     mChatModel = Connector.getChatModelJson(response, "", mRequestModel.getDeliveryId(), mRequestModel.getUser_id());
 
-                    mConnectorGetRequest.getRequest(TAG, "http://www.as.cta3.com/waslk/api/get_request?id=" + mRequestModel.getId());
+                    mConnectorGetRequest.getRequest(TAG, Constants.WASLAK_BASE_URL + "/mobile/api/get_request?id=" + mRequestModel.getId());
                 } else {
                     Helper.showSnackBarMessage(getString(R.string.error), OrderDetailsActivity.this);
                 }
