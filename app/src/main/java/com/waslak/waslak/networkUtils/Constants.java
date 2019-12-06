@@ -3,7 +3,7 @@ package com.waslak.waslak.networkUtils;
 public class Constants {
     public static String WASLAK_BASE_URL = "https://waslakgroup.com";
     public static final String GET_SHOPS_PATH = "get_shops";
-    public static final String API_KEY = "AIzaSyBlXRHjf8sL12YCaJ55mrFhSP36r-oHcHU";
+    public static final String API_KEY = "AIzaSyA9Qod1kZPKd8xsRSyoYqBXh0YZsnI0fhk";
     public static final String MOBILE_PATH = "mobile";
     public static final String API_PATH = "api";
     public static final String GET_SHOP_PATH = "get_shop";
